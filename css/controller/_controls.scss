@@ -1,0 +1,59 @@
+$bg: rgba(40,90,140,1);
+$bgd: darken($bg, 5);
+
+.controls {
+	overflow: hidden;
+
+	width: 210px;
+	margin: 20px auto;
+
+	.control {
+		width: 60px;
+		height: 60px;
+		margin: 5px;
+
+		float: left;
+
+		div.button {
+			background-color: rgba(1,1,1,0.2);
+			text-align: center;
+
+			font-size: 1.5em;
+
+			box-shadow: 0 4px rgba(1,1,1,0.4);
+	    	border-radius: 4px;
+
+	    	&:active {
+	    		margin-top: 2px;
+    			box-shadow: 0 2px rgba(1, 1, 1, 0.4);
+	    	}
+		}
+
+		p {
+			line-height: 60px;
+			margin: 0;
+		}
+
+		i {
+			line-height: 60px;
+			color: rgba(255,255,255,0.9);
+			text-shadow: 0 4px rgba(1,1,1,0.4);
+		}
+	}
+
+	// .up {
+	// }
+
+	// .down {
+
+	// }
+
+	// .left {
+
+	// }
+
+	// .right {
+
+	// }
+
+}

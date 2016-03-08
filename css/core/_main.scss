@@ -1,0 +1,55 @@
+* {
+	box-sizing: border-box;
+	text-decoration: none;
+}
+
+html, body {
+	height: 100%;
+}
+
+html {
+	overflow: hidden;
+}
+
+body {
+  min-height: 100%;
+  background-color: #f0f0f0;
+  position: relative;
+  color: #333;
+  font-family: sans-serif;
+  overflow-x: hidden;
+}
+
+p {
+	font-size: 1.2em;
+}
+
+h2 {
+	font-size: 1.8em;
+}
+
+body.no-scroll,
+html.no-scroll {
+	overflow: hidden;
+	overflow-x: hidden;
+	overflow-y: hidden;
+	// max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+	color: #33D;
+}
+
+ul {
+	padding-left: 0;
+	list-style: none;
+}
+
+fieldset {
+	border: none;
+}
+
+.hidden {
+	display: none !important;
+}

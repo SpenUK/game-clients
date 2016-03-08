@@ -1,0 +1,23 @@
+body {
+	background-color: $background-color;
+}
+
+.qrcode {
+	display: inline-block;
+	padding: 5px;
+    background-color: white;
+    border: 5px solid rgba(1,1,1,0.2);
+}
+
+.game {
+	.game-canvas {
+		border: 10px solid tomato;
+		position: absolute;
+		left: 0;
+		top: 0;
+
+		&#background {
+			position: relative;
+		}
+	}
+}
