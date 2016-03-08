@@ -164,6 +164,14 @@ var _ = require('underscore'),
 	    	);
 		},
 
+		translateAll: function (x, y) {
+		    _.each([this.contexts.background, this.contexts.cover, this.contexts.props], function(context) {
+		    	context.clearRect(0, 0, backgroundCanvas.width, backgroundCanvas.height);
+		    	context.save();
+		    	context.translate(x, y);
+		    });
+		},
+
 		serialize: function () {
 			return {
 				gameWidth: '600px',
