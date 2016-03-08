@@ -11,27 +11,6 @@ function getContext(id, contextType) {
 	return canvas ? canvas.getContext(contextType) : false;
 }
 
-function preloadImages(images) {
-	var deferred = new $.Deferred(),
-		loader = new Image(),
-		total = images.length,
-		count = 0;
-
-		loader.onload = function(){
-			count += 1;
-
-			if (count === total) {
-				deferred.resolve();
-			} else {
-				loader.src = images.pop();
-			}
-		};
-
-		loader.src = images.pop();
-
-	return deferred;
-}
-
 var _ = require('underscore'),
 	ViewExtension = require('../../../extensions/view'),
 	template = require('../../templates/game/game.hbs'),
@@ -52,21 +31,6 @@ var _ = require('underscore'),
 			this._super.apply(this, arguments);
 
 			window.game = this;
-
-			loader = preloadImages(['images/exampleTileSet.png']);
-
-			if (loader.state() === 'resolved') {
-				this.ready();
-			} else {
-				loader.then(this.ready.bind(this));
-			}
-
-			this.mapImage = new Image();
-  			this.mapImage.src = 'images/exampleTileSet.png';
-
-  			this.currentMap = mapData.maps[mapData.defaultMap];
-
-  			console.log(this.currentMap);
 
 		},
 
@@ -166,16 +130,17 @@ var _ = require('underscore'),
 
 		translateAll: function (x, y) {
 		    _.each([this.contexts.background, this.contexts.cover, this.contexts.props], function(context) {
-		    	context.clearRect(0, 0, backgroundCanvas.width, backgroundCanvas.height);
+		    	context.clearRect(0, 0, 800, 600);
 		    	context.save();
 		    	context.translate(x, y);
 		    });
+		    this.draw();
 		},
 
 		serialize: function () {
 			return {
-				gameWidth: '600px',
-				gameHeight: '400px'
+				gameWidth: this.canvasWidth + 'px',
+				gameHeight: this.canvasHeight + 'px'
 			};
 		}
 

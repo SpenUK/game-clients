@@ -2,6 +2,8 @@
 
 require('backbone-super');
 
+window.BB = require('backbone');
+
 var app = require('./app.js');
 
 $(document).on('ready', function(){
