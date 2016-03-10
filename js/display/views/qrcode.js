@@ -2,9 +2,11 @@
 
 var _ = require('underscore'),
 	ViewExtension = require('../../extensions/view'),
-	DisplayView = ViewExtension.extend({
+	template = require('../templates/qrcode.hbs'),
 
-		tagName: 'li',
+	QRCodeView = ViewExtension.extend({
+
+		template: template,
 
 		acceptedParams: ['socket'],
 
@@ -17,6 +19,8 @@ var _ = require('underscore'),
 
 			this.socket.on('token generated', this.setUrl);
 
+			this.socket.on('controller left', this.show.bind(this));
+
 			this.socket.on('controller joined', this.hide.bind(this));
 
 			this.socket.emit('request token');
@@ -27,12 +31,13 @@ var _ = require('underscore'),
 			this.ready();
 		},
 
+		show: function () {
+			console.log('show');
+			this.$el.fadeIn(500);
+		},
+
 		hide: function () {
-			var self = this;
-			this.$el.fadeOut(500, function() {
-				console.log('remove');
-				self.remove();
-			});
+			this.$el.fadeOut(500);
 		},
 
 		render: function () {
@@ -40,9 +45,15 @@ var _ = require('underscore'),
 
 			var $qr = $('<div/>');
 			new window.QRCode($qr[0], this.url);
-			this.$el.html($('<a href="' + this.url + '" target="_blank">').html($qr));
+			this.$el.find('.code').html($qr);
+		},
+
+		serialize: function () {
+			return {
+				url: this.url
+			};
 		}
 
 	});
 
-module.exports = DisplayView;
+module.exports = QRCodeView;

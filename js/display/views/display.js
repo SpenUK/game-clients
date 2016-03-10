@@ -1,9 +1,9 @@
 'use strict';
 
 var ViewExtension = require('../../extensions/view'),
-	ModelExtension = require('../../extensions/model'),
 	QRCodeView = require('./qrcode'),
 	GameView = require('./game/game'),
+	GameModel = require('../models/game'),
 	template = require('../templates/display.hbs'),
 
 	DisplayView = ViewExtension.extend({
@@ -13,8 +13,14 @@ var ViewExtension = require('../../extensions/view'),
 		acceptedParams: ['socket'],
 
 		initialize: function() {
-			var gameData = {};
-			this.gameModel = new ModelExtension(gameData);
+			this.gameModel = new GameModel({
+				height: 400,
+				width: 600,
+				deadzone: {
+					x: 300,
+					y: 200
+				}
+			});
 
 			this._super.apply(this, arguments);
 

@@ -2,15 +2,53 @@
 /*jshint bitwise: false*/
 
 var Backbone = require('backbone'),
+	_ = require('underscore'),
 
     CoreModel = Backbone.Model.extend({
 
+    	/**
+         * Should be overriden with an array of accepted paramaters
+         * Paramaters in this list will be set
+         */
+        acceptedParams: [],
+
     	isReady: true,
 
-    	onReady: function () {
-    		this.isReady = true;
-    		this.trigger('ready');
-    	}
+    	ready: function () {
+            this.trigger('ready');
+            this.isReady = true;
+        },
+        /**
+         * Override
+         */
+        onReady: function () {
+        },
+
+    	constructor: function (attributes, options) {
+            this._setAcceptedParams(options);
+
+            Backbone.Model.prototype.constructor.apply(this, arguments);
+        },
+
+        _coreParams: ['parent', 'app'],
+
+        /**
+         * Uses the acceptedParams array to set those params on 'this'.
+         */
+        _setAcceptedParams: function (options) {
+            var self = this, params;
+            if (!_.isArray(this.acceptedParams) || !options) {
+                return false;
+            }
+
+            params = _.union([],this._coreParams, this.acceptedParams);
+
+            _.each(params, function(param){
+              if (options[param]) {
+                self[param] = options[param];
+              }
+            });
+        }
 
     });
 

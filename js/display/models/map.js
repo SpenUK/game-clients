@@ -34,6 +34,8 @@ var ModelExtension = require('../../extensions/model'),
 
             this._super.apply(this, arguments);
 
+            this.expandAttributes();
+
             if (loader.state() === 'resolved') {
                 this.setImage();
             } else {
@@ -45,10 +47,53 @@ var ModelExtension = require('../../extensions/model'),
         setImage: function () {
             var image = new Image();
 
-            image.src = 'images/exampleTileSet.png';
+            image.src = this.get('imageSrc');
             this.set('image', image);
 
             this.ready();
+        },
+
+        getTileType: function (tile) {
+            var tileIndex = this.getTileIndex(tile),
+                tileType = this.get('tileMap')[tileIndex];
+
+            return this.get('tileTypes')[tileType];
+        },
+
+        getCoords: function (tile) {
+            var columns = this.get('tilesX'),
+                x = tile % columns,
+                y = parseInt(tile / columns);
+
+                return {x: x, y: y};
+        },
+
+        getTileIndex: function (tile) {
+          var x = tile.x,
+              y = tile.y;
+
+              console.log((y * this.get('tilesX')) + x + 1);
+
+              return (y * this.get('tilesX')) + x;
+        },
+
+        expandAttributes: function () {
+            var tilesX = this.get('tilesX'),
+                tilesY = this.get('tilesY'),
+                tileSize = this.get('tileSize'),
+                width = tilesX * tileSize,
+                height = tilesY * tileSize,
+                imageSrc = this.get('tileSet').src;
+
+            this.set({
+                width: width,
+                height: height,
+                imageSrc: imageSrc
+            }, {
+                silent: true
+            });
+
+            console.log(this.get('width'));
         }
     });
 

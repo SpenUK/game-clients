@@ -1,7 +1,8 @@
 'use strict';
 /*jshint bitwise: false*/
 
-var Backbone = require('backbone'),
+var _ = require('underscore'),
+    Backbone = require('backbone'),
 
     CoreCollection = Backbone.Collection.extend({
 
@@ -9,20 +10,60 @@ var Backbone = require('backbone'),
 
         status: 'initialized',
 
+        /**
+         * Should be overriden with an array of accepted paramaters
+         * Paramaters in this list will be set
+         */
+        acceptedParams: [],
+
+        isReady: true,
+
+        ready: function () {
+            this.trigger('ready');
+            this.isReady = true;
+        },
+        /**
+         * Override
+         */
+        onReady: function () {
+        },
+
+        constructor: function (models, options) {
+            console.log(options);
+            this._setAcceptedParams(options);
+
+            Backbone.Collection.prototype.constructor.apply(this, arguments);
+        },
+
     	initialize: function() {
     		this._super.apply(this, arguments);
 
-    		this.listenTo(this, 'sync', this.onReady);
+            if (!this.isReady) {
+                this.listenTo(this, 'sync', this.ready);
+            }
+
     	},
 
-    	onReady: function () {
-    		this.status = 'ready';
-    		this.trigger('ready');
-    	},
+        _coreParams: ['parent', 'app'],
 
-    	isReady: function () {
-    		return this.status === 'ready';
-    	}
+        /**
+         * Uses the acceptedParams array to set those params on 'this'.
+         */
+        _setAcceptedParams: function (options) {
+            var self = this, params;
+            if (!_.isArray(this.acceptedParams) || !options) {
+                return false;
+            }
+
+            params = _.union([],this._coreParams, this.acceptedParams);
+
+            _.each(params, function(param){
+              if (options[param]) {
+                self[param] = options[param];
+              }
+            });
+        }
+
     });
 
 module.exports = CoreCollection;

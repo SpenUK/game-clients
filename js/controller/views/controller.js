@@ -4,7 +4,6 @@ var ViewExtension = require('../../extensions/view'),
 	Collection = require('../../extensions/collection'),
 	Model = require('../../extensions/model'),
 	ControlsView = require('./controls'),
-	// MessagesView = require('./messages/messages'),
 	template = require('../templates/controller.hbs'),
 
 	ControllerView = ViewExtension.extend({

@@ -10,20 +10,33 @@ var CollectionExtension = require('../../extensions/collection'),
 
         model: MapModel,
 
+        currentMap: null,
+
         initialize: function() {
             this._super.apply(this, arguments);
             this.setCurrentMap();
+            window.mapsCollection = this;
+        },
+
+        getCurrentMap: function () {
+            return this.currentMap || this.setCurrentMap();
         },
 
         setCurrentMap: function (map) {
             var currentMap;
+
             if (map) {
-                currentMap = this.where({title: map}) || this.where({title: this.defaultMap});
+                currentMap = this.findWhere({title: map}) || this.findWhere({title: this.defaultMap});
             } else {
-                currentMap = this.where({title: this.defaultMap});
+                currentMap = this.findWhere({title: this.defaultMap});
             }
 
-            this.currentMap = currentMap;
+            if (this.currentMap !== currentMap) {
+                this.currentMap = currentMap;
+                this.trigger('changed current', this.currentMap);
+            }
+
+            return this.currentMap;
         }
     });
 

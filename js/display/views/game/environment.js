@@ -40,9 +40,13 @@ var _ = require('underscore'),
 
 		template: template,
 
-		acceptedParams: ['socket'],
+		acceptedParams: ['socket', 'cameraModel', 'height', 'width'],
 
 		isReady: false,
+
+		currentX: 0,
+
+		currentY: 0,
 
 		initialize: function() {
 			var loader,
@@ -64,9 +68,11 @@ var _ = require('underscore'),
 
   			this.currentMap = mapData.maps[mapData.defaultMap];
 
-  			console.log(this);
+  			// this.socket.on('control press', this.onControlPress.bind(this));
 
-  			this.socket.on('control press', this.onControlPress.bind(this));
+			// this.listenTo(this.cameraModel, 'change', this.translateAll.bind(this));
+			console.log(this.cameraModel);
+			this.listenTo(this.cameraModel, 'updated', this.translateAll.bind(this));
 		},
 
 		onControlPress: function (data) {
@@ -84,7 +90,7 @@ var _ = require('underscore'),
 			}
 
 			if (message === 'right') {
-				this.translateAll(-50, 0);
+				this.translateAll(-	50, 0);
 			}
 		},
 
@@ -98,37 +104,58 @@ var _ = require('underscore'),
 				cover: coverCtx,
 				props: propsCtx
 			};
+
+			window.base = this.contexts.base;
 		},
 
 		render: function () {
 			this._super.apply(this, arguments);
 			this.setContexts();
-
-			console.log(this.contexts);
-
 			this.draw();
 		},
 
 		draw: function () {
-			var tiles = this.currentMap.tileMap;
-			console.log('drawing');
-
+			var map = this.model.getCurrentMap(),
+				tiles = map.get('tileMap');
+				// avoiding having to .get() for each draw of each tile...
+				this.currentMap = map;
 			_.each(tiles, this.drawTile.bind(this));
 		},
 
 		drawTile: function (tile, i) {
-			var tileType = this.currentMap.tileTypes[tile],
-				x = i % this.currentMap.tilesX,
-				y = Math.floor(i / this.currentMap.tilesX),
+			var tileType = this.currentMap.attributes.tileTypes[tile],
+				x = i % this.currentMap.attributes.tilesX,
+				y = Math.floor(i / this.currentMap.attributes.tilesX),
 				currentMap = this.currentMap,
-				tileSize = currentMap.tileSize,
+				tileSize = currentMap.attributes.tileSize,
 				contexts = this.contexts,
 				image = this.mapImage;
 
-	    	_.each(['base', 'props', 'cover'], function(id){
+			var canvasWidth = 600,
+				canvasHeight = 400;
+
+				// debugger;
+				//
+			var translateX = this.cameraModel.x,
+				translateY = this.cameraModel.y;
+
+			var inBounds = 	x * tileSize < - translateX + canvasWidth &&
+                    		y * tileSize < - translateY + canvasHeight &&
+                    		(x + 1) * tileSize > - translateX &&
+                    		(y + 1) * tileSize > - translateY;
+
+			if (!inBounds) {
+				return false;
+			}
+
+	    	_.each([
+	    		'base',
+	    		'props',
+	    		'cover'
+	    	], function(id){
 	    		var tile = tileType[id],
-		    		srcX = tile % currentMap.tileSet.tilesX,
-					srcY = Math.floor(tile / currentMap.tileSet.tilesX);
+		    		srcX = tile % currentMap.attributes.tileSet.tilesX,
+					srcY = Math.floor(tile / currentMap.attributes.tileSet.tilesX);
 
 		    	contexts[id].drawImage(
 			        image, // image
@@ -144,19 +171,46 @@ var _ = require('underscore'),
 	    	});
 		},
 
-		translateAll: function (x, y) {
-		    _.each([this.contexts.base, this.contexts.cover, this.contexts.props], function(context) {
-		    	context.clearRect(0, 0, 800, 600);
+		translateAll: function () {
+			var x = this.cameraModel.x;
+			var y = this.cameraModel.y;
+
+			// console.log(x,y);
+
+			// console.log(x,y);
+		    _.each([
+		    	this.contexts.base,
+		    	this.contexts.cover,
+		    	this.contexts.props
+		    ], function(context) {
+		    	// context.clearRect(0, 0, this.width + 50 - this.cameraModel.x, this.height + 50 - this.cameraModel.y);
+		    	context.clearRect(0, 0, this.width, this.height);
 		    	context.save();
+
+		    	// console.log(x, y);
+
 		    	context.translate(x, y);
-		    });
+
+		    }, this);
+
+		    // this.currentX = this.cameraModel.x;
+		    // this.currentY = this.cameraModel.y;
+
 		    this.draw();
+
+		    _.each([
+		    	this.contexts.base,
+		    	this.contexts.cover,
+		    	this.contexts.props
+		    ], function(context) {
+		    	context.restore();
+		    });
 		},
 
 		serialize: function () {
 			return {
-				gameWidth: '600px',
-				gameHeight: '400px'
+				gameWidth: this.width + 'px',
+				gameHeight: this.height + 'px'
 			};
 		}
 	});
