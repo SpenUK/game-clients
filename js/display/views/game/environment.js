@@ -53,8 +53,6 @@ var _ = require('underscore'),
 				mapData = window.initialData.map;
 			this._super.apply(this, arguments);
 
-			window.game = this;
-
 			loader = preloadImages(['images/exampleTileSet.png']);
 
 			if (loader.state() === 'resolved') {
@@ -68,30 +66,7 @@ var _ = require('underscore'),
 
   			this.currentMap = mapData.maps[mapData.defaultMap];
 
-  			// this.socket.on('control press', this.onControlPress.bind(this));
-
-			// this.listenTo(this.cameraModel, 'change', this.translateAll.bind(this));
-			console.log(this.cameraModel);
 			this.listenTo(this.cameraModel, 'updated', this.translateAll.bind(this));
-		},
-
-		onControlPress: function (data) {
-			var message = data.message;
-			if (message === 'up') {
-				this.translateAll(0, 50);
-			}
-
-			if (message === 'down') {
-				this.translateAll(0, -50);
-			}
-
-			if (message === 'left') {
-				this.translateAll(50, 0);
-			}
-
-			if (message === 'right') {
-				this.translateAll(-	50, 0);
-			}
 		},
 
 		setContexts: function () {
@@ -104,8 +79,6 @@ var _ = require('underscore'),
 				cover: coverCtx,
 				props: propsCtx
 			};
-
-			window.base = this.contexts.base;
 		},
 
 		render: function () {
@@ -134,8 +107,7 @@ var _ = require('underscore'),
 			var canvasWidth = 600,
 				canvasHeight = 400;
 
-				// debugger;
-				//
+
 			var translateX = this.cameraModel.x,
 				translateY = this.cameraModel.y;
 
@@ -175,26 +147,17 @@ var _ = require('underscore'),
 			var x = this.cameraModel.x;
 			var y = this.cameraModel.y;
 
-			// console.log(x,y);
-
-			// console.log(x,y);
 		    _.each([
 		    	this.contexts.base,
 		    	this.contexts.cover,
 		    	this.contexts.props
 		    ], function(context) {
-		    	// context.clearRect(0, 0, this.width + 50 - this.cameraModel.x, this.height + 50 - this.cameraModel.y);
 		    	context.clearRect(0, 0, this.width, this.height);
 		    	context.save();
-
-		    	// console.log(x, y);
 
 		    	context.translate(x, y);
 
 		    }, this);
-
-		    // this.currentX = this.cameraModel.x;
-		    // this.currentY = this.cameraModel.y;
 
 		    this.draw();
 

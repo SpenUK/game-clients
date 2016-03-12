@@ -1,6 +1,7 @@
 'use strict';
 
-var ViewExtension = require('../../extensions/view'),
+var _ = require('underscore'),
+	ViewExtension = require('../../extensions/view'),
 	template = require('../templates/controls.hbs'),
 
 	ControlsView = ViewExtension.extend({
@@ -10,11 +11,18 @@ var ViewExtension = require('../../extensions/view'),
 		acceptedParams: ['socket'],
 
 		events: {
-			'click .up': 'up',
-			'click .down': 'down',
-			'click .left': 'left',
-			'click .right': 'right'
+			'mousedown .up': 'mdUp',
+			'mousedown .down': 'mdDown',
+			'mousedown .left': 'mdLeft',
+			'mousedown .right': 'mdRight',
+
+			'click .up': 'muUp',
+			'click .down': 'muDown',
+			'click .left': 'muLeft',
+			'click .right': 'muRight',
 		},
+
+		keysList: [37, 38, 39, 40],
 
 		initialize: function() {
 			this._super.apply(this, arguments);
@@ -22,56 +30,69 @@ var ViewExtension = require('../../extensions/view'),
 		},
 
 		bindKeys: function () {
-			var controller = this;
-			$(document).keydown(function(e) {
-			    switch(e.which) {
-			        case 37: // left
-			        controller.left();
-			        break;
-
-			        case 38: // up
-			        controller.up();
-			        break;
-
-			        case 39: // right
-			        controller.right();
-			        break;
-
-			        case 40: // down
-			        controller.down();
-			        break;
-
-			        default: return;
-			    }
-			    e.preventDefault(); // prevent the default action (scroll / move caret)
-			});
+			$(document).on('keydown.controller', this.onClick.bind(this));
+			$(document).on('keyup.controller', this.onRelease.bind(this));
 		},
 
-		up: function () {
-			console.log('upClick');
-			this.socket.emit('control', 'up');
-			this.model.trigger('control', 'up');
+		// TODO: do better.
+		mdUp: function () {
+			this.controlDown(38);
 		},
 
-		down: function () {
-			console.log('downClick');
-			this.socket.emit('control', 'down');
-			this.model.trigger('control', 'down');
+		mdDown: function () {
+			this.controlDown(40);
 		},
 
-		left: function () {
-			console.log('leftClick');
-			this.socket.emit('control', 'left');
-			this.model.trigger('control', 'left');
+		mdLeft: function () {
+			this.controlDown(37);
 		},
 
-		right: function () {
-			console.log('rightClick');
-			this.socket.emit('control', 'right');
-			this.model.trigger('control', 'right');
+		mdRight: function () {
+			this.controlDown(39);
+		},
+
+		muUp: function () {
+			this.controlUp(38);
+		},
+
+		muDown: function () {
+			this.controlUp(40);
+		},
+
+		muLeft: function () {
+			this.controlUp(37);
+		},
+
+		muRight: function () {
+			this.controlUp(39);
+		},
+
+		onRelease: function (e) {
+			this.controlUp(e.which);
+		},
+
+		onClick: function (e) {
+			this.controlDown(e.which);
+		},
+
+		controlUp: function (key) {
+			if (_.contains(this.keysList, key)) {
+				this.socket.emit('control:up', key);
+				this.model.trigger('control:up', key);
+			}
+		},
+
+		controlDown: function (key) {
+			if (_.contains(this.keysList, key)) {
+				this.socket.emit('control:down', key);
+				this.model.trigger('control:down', key);
+			}
+		},
+
+		remove: function () {
+			this._super.apply(this, arguments);
+			$(document).off('.controller');
 		}
-
-
 	});
 
 module.exports = ControlsView;

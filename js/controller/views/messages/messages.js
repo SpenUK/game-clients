@@ -2,9 +2,7 @@
 
 var _ = require('underscore'),
 	CollectionView = require('../../../extensions/collectionview'),
-	// Collection = require('../../../extensions/collection'),
 	MessageView = require('./message'),
-	// template = require('../../templates/messages.hbs'),
 
 	MessagesView = CollectionView.extend({
 
@@ -15,8 +13,6 @@ var _ = require('underscore'),
 		initialize: function() {
 			_.bindAll(this, 'addMessage', 'onControlPress');
 
-			// this.collection = new Collection();
-
 			this._super.apply(this, arguments);
 
 			if (this.socket) {
@@ -26,7 +22,6 @@ var _ = require('underscore'),
 		},
 
 		addMessage: function (data) {
-			console.log(data);
 			this.collection.add({
 				username: data.id,
 				message: data.copy,

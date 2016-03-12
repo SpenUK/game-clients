@@ -30,14 +30,6 @@ var _ = require('underscore'),
     		options = options || {};
     		this.renderedItems = new CoreCollection();
             this._super.apply(this, arguments);
-
-            // this.listenTo(this.collection, 'add', this.renderOne);
-            // this.listenTo(this.collection, 'remove', this.removeOne);
-
-            // this.listenTo(this.collection, 'add', function() {console.log(this.renderOne);});
-            // this.listenTo(this.collection, 'remove', function() {console.log(this.removeOne);});
-
-            // this.listenTo(this.collection, 'all', function(a) {console.log(a);});
     	},
 
         render: function () {

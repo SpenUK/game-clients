@@ -1,6 +1,7 @@
 'use strict';
 
-var ViewExtension = require('../../../extensions/view'),
+var _ = require('underscore'),
+	ViewExtension = require('../../../extensions/view'),
 	EnvironmentView = require('./environment'),
 	PlayerView = require('./player'),
 	CameraModel = require('../../models/camera'),
@@ -23,8 +24,6 @@ var ViewExtension = require('../../../extensions/view'),
 			var playerData = window.initialData.player,
 				width = this.model.get('width'),
 				height = this.model.get('height');
-
-				console.log(height);
 
 			this._super.apply(this, arguments);
 
@@ -55,6 +54,22 @@ var ViewExtension = require('../../../extensions/view'),
 				}
 			});
 			this.model.set('cameraModel', this.cameraModel);
+
+		},
+
+		// render: function () {
+			// var self = this;
+	        // window.requestAnimationFrame(function(){
+	        //   self.tick();
+	        // });
+		// },
+
+		tick: function () {
+	        _.each(this.subviewInstances, function (subview) {
+	        	if (subview.tick) {
+	        		subview.tick();
+	        	}
+	        });
 		},
 
 		views: function () {

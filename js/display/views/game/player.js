@@ -55,9 +55,6 @@ var _ = require('underscore'),
 			var loader,
 				playerData = window.initialData.player;
 
-			//  model?
-			this.data = playerData;
-
 			this._super.apply(this, arguments);
 
 			loader = preloadImages([playerData.spriteMap.src]);
@@ -75,62 +72,39 @@ var _ = require('underscore'),
 			this.listenTo(this.cameraModel, 'updated', this.draw);
 		},
 
-		startMoving: function () {
-			// console.log('startMove');
-			// this.draw();
-		},
-
-		canMoveToTile: function () {
-			return true;
-		},
-
 		render: function () {
 			this._super.apply(this, arguments);
 			this.context = getContext('player');
+			this.tick();
+			// window.requestAnimationFrame(this.move.bind(this));
+		},
+
+		tick: function () {
+			this.model.move();
 			this.draw();
+			window.requestAnimationFrame(this.tick.bind(this));
 		},
 
 		draw: function () {
 			var srcX = 1,
 				srcY = 1,
-				x = this.model.get('x'),
-				y = this.model.get('y'),
+				x = this.model.position.x,
+				y = this.model.position.y,
 				tileSize = 50;
 
-			// console.log(x, y, x * tileSize, y * tileSize, this.cameraModel.x, this.cameraModel.y);
 			this.context.clearRect(0,0,600,400);
-
 	    	this.context.drawImage(
 		        this.image, // image
 		        srcX * tileSize, // source x start
 				srcY * tileSize, // source y start
 				tileSize, // source x width
 				tileSize, // source y height
-				(x * tileSize) + this.cameraModel.x, // placement x
-				(y * tileSize) + this.cameraModel.y, // placement y
+				x + this.cameraModel.x, // placement x
+				y + this.cameraModel.y, // placement y
 				tileSize, // height
 				tileSize // width
 	    	);
 		},
-
-		// translateAll: function (x, y) {
-		// 	this.translateX += x;
-		// 	this.translateY += y;
-
-		// 	console.log(this.translateX, this.translateY);
-		//     _.each([
-		//     	this.contexts.base
-		//     	// this.contexts.cover,
-		//     	// this.contexts.props
-		//     ], function(context) {
-		//     	context.clearRect(0, 0, 600 - this.translateX, 400 - this.translateY);
-		//     	context.save();
-		//     	context.translate(x, y);
-		//     	context.restore();
-		//     }, this);
-
-		//     this.draw();
-		// },
 
 		serialize: function () {
 			return {

@@ -72,8 +72,6 @@ var ModelExtension = require('../../extensions/model'),
           var x = tile.x,
               y = tile.y;
 
-              console.log((y * this.get('tilesX')) + x + 1);
-
               return (y * this.get('tilesX')) + x;
         },
 
@@ -92,8 +90,6 @@ var ModelExtension = require('../../extensions/model'),
             }, {
                 silent: true
             });
-
-            console.log(this.get('width'));
         }
     });
 

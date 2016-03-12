@@ -5,12 +5,7 @@ var ViewExtension = require('../../../extensions/view'),
 
 	MessagesView = ViewExtension.extend({
 
-		template: template,
-
-		render: function () {
-			console.log(this.model);
-			this._super.apply(this, arguments);
-		},
+		template: template
 
 	});
 

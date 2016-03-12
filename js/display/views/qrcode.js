@@ -26,13 +26,21 @@ var _ = require('underscore'),
 			this.socket.emit('request token');
 		},
 
+		events: {
+			'click': 'openControlsWindow'
+		},
+
+		openControlsWindow: function (e) {
+			e.preventDefault();
+			window.open(this.url, 'controller', 'width=420, height=280, left=900, top=160, menubar=0, status=0, scrollbars=0, toolbar=0');
+		},
+
 		setUrl: function (data) {
 			this.url = window.location.origin + '/controller/' + data.token;
 			this.ready();
 		},
 
 		show: function () {
-			console.log('show');
 			this.$el.fadeIn(500);
 		},
 

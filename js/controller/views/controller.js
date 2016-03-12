@@ -27,7 +27,6 @@ var ViewExtension = require('../../extensions/view'),
 		},
 
 		addSentControlMessage: function (message) {
-			console.log(message);
 			this.sentMessagesCollection.add({
 				username: this.token,
 				message: message,
