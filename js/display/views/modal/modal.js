@@ -6,9 +6,11 @@ var ViewExtension = require('../../../extensions/view'),
 
 	ModalView = ViewExtension.extend({
 
-		acceptedParams: ['dismissable'],
+		acceptedParams: ['dismissable', 'width'],
 
 		dismissable: true,
+
+		width: 600,
 
 		template: template,
 
@@ -16,11 +18,6 @@ var ViewExtension = require('../../../extensions/view'),
 
 		events: {
 			'click .modal__button--dismiss': 'hide'
-		},
-
-		initialize: function() {
-			this._super.apply(this, arguments);
-			window.modal = this;
 		},
 
 		views: function () {
@@ -72,7 +69,8 @@ var ViewExtension = require('../../../extensions/view'),
 
 		serialize: function () {
 			return {
-				dismissable: this.dismissable
+				dismissable: this.dismissable,
+				width: this.width
 			};
 		}
 

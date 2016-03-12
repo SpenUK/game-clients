@@ -38,7 +38,10 @@ var ViewExtension = require('../../extensions/view'),
 		views: function () {
 			var views = {
 				'.modal': {
-					view: ModalView
+					view: ModalView,
+					options: {
+						dismissable: false
+					}
 				},
 
 				'.game': {

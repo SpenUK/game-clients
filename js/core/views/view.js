@@ -202,7 +202,7 @@ var _ = require('underscore'),
             params = _.union([],this._coreParams, this.acceptedParams);
 
             _.each(params, function(param){
-              if (options[param]) {
+              if (options[param] !== undefined) {
                 self[param] = options[param];
               }
             });
