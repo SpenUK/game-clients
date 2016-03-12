@@ -8,17 +8,12 @@ var ViewExtension = require('../../../extensions/view'),
 
 		acceptedParams: ['dismissable'],
 
-		dismissable: false,
+		dismissable: true,
 
 		template: template,
 
 		events: {
 			'click .modal__button--dismiss': 'hide'
-		},
-
-		initialize: function() {
-			this._super.apply(this, arguments);
-			window.modal = this;
 		},
 
 		views: function () {
@@ -34,8 +29,9 @@ var ViewExtension = require('../../../extensions/view'),
 
 		setContent: function (viewDefinition) {
 			var contentEl = '.modal__content';
-			this.removeSubview(contentEl);
-			this.renderSubview(viewDefinition, contentEl);
+
+			this.removeSubviewInstance(contentEl);
+			this._renderSubview(viewDefinition, '.modal__content');
 
 			return this;
 		},

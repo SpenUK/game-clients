@@ -1,7 +1,8 @@
 'use strict';
 
 var ViewExtension = require('../../extensions/view'),
-	QRCodeView = require('./qrcode'),
+	ConnectNoticeView = require('./connectnotice/connectnotice'),
+	QrView = require('./connectnotice/qr/qr'),
 	GameView = require('./game/game'),
 	ModalView = require('./modal/modal'),
 	GameModel = require('../models/game'),
@@ -23,6 +24,8 @@ var ViewExtension = require('../../extensions/view'),
 				}
 			});
 
+			window.displayView = this;
+
 			this._super.apply(this, arguments);
 
 			this.socket.emit('display initialize');
@@ -30,13 +33,6 @@ var ViewExtension = require('../../extensions/view'),
 
 		views: function () {
 			var views = {
-				'.qrcode': {
-					view: QRCodeView,
-					options: {
-						socket: this.socket
-					}
-				},
-
 				'.modal': {
 					view: ModalView
 				},
@@ -50,11 +46,44 @@ var ViewExtension = require('../../extensions/view'),
 				}
 			};
 			return views;
+		},
+
+		render: function () {
+			this._super.apply(this, arguments);
+			this.showConnectNotice();
+		},
+
+		showConnectNotice: function () {
+			this.openModalWith({
+				view: QrView,
+				options: {
+					socket: this.socket
+				}
+			});
+		},
+
+		showConnectNotice2: function () {
+			this.openModalWith({
+				view: ConnectNoticeView,
+				options: {
+					socket: this.socket
+				}
+			});
+		},
+
+		openModalWith: function (viewDefinition) {
+			var modalView,
+				modalObject = this.subviewInstances.findWhere({key: '.modal'});
+
+			if (modalObject) {
+				modalView = modalObject.get('view');
+				modalView.setContent(viewDefinition).show();
+
+				return true;
+			}
+
+			return false;
 		}
-
-		// serialize: function () {
-		// },
-
 	});
 
 module.exports = DisplayView;

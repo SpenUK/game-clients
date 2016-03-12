@@ -12,6 +12,8 @@ var _ = require('underscore'),
 
         isReady: true,
 
+        rendered: false,
+
         /**
          * Should be overriden with an array of accepted paramaters
          * Paramaters in this list will be set
@@ -29,8 +31,6 @@ var _ = require('underscore'),
          *
          */
         initialize: function () {
-            // options = options || {};
-            // this._setAcceptedParams(options);
             this.wrapRender();
         },
 
@@ -43,9 +43,11 @@ var _ = require('underscore'),
         },
 
         render: function () {
+            this.rendered = false;
             this.$el.html(this.template ? this.template(this.serialize()) : '');
             this._renderSubviews();
             this._super.apply(this, arguments);
+            this.rendered = true;
 
             return this;
         },
@@ -115,7 +117,9 @@ var _ = require('underscore'),
                 key: key
             });
 
-            view.listenTo(this, 'afterRender', function(){
+            debugger;
+
+            view.listenTo(this, 'afterRender alreadyRendered', function(){
                 if (view.isReady) {
                     view.render();
                 } else {
@@ -130,6 +134,12 @@ var _ = require('underscore'),
                     view.listenToOnce(view.model, 'ready', view.onReady);
                 }
             });
+
+            console.log(this.rendered);
+
+            if (this.rendered) {
+                this.trigger('alreadyRendered');
+            }
 
             this.listenTo(view, 'destroy', function(){
                 this.subviewInstances[key] = null;
@@ -151,8 +161,10 @@ var _ = require('underscore'),
                 model = this.subviewInstances.findWhere({key: model});
             }
 
-            model.get('view').remove();
-            model.destroy();
+            if (model) {
+                model.get('view').remove();
+                model.destroy();
+            }
         },
 
 
@@ -177,35 +189,6 @@ var _ = require('underscore'),
                 View: View,
                 options: options
             };
-        },
-
-        _expandViewDefinitionx: function (viewDefinition) {
-            var View,
-                options = {},
-                definitionIsView = !!viewDefinition.extend;
-
-            if (definitionIsView) {
-                View = viewDefinition;
-            } else {
-                if (_.isFunction(viewDefinition)) {
-                    viewDefinition = viewDefinition();
-                }
-
-                View = viewDefinition.view ? viewDefinition.view :  viewDefinition;
-                options = _.result(viewDefinition, 'options');
-            }
-
-            options = _.extend(options, {});
-
-            if (!_.isFunction(View)) {
-                console.log('view is not a function');
-                return false;
-            } else {
-                return {
-                    View: View,
-                    options: options
-                };
-            }
         },
 
         _coreParams: ['parent', 'app'],
