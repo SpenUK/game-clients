@@ -3,6 +3,7 @@
 var ViewExtension = require('../../extensions/view'),
 	QRCodeView = require('./qrcode'),
 	GameView = require('./game/game'),
+	ModalView = require('./modal/modal'),
 	GameModel = require('../models/game'),
 	template = require('../templates/display.hbs'),
 
@@ -34,6 +35,10 @@ var ViewExtension = require('../../extensions/view'),
 					options: {
 						socket: this.socket
 					}
+				},
+
+				'.modal': {
+					view: ModalView
 				},
 
 				'.game': {

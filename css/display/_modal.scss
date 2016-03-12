@@ -1,0 +1,66 @@
+.modal {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 100%;
+	width: 100%;
+	z-index: 3000;
+	display: none;
+}
+
+.modal__container {
+	$modal-color: rgba(255,255,255,1);
+	min-height: 300px;
+	width: 600px;
+	margin: 0 auto;
+	margin-top: 100px;
+	border-radius: 8px;
+	background-color: $modal-color;
+	display: block;
+	position: relative;
+
+	box-shadow: 0 3px darken($modal-color, 20);
+}
+
+.modal__button--dismiss {
+	$dismiss-color: rgba(200, 100, 100, 1);
+	$dismiss-color-shadow: darken($dismiss-color, 20);
+	position: absolute;
+	cursor: pointer;
+	top: 10px;
+	right: 10px;
+	height: 40px;
+	width: 40px;
+
+	background-color: $dismiss-color;
+	text-align: center;
+
+	font-size: 1.5em;
+
+	box-shadow: 0 3px $dismiss-color-shadow;
+	border-radius: 4px;
+
+	&:active {
+		margin-top: 2px;
+		box-shadow: 0 1px $dismiss-color-shadow;
+	}
+
+	i {
+		line-height: 40px;
+		color: rgba(255,255,255,0.9);
+		text-shadow: 0 3px $dismiss-color-shadow;
+	}
+}
+
+.modal__shader {
+	background-color: rgba(0,0,0,0.4);
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}

@@ -30,17 +30,17 @@ $bgd: darken($bg, 5);
 		@include disable-selection();
 
 		div.button {
-			background-color: rgba(1,1,1,0.2);
+			background-color: rgba(0, 0, 0, 0.2);
 			text-align: center;
 
 			font-size: 2em;
 
-			box-shadow: 0 6px rgba(1,1,1,0.4);
+			box-shadow: 0 6px rgba(0, 0, 0, 0.4);
 	    	border-radius: 6px;
 
 	    	&:active {
 	    		margin-top: 4px;
-    			box-shadow: 0 2px rgba(1, 1, 1, 0.4);
+    			box-shadow: 0 2px rgba(0, 0, 0, 0.4);
 	    	}
 		}
 
@@ -52,7 +52,7 @@ $bgd: darken($bg, 5);
 		i {
 			line-height: 100px;
 			color: rgba(255,255,255,0.9);
-			text-shadow: 0 6px rgba(1,1,1,0.4);
+			text-shadow: 0 6px rgba(0, 0, 0, 0.4);
 		}
 	}
 

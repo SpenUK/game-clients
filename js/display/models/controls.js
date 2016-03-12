@@ -34,18 +34,14 @@ var _ = require('underscore'),
 		},
 
 		onControlDown: function (data) {
-			var message = data.message;
-			console.log('pressed:', message);
-			if (_.contains(this.keysList, message)) {
-				this.trigger('down', message);
+			if (_.contains(this.keysList, data.message)) {
+				this.trigger('down', data.message);
 			}
 		},
 
 		onControlUp: function (data) {
-			var message = data.message;
-			console.log('released:', message);
-			if (_.contains(this.keysList, message)) {
-				this.trigger('up', message);
+			if (_.contains(this.keysList, data.message)) {
+				this.trigger('up', data.message);
 			}
 		},
 

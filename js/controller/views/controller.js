@@ -52,20 +52,6 @@ var ViewExtension = require('../../extensions/view'),
 						model: this.controlsModel
 					}
 				}
-				// '.sent-messages': {
-				// 	view: MessagesView,
-				// 	options: {
-
-				// 		collection: this.sentMessagesCollection
-				// 	}
-				// },
-				// '.recieved-messages': {
-				// 	view: MessagesView,
-				// 	options: {
-				// 		socket: this.socket,
-				// 		collection: this.recievedMessagesCollection
-				// 	}
-				// }
 			};
 			return views;
 		}

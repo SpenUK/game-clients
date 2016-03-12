@@ -29,7 +29,6 @@ var _ = require('underscore'),
         },
 
         constructor: function (models, options) {
-            console.log(options);
             this._setAcceptedParams(options);
 
             Backbone.Collection.prototype.constructor.apply(this, arguments);

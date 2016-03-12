@@ -6,9 +6,9 @@ var _ = require('underscore'),
 
     CoreView = Backbone.View.extend({
 
-        $window : $('window'),
+        $window: $('window'),
 
-        $body : $('body'),
+        $body: $('body'),
 
         isReady: true,
 
@@ -78,6 +78,10 @@ var _ = require('underscore'),
             return this.model ? this.model.attributes : {};
         },
 
+        renderSubview: function () {
+            this._renderSubview.apply(this, arguments);
+        },
+
         /**
          *
          */
@@ -99,7 +103,7 @@ var _ = require('underscore'),
             View = viewDefinition.View;
             options = viewDefinition.options;
 
-            options.model = options.model || this.model;
+            options.model = options.model || this.model || null;
 
             view = new View(_.extend(options, {
                 el: key,
@@ -138,6 +142,10 @@ var _ = require('underscore'),
             this.subviewInstances.each(this._removeSubviewInstance, this);
         },
 
+        removeSubviewInstance: function () {
+            this._removeSubviewInstance.apply(this, arguments);
+        },
+
         _removeSubviewInstance: function (model) {
             if (_.isString(model)) {
                 model = this.subviewInstances.findWhere({key: model});
@@ -154,7 +162,7 @@ var _ = require('underscore'),
 
             if (_.isObject(viewDefinition) && (viewDefinition.view || viewDefinition.View)) {
                 View = viewDefinition.view || viewDefinition.View;
-                options = _.result(viewDefinition, 'options');
+                options = _.result(viewDefinition, 'options') || {};
 
             } else if (_.isFunction(viewDefinition)) {
                 View = viewDefinition;
