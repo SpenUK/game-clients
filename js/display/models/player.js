@@ -83,7 +83,6 @@ var ModelExtension = require('../../extensions/model'),
                     // No more distance to travel, so update tile position.
 
                     // event tile? portal tile? etc.
-                    // console.log('reached:', this.target);
                     this.set(this.target);
 
                     if (!this.direction) {
@@ -95,12 +94,10 @@ var ModelExtension = require('../../extensions/model'),
                     nextTile = this._getNextTile();
 
                     if (this._canMoveToTile(nextTile)) {
-                        // console.log('has direction, can move');
                         this._startMoving(nextTile, this.direction);
                     }
 
                 } else {
-                    // console.log('else', this.distance);
                     this._continueMoving();
                 }
             }
@@ -137,8 +134,6 @@ var ModelExtension = require('../../extensions/model'),
         },
 
         _startMoving: function(target, direction){
-            // console.log('startMoving');
-
             this.target = target;
             this.targetDirection = direction;
             this.distance = this.get('tileSize');
@@ -165,8 +160,6 @@ var ModelExtension = require('../../extensions/model'),
                 this.position.x += this.step;
                 break;
             }
-
-            // console.log(this.position, this.targetDirection, this.distance);
         },
 
         _setDirection: function () {

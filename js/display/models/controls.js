@@ -23,49 +23,11 @@ var _ = require('underscore'),
 
 		bindKeys: function () {
 			$(document).on('keydown.controlModel', (function(e) {
-			    // switch(e.which) {
-			    //     case 37: // left
-			    //     this.onControlDown({message: 'left'});
-			    //     break;
-
-			    //     case 38: // up
-			    //     this.onControlDown({message: 'up'});
-			    //     break;
-
-			    //     case 39: // right
-			    //     this.onControlDown({message: 'right'});
-			    //     break;
-
-			    //     case 40: // down
-			    //     this.onControlDown({message: 'down'});
-			    //     break;
-
-			    //     default: return;
-			    // }
 			    this.onControlDown({message: e.which});
 			    e.preventDefault();
 			}).bind(this));
 
 			$(document).on('keyup.controlModel', (function(e) {
-			    // switch(e.which) {
-			    //     case 37: // left
-			    //     this.onControlUp({message: 'left'});
-			    //     break;
-
-			    //     case 38: // up
-			    //     this.onControlUp({message: 'up'});
-			    //     break;
-
-			    //     case 39: // right
-			    //     this.onControlUp({message: 'right'});
-			    //     break;
-
-			    //     case 40: // down
-			    //     this.onControlUp({message: 'down'});
-			    //     break;
-
-			    //     default: return;
-			    // }
 			    this.onControlUp({message: e.which});
 			    e.preventDefault();
 			}).bind(this));

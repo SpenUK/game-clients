@@ -14,14 +14,15 @@ $bgd: darken($bg, 5);
 .controls {
 	overflow: hidden;
 
-	width: 210px;
+	width: 330px;
 	margin: 20px auto;
+	padding-bottom: 6px;
 
 	@include disable-selection();
 
 	.control {
-		width: 60px;
-		height: 60px;
+		width: 100px;
+		height: 100px;
 		margin: 5px;
 
 		float: left;
@@ -32,26 +33,26 @@ $bgd: darken($bg, 5);
 			background-color: rgba(1,1,1,0.2);
 			text-align: center;
 
-			font-size: 1.5em;
+			font-size: 2em;
 
-			box-shadow: 0 4px rgba(1,1,1,0.4);
-	    	border-radius: 4px;
+			box-shadow: 0 6px rgba(1,1,1,0.4);
+	    	border-radius: 6px;
 
 	    	&:active {
-	    		margin-top: 2px;
+	    		margin-top: 4px;
     			box-shadow: 0 2px rgba(1, 1, 1, 0.4);
 	    	}
 		}
 
 		p {
-			line-height: 60px;
+			line-height: 100px;
 			margin: 0;
 		}
 
 		i {
-			line-height: 60px;
+			line-height: 100px;
 			color: rgba(255,255,255,0.9);
-			text-shadow: 0 4px rgba(1,1,1,0.4);
+			text-shadow: 0 6px rgba(1,1,1,0.4);
 		}
 	}
 

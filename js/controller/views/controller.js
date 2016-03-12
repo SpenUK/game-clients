@@ -19,11 +19,20 @@ var ViewExtension = require('../../extensions/view'),
 				this.socket.emit('controller initialize', initialData.token);
 			}
 
+			this.disableViewPort();
+
 			this.controlsModel = new Model();
 			this.sentMessagesCollection = new Collection();
 			this.recievedMessagesCollection = new Collection();
 
 			this.listenTo(this.controlsModel, 'control', this.addSentControlMessage);
+		},
+
+		disableViewPort: function () {
+			var viewport = document.querySelector('meta[name=viewport]'),
+				content = viewport.content.replace(/user-scalable=(\w+)/, 'user-scalable=no');
+
+			viewport.setAttribute('content', content);
 		},
 
 		addSentControlMessage: function (message) {

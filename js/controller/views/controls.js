@@ -11,6 +11,16 @@ var _ = require('underscore'),
 		acceptedParams: ['socket'],
 
 		events: {
+			'touchstart .up': 'mdUp',
+			'touchstart .down': 'mdDown',
+			'touchstart .left': 'mdLeft',
+			'touchstart .right': 'mdRight',
+
+			'touchend .up': 'muUp',
+			'touchend .down': 'muDown',
+			'touchend .left': 'muLeft',
+			'touchend .right': 'muRight',
+
 			'mousedown .up': 'mdUp',
 			'mousedown .down': 'mdDown',
 			'mousedown .left': 'mdLeft',
@@ -19,7 +29,7 @@ var _ = require('underscore'),
 			'click .up': 'muUp',
 			'click .down': 'muDown',
 			'click .left': 'muLeft',
-			'click .right': 'muRight',
+			'click .right': 'muRight'
 		},
 
 		keysList: [37, 38, 39, 40],
