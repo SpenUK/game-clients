@@ -13,7 +13,7 @@ var ViewExtension = require('../../extensions/view'),
 		acceptedParams: ['socket'],
 
 		initialize: function() {
-			this.gameModel = new GameModel({
+			this.model = new GameModel({
 				height: 400,
 				width: 600,
 				deadzone: {
@@ -39,13 +39,16 @@ var ViewExtension = require('../../extensions/view'),
 				'.game': {
 					view: GameView,
 					options: {
-						model: this.gameModel,
-						socket: this.socket
+						model: this.model,
+						socket: this.socket,
 					}
 				}
 			};
 			return views;
 		}
+
+		// serialize: function () {
+		// },
 
 	});
 
