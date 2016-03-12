@@ -2,7 +2,6 @@
 
 var ViewExtension = require('../../extensions/view'),
 	ConnectNoticeView = require('./connectnotice/connectnotice'),
-	QrView = require('./connectnotice/qr/qr'),
 	GameView = require('./game/game'),
 	ModalView = require('./modal/modal'),
 	GameModel = require('../models/game'),
@@ -13,6 +12,8 @@ var ViewExtension = require('../../extensions/view'),
 		template: template,
 
 		acceptedParams: ['socket'],
+
+		debugName: 'display',
 
 		initialize: function() {
 			this.model = new GameModel({
@@ -29,6 +30,9 @@ var ViewExtension = require('../../extensions/view'),
 			this._super.apply(this, arguments);
 
 			this.socket.emit('display initialize');
+
+			this.socket.on('controller left', this.showConnectNotice.bind(this));
+			this.socket.on('controller joined', this.hideModal.bind(this));
 		},
 
 		views: function () {
@@ -49,20 +53,16 @@ var ViewExtension = require('../../extensions/view'),
 		},
 
 		render: function () {
+			var modalView;
+
 			this._super.apply(this, arguments);
+
+			modalView = this.getModalView();
+
 			this.showConnectNotice();
 		},
 
 		showConnectNotice: function () {
-			this.openModalWith({
-				view: QrView,
-				options: {
-					socket: this.socket
-				}
-			});
-		},
-
-		showConnectNotice2: function () {
 			this.openModalWith({
 				view: ConnectNoticeView,
 				options: {
@@ -71,18 +71,32 @@ var ViewExtension = require('../../extensions/view'),
 			});
 		},
 
+		hideModal: function () {
+			var modalView = this.getModalView();
+			if (modalView) {
+				modalView.hide();
+			}
+		},
+
+		getModalView: function () {
+			var modalObject = this.subviewInstances.findWhere({key: '.modal'});
+
+			return modalObject ? modalObject.get('view') : false;
+		},
+
 		openModalWith: function (viewDefinition) {
-			var modalView,
-				modalObject = this.subviewInstances.findWhere({key: '.modal'});
+			var modalView = this.getModalView();
 
-			if (modalObject) {
-				modalView = modalObject.get('view');
-				modalView.setContent(viewDefinition).show();
-
-				return true;
+			function openModal () {
+				modalView.setContent(viewDefinition);
+				modalView.show();
 			}
 
-			return false;
+			if (modalView.rendered) {
+				openModal();
+			} else {
+				this.listenToOnce(modalView, 'afterRender', openModal);
+			}
 		}
 	});
 

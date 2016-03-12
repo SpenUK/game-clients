@@ -39,6 +39,7 @@ var _ = require('underscore'),
         },
 
         afterRender: function () {
+            this.rendered = true;
             this.trigger('afterRender');
         },
 
@@ -47,7 +48,6 @@ var _ = require('underscore'),
             this.$el.html(this.template ? this.template(this.serialize()) : '');
             this._renderSubviews();
             this._super.apply(this, arguments);
-            this.rendered = true;
 
             return this;
         },
@@ -117,13 +117,12 @@ var _ = require('underscore'),
                 key: key
             });
 
-            debugger;
-
             view.listenTo(this, 'afterRender alreadyRendered', function(){
+
                 if (view.isReady) {
                     view.render();
                 } else {
-                    view.listenToOnce(view, 'ready', function(){
+                    view.once('ready', function(){
                         view.render();
                     });
                 }
@@ -134,8 +133,6 @@ var _ = require('underscore'),
                     view.listenToOnce(view.model, 'ready', view.onReady);
                 }
             });
-
-            console.log(this.rendered);
 
             if (this.rendered) {
                 this.trigger('alreadyRendered');
@@ -191,7 +188,7 @@ var _ = require('underscore'),
             };
         },
 
-        _coreParams: ['parent', 'app'],
+        _coreParams: ['parentView', 'app'],
 
         /**
          * Uses the acceptedParams array to set those params on 'this'.

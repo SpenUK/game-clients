@@ -12,8 +12,15 @@ var ViewExtension = require('../../../extensions/view'),
 
 		template: template,
 
+		debugName: 'modal',
+
 		events: {
 			'click .modal__button--dismiss': 'hide'
+		},
+
+		initialize: function() {
+			this._super.apply(this, arguments);
+			window.modal = this;
 		},
 
 		views: function () {
@@ -30,13 +37,17 @@ var ViewExtension = require('../../../extensions/view'),
 		setContent: function (viewDefinition) {
 			var contentEl = '.modal__content';
 
-			this.removeSubviewInstance(contentEl);
-			this._renderSubview(viewDefinition, '.modal__content');
+			viewDefinition.options = viewDefinition.options || {};
+			viewDefinition.options.modalView = this;
+
+			// this.removeSubviewInstance(contentEl);
+			this._renderSubview(viewDefinition, contentEl);
 
 			return this;
 		},
 
 		show: function () {
+			// this.$el.show();
 			this.$el.fadeIn(100);
 		},
 
