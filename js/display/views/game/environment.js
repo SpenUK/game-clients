@@ -79,12 +79,19 @@ var _ = require('underscore'),
 				cover: coverCtx,
 				props: propsCtx
 			};
+
+			console.log(Object.keys(this.contexts).join(','));
 		},
 
 		render: function () {
 			this._super.apply(this, arguments);
 			this.setContexts();
-			this.draw();
+
+			this.model.ticker.register('environment-tick', this.tick.bind(this));
+		},
+
+		tick: function () {
+			this.translateAll();
 		},
 
 		draw: function () {
@@ -106,7 +113,6 @@ var _ = require('underscore'),
 
 			var canvasWidth = 600,
 				canvasHeight = 400;
-
 
 			var translateX = this.cameraModel.x,
 				translateY = this.cameraModel.y;

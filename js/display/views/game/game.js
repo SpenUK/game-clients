@@ -1,7 +1,7 @@
 'use strict';
 
-var _ = require('underscore'),
-	ViewExtension = require('../../../extensions/view'),
+// var _ = require('underscore'),
+var	ViewExtension = require('../../../extensions/view'),
 	EnvironmentView = require('./environment'),
 	PlayerView = require('./player'),
 	CameraModel = require('../../models/camera'),
@@ -63,14 +63,21 @@ var _ = require('underscore'),
 	        //   self.tick();
 	        // });
 		// },
+		render: function () {
+			this._super.apply(this, arguments);
 
-		tick: function () {
-	        _.each(this.subviewInstances, function (subview) {
-	        	if (subview.tick) {
-	        		subview.tick();
-	        	}
-	        });
+			// window.requestAnimationFrame(this.tick.bind(this));
 		},
+
+		// tick: function () {
+	 //        this.subviewInstances.each(function (subview) {
+	 //        	var view = subview.get('view');
+	 //        	if (!!view.tick) {
+	 //        		view.tick();
+	 //        	}
+	 //        });
+	 //        // window.requestAnimationFrame(this.tick.bind(this));
+		// },
 
 		views: function () {
 			return {
@@ -89,6 +96,7 @@ var _ = require('underscore'),
 					options: {
 						socket: this.socket,
 						cameraModel: this.cameraModel,
+						gameModel: this.model,
 						model: this.playerModel,
 						width: this.width,
 						height: this.height

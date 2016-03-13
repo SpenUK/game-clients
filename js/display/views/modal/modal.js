@@ -37,14 +37,12 @@ var ViewExtension = require('../../../extensions/view'),
 			viewDefinition.options = viewDefinition.options || {};
 			viewDefinition.options.modalView = this;
 
-			// this.removeSubviewInstance(contentEl);
 			this._renderSubview(viewDefinition, contentEl);
 
 			return this;
 		},
 
 		show: function () {
-			// this.$el.show();
 			this.$el.fadeIn(100);
 		},
 

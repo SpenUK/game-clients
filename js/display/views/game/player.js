@@ -40,7 +40,7 @@ var _ = require('underscore'),
 
 		template: template,
 
-		acceptedParams: ['socket', 'cameraModel','height', 'width'],
+		acceptedParams: ['socket', 'cameraModel', 'gameModel', 'height', 'width'],
 
 		isReady: false,
 
@@ -70,19 +70,21 @@ var _ = require('underscore'),
 
 			this.listenTo(this.model, 'change:y change:x', this.startMoving);
 			this.listenTo(this.cameraModel, 'updated', this.draw);
+
+			console.log(this.gameModel.ticker);
 		},
 
 		render: function () {
 			this._super.apply(this, arguments);
 			this.context = getContext('player');
-			this.tick();
+			this.draw();
 			// window.requestAnimationFrame(this.move.bind(this));
+			this.gameModel.ticker.register('player-tick', this.tick.bind(this));
 		},
 
 		tick: function () {
 			this.model.move();
 			this.draw();
-			window.requestAnimationFrame(this.tick.bind(this));
 		},
 
 		draw: function () {

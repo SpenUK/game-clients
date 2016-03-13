@@ -23,16 +23,18 @@ var ViewExtension = require('../../extensions/view'),
 					x: 300,
 					y: 200
 				}
+			}, {
+				socket: this.socket
 			});
-
-			window.displayView = this;
 
 			this._super.apply(this, arguments);
 
-			this.socket.emit('display initialize');
-
 			this.socket.on('controller left', this.showConnectNotice.bind(this));
 			this.socket.on('controller joined', this.hideModal.bind(this));
+			this.socket.on('set token', function (token) {
+				console.log(token);
+			});
+
 		},
 
 		views: function () {
@@ -40,7 +42,8 @@ var ViewExtension = require('../../extensions/view'),
 				'.modal': {
 					view: ModalView,
 					options: {
-						dismissable: false
+						dismissable: false,
+						width: 620
 					}
 				},
 
@@ -69,7 +72,8 @@ var ViewExtension = require('../../extensions/view'),
 			this.openModalWith({
 				view: ConnectNoticeView,
 				options: {
-					socket: this.socket
+					socket: this.socket,
+					model: this.model
 				}
 			});
 		},

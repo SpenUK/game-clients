@@ -160,6 +160,7 @@ var ModelExtension = require('../../extensions/model'),
                 this.position.x += this.step;
                 break;
             }
+            this.trigger('moved');
         },
 
         _setDirection: function () {

@@ -38,7 +38,7 @@ var ModelExtension = require('../../extensions/model'),
 
 		initialize: function() {
 			this._super.apply(this, arguments);
-			this.listenTo(this.playerModel, 'change:y change:x', this.playerMoved.bind(this));
+			this.listenTo(this.playerModel, 'moved', this.playerMoved.bind(this));
 		},
 
 		playerMoved: function () {
@@ -78,8 +78,8 @@ var ModelExtension = require('../../extensions/model'),
 				gameHeight = this.gameModel.get('height'),
 				worldWidth = map.get('width'),
 				worldHeight = map.get('height'),
-				playerX = this.playerModel.get('x') * 50,
-				playerY = this.playerModel.get('y') * 50,
+				playerX = this.playerModel.position.x,
+				playerY = this.playerModel.position.y,
 				targetX = (gameWidth / 2) - playerX, // center of map - player position
   				targetY = (gameHeight / 2) - playerY,
 
