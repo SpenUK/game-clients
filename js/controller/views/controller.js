@@ -27,7 +27,7 @@ var ViewExtension = require('../../extensions/view'),
 			this.render();
 		},
 
-		onSocketReject: function (message) {
+		onSocketReject: function () {
 			// console.log('onSocketReject', message); // TODO: error state on form.
 			this.model.unset('token');
 			this.render();
