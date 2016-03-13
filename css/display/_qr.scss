@@ -1,9 +1,25 @@
 .connect-notice__message {
-	font-size: 1.8em;
+	font-size: 1.6em;
+	margin-top: 0.4em;
+	margin-bottom: 0.4em;
+}
+
+.connect-notice__token {
+	display: inline-block;
+	font-size: 1.6em;
+	background-color: $background-color;
+	text-align: center;
+	box-shadow: 0 2px darken($background-color, 20);
+	color: white;
+	padding: 15px 20px;
+	margin-top: 0.2em;
+	margin-bottom: 0.2em;
 }
 
 .connect-notice__url {
-	font-size: 1.2em;
+	font-size: 1.6em;
+	margin-top: 0.4em;
+	margin-bottom: 0.4em;
 	overflow-wrap: break-word;
 	word-wrap: break-word;
 }

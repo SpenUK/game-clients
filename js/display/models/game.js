@@ -24,7 +24,9 @@ var ModelExtension = require('../../extensions/model'),
 		initialize: function() {
 			var mapData = window.initialData.map;
 
-			this.socket.on('token generated', this.setUrl.bind(this));
+			this.set('controllerUrl', 'bit.ly/rpg-control');
+
+			this.socket.on('token generated', this.setToken.bind(this));
 
 			this.socket.emit('display initialize');
 			this.socket.emit('request token');
@@ -34,10 +36,16 @@ var ModelExtension = require('../../extensions/model'),
 			this.mapsCollection = new MapsCollection(mapData.maps, {
 				defaultMap: mapData.defaultMap
 			});
+
+			this.on('change:token', this.setUrl);
 		},
 
-		setUrl: function (data) {
-			var url = window.location.origin + '/controller/' + data.token;
+		setToken: function (data) {
+			this.set('token', data.token);
+		},
+
+		setUrl: function () {
+			var url = window.location.origin + '/controller/' + this.get('token');
 			this.set('url', url);
 		},
 

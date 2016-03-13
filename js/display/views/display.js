@@ -31,9 +31,6 @@ var ViewExtension = require('../../extensions/view'),
 
 			this.socket.on('controller left', this.showConnectNotice.bind(this));
 			this.socket.on('controller joined', this.hideModal.bind(this));
-			this.socket.on('set token', function (token) {
-				console.log(token);
-			});
 
 		},
 
