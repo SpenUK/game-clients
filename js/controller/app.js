@@ -1,6 +1,7 @@
 'use strict';
 
 var ControllerView = require('./views/controller'),
+    ControllerModel = require('./models/controller'),
 
     /**
      *
@@ -8,12 +9,29 @@ var ControllerView = require('./views/controller'),
     App = {
 
         initialize: function(socket){
+            this.socket = socket;
             this.view = new ControllerView({
                 el: '.controller',
-                socket: socket
+                socket: this.socket,
+                model: this.getControllerModel()
             });
 
             this.view.render();
+        },
+
+        getControllerModel: function () {
+            return this.controllerModel || this.setControllerModel();
+        },
+
+        setControllerModel: function () {
+            var initialData = window.initialData;
+
+            this.controllerModel = new ControllerModel({
+                token: initialData.token,
+                socket: this.socket
+            });
+
+            return this.controllerModel;
         }
 
     };

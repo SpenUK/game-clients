@@ -79,8 +79,6 @@ var _ = require('underscore'),
 				cover: coverCtx,
 				props: propsCtx
 			};
-
-			console.log(Object.keys(this.contexts).join(','));
 		},
 
 		render: function () {

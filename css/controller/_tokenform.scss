@@ -1,0 +1,150 @@
+// TODO: Use utils instead
+@mixin box-shadow ($options) {
+  -webkit-box-shadow: $options;
+  -moz-box-shadow: $options;
+  box-shadow: $options;
+}
+
+@mixin ui-btn-label($background-color, $height){
+	background-color: $background-color;
+	box-shadow: 0 2px 0 darken($background-color, 15);
+	color: rgba(255,255,255,0.8);
+	text-shadow: 0 1px 0 rgba(0,0,0,0.2);
+	height: $height * 1px;
+	line-height: $height * 1px;
+	min-width: $height * 1px;
+	text-align: center;
+	border-radius: 4px;
+	position: relative;
+	display: inline-block;
+	padding: 0 .25em;
+	vertical-align: top;
+
+	* {
+		line-height: inherit;
+		margin: 0;
+	}
+}
+
+$box-shadow: 0 4px 0 rgba(0,0,0,.1);
+
+.token-input {
+    position: absolute;
+    display: table;
+    width: 100%;
+    height: 100%;
+}
+
+form.token-input__form {
+	font-size: 1.2em;
+	position: relative;
+    max-width: 100%;
+    padding: 20px;
+    width: 400px;
+    margin: 0 auto;
+
+    vertical-align: middle;
+    display: table-cell;
+
+	input, textarea {
+		transition: opacity 0.5s linear;
+	}
+
+	input, input:focus {
+		border: none;
+	    overflow: auto;
+	    outline: none;
+	    resize: none;
+	    font-size: 1.4em;
+	    text-align: center;
+
+    	@include box-shadow($box-shadow);
+	    width: 100%;
+	    margin: 8px auto;
+	    padding: 0.2em 0.6em;
+	    background-color: $white;
+	}
+
+	textarea, textarea:focus {
+	    border: none;
+	    overflow: auto;
+	    outline: none;
+	    resize: none;
+
+	    @include box-shadow($box-shadow);
+	    width: 100%;
+	    margin: 8px auto;
+	    padding: 0.7em 0.6em;
+	    background-color: $white;
+	}
+
+	button.submit {
+		$button-color: rgba(255,90,110,1);
+		margin-top: 20px;
+		position: relative;
+		border: none;
+		outline: none;
+		width: 100%;
+		color: white;
+		padding: 0.5em;
+		background-color: $button-color;
+	    @include box-shadow (0 4px 0 darken($button-color,15));
+	    text-shadow: 0 4px 0 rgba(0, 0, 0, 0.2);
+	    // border-radius: 6px;
+	    font-size: 1.4em;
+
+	    i {
+	    	display: none;
+	    	margin: 0 auto;
+	    	font-size: 1.2em;
+	    }
+
+	    &:active {
+	    	top: 3px;
+	    	@include box-shadow(0 1px 0 darken($button-color,15));
+	    }
+	}
+
+	i {
+		width: 50px;
+		text-align: center;
+	}
+
+	.submission-error {
+		@include ui-btn-label(rgb(215,40,40), 50);
+		margin: 8px auto;
+		color: $white;
+		padding: 0 50px;
+		display: none;
+
+		.fa-close {
+			cursor: pointer;
+			&:hover {
+				font-size: 1.2em;
+			}
+		}
+	}
+
+	.field.error {
+			input, textarea {
+	  		background-color: rgba(255,225,225,1);
+	  		@include box-shadow(0 4px 0 darken(rgba(255,225,225,1),15));
+	  	}
+  	}
+
+	&.error {
+  		.submission-error {
+  			display: block;
+  		}
+  	}
+
+  	&.pending {
+  		.submit .fa-spinner {
+  			display: block;
+  		}
+
+  		.submit span {
+  			display: none;
+  		}
+  	}
+}

@@ -1,9 +1,9 @@
 'use strict';
 
 var ViewExtension = require('../../extensions/view'),
-	Collection = require('../../extensions/collection'),
 	Model = require('../../extensions/model'),
 	ControlsView = require('./controls'),
+	TokenInputView = require('./tokeninput/tokeninput'),
 	template = require('../templates/controller.hbs'),
 
 	ControllerView = ViewExtension.extend({
@@ -13,20 +13,26 @@ var ViewExtension = require('../../extensions/view'),
 		acceptedParams: ['socket'],
 
 		initialize: function() {
-			var initialData = window.initialData;
 			this._super.apply(this, arguments);
-			if (initialData && initialData.token) {
-				this.socket.emit('controller initialize', initialData.token);
-			}
 
 			this.disableViewPort();
 
 			this.controlsModel = new Model();
-			this.sentMessagesCollection = new Collection();
-			this.recievedMessagesCollection = new Collection();
 
-			this.listenTo(this.controlsModel, 'control', this.addSentControlMessage);
+			this.socket.on('controller joined', this.onSocketJoined.bind(this));
+			this.socket.on('controller rejected', this.onSocketReject.bind(this));
 		},
+
+		onSocketJoined: function () {
+			this.render();
+		},
+
+		onSocketReject: function (message) {
+			// console.log('onSocketReject', message); // TODO: error state on form.
+			this.model.unset('token');
+			this.render();
+		},
+
 
 		disableViewPort: function () {
 			var viewport = document.querySelector('meta[name=viewport]'),
@@ -35,24 +41,24 @@ var ViewExtension = require('../../extensions/view'),
 			viewport.setAttribute('content', content);
 		},
 
-		addSentControlMessage: function (message) {
-			this.sentMessagesCollection.add({
-				username: this.token,
-				message: message,
-				messageClass: 'key-press'
-			});
-		},
-
 		views: function () {
-			var views = {
-				'.controls': {
+			var views = {},
+				token = this.model.get('token');
+
+			if (token) {
+				views['.controls'] = {
 					view: ControlsView,
 					options: {
 						socket: this.socket,
 						model: this.controlsModel
 					}
-				}
-			};
+				};
+			} else {
+				views['.token-input'] = {
+					view: TokenInputView
+				};
+			}
+
 			return views;
 		}
 

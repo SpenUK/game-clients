@@ -33,9 +33,9 @@ var ModelExtension = require('../../extensions/model'),
             this.listenTo(this.controlsModel, 'down', this.onControlDown);
             this.listenTo(this.controlsModel, 'up', this.onControlUp);
 
-            this.listenTo(this.gameModel.mapsCollection, 'changed current', function () {
-                console.log('map changed...');
-            });
+            // this.listenTo(this.gameModel.mapsCollection, 'changed current', function () {
+                // console.log('map changed...');
+            // });
 
             this.setMapModel(this.gameModel.getCurrentMap());
 

@@ -70,8 +70,6 @@ var _ = require('underscore'),
 
 			this.listenTo(this.model, 'change:y change:x', this.startMoving);
 			this.listenTo(this.cameraModel, 'updated', this.draw);
-
-			console.log(this.gameModel.ticker);
 		},
 
 		render: function () {
