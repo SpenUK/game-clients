@@ -54,8 +54,8 @@ var ModelExtension = require('../../extensions/model'),
 
 		update: function () {
 			var deadzone = this.get('deadzone'),
-				playerX = this.playerModel.get('x') * 50,
-				playerY = this.playerModel.get('y') * 50;
+				playerX = this.playerModel.get('x') * 32,
+				playerY = this.playerModel.get('y') * 32;
 
 			if (playerX - this.x + deadzone.x > this.width) {
 				this.x = playerX - (this.width - deadzone.x);

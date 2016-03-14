@@ -7,9 +7,9 @@
 .connect-notice__token {
 	display: inline-block;
 	font-size: 1.6em;
-	background-color: $background-color;
+	background-color: rgba(255,90,110,1);
 	text-align: center;
-	box-shadow: 0 2px darken($background-color, 20);
+	box-shadow: 0 2px darken(rgba(255,90,110,1), 15);
 	color: white;
 	padding: 15px 20px;
 	margin-top: 0.2em;

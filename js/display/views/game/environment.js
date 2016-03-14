@@ -1,38 +1,7 @@
 'use strict';
 
-function getCanvas(id) {
-	var canvas = document.getElementById(id);
-	return canvas && canvas.nodeName === 'CANVAS' ? canvas : false;
-}
-
-function getContext(id, contextType) {
-	contextType = contextType || '2d';
-	var canvas = getCanvas(id);
-	return canvas ? canvas.getContext(contextType) : false;
-}
-
-function preloadImages(images) {
-	var deferred = new $.Deferred(),
-		loader = new Image(),
-		total = images.length,
-		count = 0;
-
-		loader.onload = function(){
-			count += 1;
-
-			if (count === total) {
-				deferred.resolve();
-			} else {
-				loader.src = images.pop();
-			}
-		};
-
-		loader.src = images.pop();
-
-	return deferred;
-}
-
 var _ = require('underscore'),
+	canvasUtils = require('../../../utils/canvas'),
 	ViewExtension = require('../../../extensions/view'),
 	template = require('../../templates/game/environment.hbs'),
 
@@ -40,7 +9,7 @@ var _ = require('underscore'),
 
 		template: template,
 
-		acceptedParams: ['socket', 'cameraModel', 'height', 'width'],
+		acceptedParams: ['socket', 'cameraModel'],
 
 		isReady: false,
 
@@ -53,7 +22,7 @@ var _ = require('underscore'),
 				mapData = window.initialData.map;
 			this._super.apply(this, arguments);
 
-			loader = preloadImages(['images/exampleTileSet.png']);
+			loader = canvasUtils.preloadImages(['images/rpg-tiles.png']);
 
 			if (loader.state() === 'resolved') {
 				this.ready();
@@ -62,7 +31,7 @@ var _ = require('underscore'),
 			}
 
 			this.mapImage = new Image();
-  			this.mapImage.src = 'images/exampleTileSet.png';
+  			this.mapImage.src = 'images/rpg-tiles.png';
 
   			this.currentMap = mapData.maps[mapData.defaultMap];
 
@@ -70,9 +39,9 @@ var _ = require('underscore'),
 		},
 
 		setContexts: function () {
-			var baseCtx = getContext('base'),
-				coverCtx = getContext('cover'),
-				propsCtx = getContext('props');
+			var baseCtx = canvasUtils.getContext('base'),
+				coverCtx = canvasUtils.getContext('cover'),
+				propsCtx = canvasUtils.getContext('props');
 
 			this.contexts = {
 				base: baseCtx,
@@ -97,6 +66,7 @@ var _ = require('underscore'),
 				tiles = map.get('tileMap');
 				// avoiding having to .get() for each draw of each tile...
 				this.currentMap = map;
+
 			_.each(tiles, this.drawTile.bind(this));
 		},
 
@@ -107,12 +77,10 @@ var _ = require('underscore'),
 				currentMap = this.currentMap,
 				tileSize = currentMap.attributes.tileSize,
 				contexts = this.contexts,
-				image = this.mapImage;
-
-			var canvasWidth = 600,
-				canvasHeight = 400;
-
-			var translateX = this.cameraModel.x,
+				image = this.mapImage,
+				canvasWidth = this.model.attributes.width,
+				canvasHeight = this.model.attributes.height,
+				translateX = this.cameraModel.x,
 				translateY = this.cameraModel.y;
 
 			var inBounds = 	x * tileSize < - translateX + canvasWidth &&
@@ -123,7 +91,6 @@ var _ = require('underscore'),
 			if (!inBounds) {
 				return false;
 			}
-
 	    	_.each([
 	    		'base',
 	    		'props',
@@ -148,15 +115,15 @@ var _ = require('underscore'),
 		},
 
 		translateAll: function () {
-			var x = this.cameraModel.x;
-			var y = this.cameraModel.y;
+			var x = this.cameraModel.x,
+				y = this.cameraModel.y;
 
 		    _.each([
 		    	this.contexts.base,
 		    	this.contexts.cover,
 		    	this.contexts.props
 		    ], function(context) {
-		    	context.clearRect(0, 0, this.width, this.height);
+		    	context.clearRect(0, 0, this.model.attributes.width, this.model.attributes.height);
 		    	context.save();
 
 		    	context.translate(x, y);
@@ -176,8 +143,8 @@ var _ = require('underscore'),
 
 		serialize: function () {
 			return {
-				gameWidth: this.width + 'px',
-				gameHeight: this.height + 'px'
+				gameWidth: this.model.get('width') + 'px',
+				gameHeight: this.model.get('height') + 'px'
 			};
 		}
 	});

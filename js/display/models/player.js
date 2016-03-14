@@ -7,7 +7,7 @@ var ModelExtension = require('../../extensions/model'),
 
         isMoving: false,
 
-        step: 5,
+        step: 4,
 
     	acceptedParams: ['controlsModel', 'gameModel'],
 
@@ -69,7 +69,7 @@ var ModelExtension = require('../../extensions/model'),
 
                 nextTile = this._getNextTile();
                 // not moving but wants to move
-                if (nextTile && this._canMoveToTile(nextTile)) {
+                if (nextTile && this._canMoveToTile(nextTile) && this._canMoveFromTile()) {
                     this._startMoving(nextTile, this.direction);
                     this._continueMoving();
                 } else {
@@ -93,7 +93,7 @@ var ModelExtension = require('../../extensions/model'),
 
                     nextTile = this._getNextTile();
 
-                    if (this._canMoveToTile(nextTile)) {
+                    if (this._canMoveToTile(nextTile) && this._canMoveFromTile()) {
                         this._startMoving(nextTile, this.direction);
                     }
 
@@ -104,8 +104,26 @@ var ModelExtension = require('../../extensions/model'),
     	},
 
         _canMoveToTile: function (target) {
-            var tileData = this.mapModel.getTileType(target);
-            return tileData && tileData.passable;
+            var targetTile = this.mapModel.getTileType(target);
+
+            return targetTile &&
+                    !(this.direction === 1 && targetTile.blocker % 1000 >= 100 ||
+                      this.direction === 2 && targetTile.blocker >= 1000       ||
+                      this.direction === 3 && targetTile.blocker % 10 === 1    ||
+                      this.direction === 4 && targetTile.blocker % 100 >= 10);
+        },
+
+        _canMoveFromTile: function () {
+            var currentTile = this.mapModel.getTileType({
+                x: this.attributes.x,
+                y: this.attributes.y
+            });
+
+            return currentTile &&
+                    !(this.direction === 1 && currentTile.blocker >= 1000       ||
+                      this.direction === 2 && currentTile.blocker % 1000 >= 100 ||
+                      this.direction === 3 && currentTile.blocker % 100 >= 1000 ||
+                      this.direction === 4 && currentTile.blocker % 10 === 1);
         },
 
         _getNextTile: function () {
