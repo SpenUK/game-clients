@@ -33,6 +33,8 @@ var ModelExtension = require('../../extensions/model'),
             this.listenTo(this.controlsModel, 'down', this.onControlDown);
             this.listenTo(this.controlsModel, 'up', this.onControlUp);
 
+            console.log(this.attributes);
+
             // this.listenTo(this.gameModel.mapsCollection, 'changed current', function () {
                 // console.log('map changed...');
             // });
@@ -82,8 +84,14 @@ var ModelExtension = require('../../extensions/model'),
                 if (this._reachedTarget()) {
                     // No more distance to travel, so update tile position.
 
-                    // event tile? portal tile? etc.
                     this.set(this.target);
+
+                    var portal = this.mapModel.getTilePortal(this.target);
+
+                    if (portal) {
+                        // this.trigger();
+                        return;
+                    }
 
                     if (!this.direction) {
                         // no current direction, so stop moving
@@ -95,6 +103,9 @@ var ModelExtension = require('../../extensions/model'),
 
                     if (this._canMoveToTile(nextTile) && this._canMoveFromTile()) {
                         this._startMoving(nextTile, this.direction);
+                    } else {
+                        this._stopMoving();
+                        return;
                     }
 
                 } else {
@@ -124,6 +135,11 @@ var ModelExtension = require('../../extensions/model'),
                       this.direction === 2 && currentTile.blocker % 1000 >= 100 ||
                       this.direction === 3 && currentTile.blocker % 100 >= 1000 ||
                       this.direction === 4 && currentTile.blocker % 10 === 1);
+        },
+
+        _getTileEvent: function (tile) {
+            var tileType = this.mapModel.getTileType(tile);
+            return tileType.event;
         },
 
         _getNextTile: function () {

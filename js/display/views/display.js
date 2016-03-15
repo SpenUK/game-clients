@@ -1,6 +1,7 @@
 'use strict';
 
 var ViewExtension = require('../../extensions/view'),
+	ticker = require('../ticker'),
 	ConnectNoticeView = require('./connectnotice/connectnotice'),
 	GameView = require('./game/game'),
 	ModalView = require('./modal/modal'),
@@ -29,8 +30,8 @@ var ViewExtension = require('../../extensions/view'),
 
 			this._super.apply(this, arguments);
 
-			this.socket.on('controller left', this.showConnectNotice.bind(this));
-			this.socket.on('controller joined', this.hideModal.bind(this));
+			this.socket.on('controller left', this.onControllerLeft.bind(this));
+			this.socket.on('controller joined', this.onControllerJoined.bind(this));
 
 		},
 
@@ -62,6 +63,19 @@ var ViewExtension = require('../../extensions/view'),
 
 			modalView = this.getModalView();
 
+			this.showConnectNotice();
+		},
+
+		onControllerJoined: function () {
+			if (ticker.initialized) {
+				ticker.unpause();
+			}
+
+			this.hideModal();
+		},
+
+		onControllerLeft: function () {
+			ticker.pause();
 			this.showConnectNotice();
 		},
 

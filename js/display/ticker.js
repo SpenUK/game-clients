@@ -4,11 +4,15 @@ var _ = require('underscore');
 
 module.exports = {
 
+	initialized: false,
+
 	paused: true,
 
 	initialize: function() {
+		_.bindAll(this, 'register', 'remove', 'pause', 'unpause', 'togglePause', 'tick');
+
 		this.callbacks = {};
-		this.unpause();
+		this.initialized = true;
 		this.tick();
 
 		return this;
@@ -35,10 +39,11 @@ module.exports = {
 
 	unpause: function () {
 		this.paused = false;
+		window.requestAnimationFrame(this.tick.bind(this));
 	},
 
 	togglePause: function () {
-		(this.paused ? this.pause : this.unpause)();
+		(this.paused ? this.unpause : this.pause)();
 	},
 
 	tick: function () {

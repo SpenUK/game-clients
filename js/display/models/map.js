@@ -60,6 +60,16 @@ var ModelExtension = require('../../extensions/model'),
             return this.get('tileTypes')[tileType];
         },
 
+        getTileEvent: function (tile) {
+            var tileType = this.getTileType(tile);
+            return this.attributes.eventTiles[tileType.event];
+        },
+
+        getTilePortal: function (tile) {
+            var tileType = this.getTileType(tile);
+            return this.attributes.portals[tileType.portal];
+        },
+
         getCoords: function (tile) {
             var columns = this.get('tilesX'),
                 x = tile % columns,

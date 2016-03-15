@@ -3,6 +3,7 @@
 
 var _ = require('underscore'),
 	ModelExtension = require('../../extensions/model'),
+	ticker = require('../ticker'),
 
     CameraModel = ModelExtension.extend({
 
@@ -40,6 +41,10 @@ var _ = require('underscore'),
 		},
 
 		onControlUp: function (data) {
+			if (data.message === 80) {
+				ticker.togglePause();
+			}
+
 			if (_.contains(this.keysList, data.message)) {
 				this.trigger('up', data.message);
 			}
