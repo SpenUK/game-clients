@@ -120,6 +120,8 @@ var _ = require('underscore'),
 			var x = this.cameraModel.x,
 				y = this.cameraModel.y;
 
+				// console.log(x,y);
+
 		    _.each([
 		    	this.contexts.base,
 		    	this.contexts.cover,

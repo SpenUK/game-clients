@@ -32,13 +32,12 @@ var ModelExtension = require('../../extensions/model'),
 
     		this._super.apply(this, arguments);
 
-            this._setPosition();
+            this._initializePosition();
 
             this.listenTo(this.controlsModel, 'down', this.onControlDown);
             this.listenTo(this.controlsModel, 'up', this.onControlUp);
 
             this.listenTo(this.gameModel.mapsCollection, 'changed:currentMap', function (map) {
-                console.log(this.gameModel.mapsCollection.getCurrentMap().cid);
                 this.setMapModel(map);
             });
 
@@ -106,9 +105,8 @@ var ModelExtension = require('../../extensions/model'),
                     var portal = this.mapModel.getTilePortal(this.target);
 
                     if (portal) {
-                        this.target = null; //TODO do better
                         this._stopMoving();
-                        this.gameModel.mapsCollection.setCurrentMap(portal.map);
+                        this._moveToPortalDestination(portal);
                         return;
                     }
 
@@ -132,6 +130,11 @@ var ModelExtension = require('../../extensions/model'),
                 }
             }
     	},
+
+        _moveToPortalDestination: function (portal) {
+            this._setLocation(portal.x, portal.y, portal.map);
+            this.gameModel.mapsCollection.setCurrentMap(portal.map);
+        },
 
         _canMoveToTile: function (target) {
             // var targetTile = this.mapModel.getTileType(target);
@@ -243,21 +246,22 @@ var ModelExtension = require('../../extensions/model'),
             this.isMoving = false;
         },
 
-        _setPosition: function () {
-            var location = this.get('location'),
-                tileSize = this.get('tileSize');
+        _initializePosition: function () {
+            var location = this.get('location');
+            this._setLocation(location.x, location.y, location.map);
+        },
 
-                console.log(location);
-
+        _setLocation: function (x, y, map) {
+            var tileSize = this.get('tileSize');
             this.set({
-                x: location.x,
-                y: location.y,
-                map: location.map
+                x: x,
+                y: y,
+                map: map
             });
 
             this.position = {
-                x: location.x * tileSize,
-                y: location.y * tileSize
+                x: x * tileSize,
+                y: y * tileSize
             };
         }
     });

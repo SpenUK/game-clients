@@ -39,45 +39,46 @@ var ModelExtension = require('../../extensions/model'),
 		initialize: function() {
 			this._super.apply(this, arguments);
 			this.listenTo(this.playerModel, 'moved', this.playerMoved.bind(this));
+			window.camera = this;
 		},
 
 		playerMoved: function () {
 			this.setPosition();
 		},
 
-		follow: function(subject, deadzone) {
-			this.followed = subject;
-			if (deadzone && deadzone.x && deadzone.y) {
-				this.deadzone = deadzone;
-			}
-		},
+		// follow: function(subject, deadzone) {
+		// 	this.followed = subject;
+		// 	if (deadzone && deadzone.x && deadzone.y) {
+		// 		this.deadzone = deadzone;
+		// 	}
+		// },
 
-		update: function () {
-			var deadzone = this.get('deadzone'),
-				playerX = this.playerModel.get('x') * 32,
-				playerY = this.playerModel.get('y') * 32;
+		// update: function () {
+		// 	var deadzone = this.get('deadzone'),
+		// 		playerX = this.playerModel.get('x') * 32,
+		// 		playerY = this.playerModel.get('y') * 32;
 
-			if (playerX - this.x + deadzone.x > this.width) {
-				this.x = playerX - (this.width - deadzone.x);
-			} else if (playerX  - deadzone.x < this.x) {
-				this.x = playerX  - deadzone.x;
-			}
+		// 	if (playerX - this.x + deadzone.x > this.width) {
+		// 		this.x = playerX - (this.width - deadzone.x);
+		// 	} else if (playerX  - deadzone.x < this.x) {
+		// 		this.x = playerX  - deadzone.x;
+		// 	}
 
-			if (playerY - this.y + deadzone.y > this.height) {
-				this.y = playerY - (this.height - deadzone.y);
-			} else if (playerY - deadzone.y < this.y) {
-				this.y = playerY - deadzone.y;
-			}
+		// 	if (playerY - this.y + deadzone.y > this.height) {
+		// 		this.y = playerY - (this.height - deadzone.y);
+		// 	} else if (playerY - deadzone.y < this.y) {
+		// 		this.y = playerY - deadzone.y;
+		// 	}
 
-			this.trigger('updated');
-		},
+		// 	this.trigger('updated');
+		// },
 
 		setPosition: function () {
 			var map = this.gameModel.getCurrentMap(),
-				gameWidth = this.gameModel.get('width'),
-				gameHeight = this.gameModel.get('height'),
-				worldWidth = map.get('width'),
-				worldHeight = map.get('height'),
+				gameWidth = this.gameModel.attributes.width,
+				gameHeight = this.gameModel.attributes.height,
+				worldWidth = map.attributes.width,
+				worldHeight = map.attributes.height,
 				playerX = this.playerModel.position.x,
 				playerY = this.playerModel.position.y,
 				targetX = (gameWidth / 2) - playerX, // center of map - player position
@@ -91,8 +92,30 @@ var ModelExtension = require('../../extensions/model'),
 		    	inDeadzoneX = inDeadzoneLeft || inDeadzoneRight,
 		    	inDeadzoneY = inDeadzoneTop || inDeadzoneBottom;
 
-		    this.x = (inDeadzoneX ? this.x : (targetX + this.base.x));
-		    this.y = (inDeadzoneY ? this.y : (targetY + this.base.y));
+		    	// var playerOffScreenX = playerX < this.x + worldWidth;
+		    	// var playerOffScreenY = playerY < this.y + worldHeight - 240;
+
+		    	// if (playerOffScreenY) {
+		    		// console.log(playerOffScreenX, playerOffScreenY);
+		    	// } else {
+		    		// console.log(targetY + (worldHeight - gameHeight) < this.y);
+		    		console.log(targetY, (worldHeight - gameHeight), this.y);
+		    	// }
+
+
+		    	// console.log(worldWidth, gameWidth);
+
+		    	// console.log(this.x, this.y);
+		    	// console.log(playerX, playerY);
+		    	// -552 -240
+		    	// 1152 600
+		    	//
+		    	var thingY = targetY + (worldHeight - gameHeight) < this.y;
+		    	var thingX = targetX + (worldWidth - gameWidth) < this.x;
+
+
+		    this.x = (inDeadzoneX || thingX ? this.x : (targetX + this.base.x));
+		    this.y = (inDeadzoneY || thingY ? this.y : (targetY + this.base.y));
 
 		    this.trigger('updated');
 		}
