@@ -1,8 +1,9 @@
 'use strict';
 /*jshint bitwise: false*/
+/*jshint -W087 */
 
 var ModelExtension = require('../../extensions/model'),
-
+    canvasUtils = require('../../utils/canvas'),
     PlayerModel = ModelExtension.extend({
 
         isMoving: false,
@@ -26,25 +27,41 @@ var ModelExtension = require('../../extensions/model'),
         },
 
     	initialize: function() {
-            this._setPosition();
+            var loader,
+                spriteMap = this.get('spriteMap');
 
     		this._super.apply(this, arguments);
+
+            this._setPosition();
 
             this.listenTo(this.controlsModel, 'down', this.onControlDown);
             this.listenTo(this.controlsModel, 'up', this.onControlUp);
 
-            console.log(this.attributes);
+            this.listenTo(this.gameModel.mapsCollection, 'changed:currentMap', function (map) {
+                console.log(this.gameModel.mapsCollection.getCurrentMap().cid);
+                this.setMapModel(map);
+            });
 
-            // this.listenTo(this.gameModel.mapsCollection, 'changed current', function () {
-                // console.log('map changed...');
-            // });
+            loader = canvasUtils.preloadImages([spriteMap.src]);
 
-            this.setMapModel(this.gameModel.getCurrentMap());
+            this.image = new Image();
+            this.image.src = spriteMap.src;
+
+            if (loader.state() === 'resolved') {
+                this.ready();
+            } else {
+                loader.then(this.ready.bind(this));
+            }
+
+            if (!this.mapModel) {
+                this.setMapModel(this.gameModel.getCurrentMap());
+            }
 
             this.move();
     	},
 
         setMapModel: function (model) {
+            console.log('set:', model);
             this.mapModel = model;
         },
 
@@ -89,7 +106,9 @@ var ModelExtension = require('../../extensions/model'),
                     var portal = this.mapModel.getTilePortal(this.target);
 
                     if (portal) {
-                        // this.trigger();
+                        this.target = null; //TODO do better
+                        this._stopMoving();
+                        this.gameModel.mapsCollection.setCurrentMap(portal.map);
                         return;
                     }
 
@@ -115,7 +134,8 @@ var ModelExtension = require('../../extensions/model'),
     	},
 
         _canMoveToTile: function (target) {
-            var targetTile = this.mapModel.getTileType(target);
+            // var targetTile = this.mapModel.getTileType(target);
+            var targetTile = this.gameModel.mapsCollection.currentMap.getTileType(target);
 
             return targetTile &&
                     !(this.direction === 1 && targetTile.blocker % 1000 >= 100 ||
@@ -125,7 +145,7 @@ var ModelExtension = require('../../extensions/model'),
         },
 
         _canMoveFromTile: function () {
-            var currentTile = this.mapModel.getTileType({
+            var currentTile = this.gameModel.mapsCollection.currentMap.getTileType({
                 x: this.attributes.x,
                 y: this.attributes.y
             });
@@ -138,7 +158,7 @@ var ModelExtension = require('../../extensions/model'),
         },
 
         _getTileEvent: function (tile) {
-            var tileType = this.mapModel.getTileType(tile);
+            var tileType = this.gameModel.mapsCollection.currentMap.getTileType(tile);
             return tileType.event;
         },
 
@@ -227,9 +247,12 @@ var ModelExtension = require('../../extensions/model'),
             var location = this.get('location'),
                 tileSize = this.get('tileSize');
 
+                console.log(location);
+
             this.set({
                 x: location.x,
-                y: location.y
+                y: location.y,
+                map: location.map
             });
 
             this.position = {

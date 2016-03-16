@@ -12,28 +12,21 @@ var CollectionExtension = require('../../extensions/collection'),
 
         currentMap: null,
 
-        initialize: function() {
-            this._super.apply(this, arguments);
-            this.setCurrentMap();
-            window.mapsCollection = this;
-        },
-
         getCurrentMap: function () {
             return this.currentMap || this.setCurrentMap();
         },
 
         setCurrentMap: function (map) {
+            console.log('setCurrentMap');
             var currentMap;
 
-            if (map) {
-                currentMap = this.findWhere({title: map}) || this.findWhere({title: this.defaultMap});
-            } else {
-                currentMap = this.findWhere({title: this.defaultMap});
-            }
+            currentMap = this.findWhere({title: map}) || this.lastMap || this.findWhere({title: this.defaultMap});
 
-            if (this.currentMap !== currentMap) {
+            if (currentMap && currentMap !== this.currentMap) {
+                this.lastMap = this.currentMap;
                 this.currentMap = currentMap;
-                this.trigger('changed current', this.currentMap);
+                console.log('valid change:', this.currentMap);
+                this.trigger('changed:currentMap', this.currentMap);
             }
 
             return this.currentMap;

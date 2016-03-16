@@ -27,13 +27,10 @@ var ViewExtension = require('../../../extensions/view'),
 
 			loader = canvasUtils.preloadImages([spriteSrc]);
 
+			// Image stuff better handled on the model.
+
 			this.image = new Image();
   			this.image.src = spriteSrc;
-
-  			this.tileSize = this.model.get('tileSize');
-  			this.spriteHeight = this.model.get('height');
-  			this.spriteWidth = this.model.get('width');
-  			this.offsetY = this.model.get('offsetY');
 
 			if (loader.state() === 'resolved') {
 				this.ready();
@@ -61,19 +58,19 @@ var ViewExtension = require('../../../extensions/view'),
 			var srcX = 0,
 				srcY = 0,
 				x = this.model.position.x,
-				y = this.model.position.y + (this.offsetY * this.tileSize);
+				y = this.model.position.y + (this.model.attributes.offsetY * this.model.attributes.tileSize);
 
 			this.context.clearRect(0,0, this.gameModel.attributes.width, this.gameModel.attributes.height);
 	    	this.context.drawImage(
 		        this.image, // image
-		        srcX * this.tileSize, // source x start
-				srcY * this.tileSize, // source y start
-				this.tileSize, // source x width
-				this.tileSize * this.spriteHeight, // source y height
+		        srcX * this.model.attributes.tileSize, // source x start
+				srcY * this.model.attributes.tileSize, // source y start
+				this.model.attributes.tileSize, // source x width
+				this.model.attributes.tileSize * this.model.attributes.height, // source y height
 				x + this.cameraModel.x, // placement x
 				y + this.cameraModel.y, // placement y
-				this.tileSize, // width
-				this.tileSize * this.spriteHeight // height
+				this.model.attributes.tileSize, // width
+				this.model.attributes.tileSize * this.model.attributes.height // height
 	    	);
 		},
 

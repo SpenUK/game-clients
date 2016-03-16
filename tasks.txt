@@ -1,0 +1,38 @@
+set current map
+event tiles?
+portal tiles?
+
+UDLR portal in and out transitions
+	possibly sprites for portals - doors etc. not caves etc.
+	maybe just walk animation for player - once portal is open.
+
+// directional passing - logical way could be to check in and out each time - only if truthy
+
+spriteAnimations
+
+tap to turn, hold to walk - means sending new events.
+
+interact button(s) - to start NPC chat etc.
+
+NPCs... static and roaming? roaming could be hard, will need to set boundaries, ensure that the NPC can't walk over player and viceversa
+
+ambient animated tiles
+
+NPC / Situational sprites
+
+Alternative control views
+	Store,
+	Options (ABC maybe?)
+	Inventory? actual inventory will be on screen, but interaction could be different
+
+Local storage for:
+	Position
+	Progress
+	Inventory
+	Etc.
+
+// Pause ticker
+	events for pause?
+
+free up keys when needed
+

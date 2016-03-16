@@ -19,10 +19,12 @@ var _ = require('underscore'),
 
 		initialize: function() {
 			var loader,
-				mapData = window.initialData.map;
+				map = this.model.getCurrentMap(),
+				tileSet = map.get('tileSet');
+
 			this._super.apply(this, arguments);
 
-			loader = canvasUtils.preloadImages(['images/rpg-tiles.png']);
+			loader = canvasUtils.preloadImages([tileSet.src]);
 
 			if (loader.state() === 'resolved') {
 				this.ready();
@@ -31,9 +33,9 @@ var _ = require('underscore'),
 			}
 
 			this.mapImage = new Image();
-  			this.mapImage.src = 'images/rpg-tiles.png';
+  			this.mapImage.src = tileSet.src;
 
-  			this.currentMap = mapData.maps[mapData.defaultMap];
+  			this.currentMap = map;
 
 			this.listenTo(this.cameraModel, 'updated', this.translateAll.bind(this));
 		},

@@ -1,36 +1,16 @@
 'use strict';
 /*jshint bitwise: false*/
-
-function preloadImages(images) {
-    var deferred = new $.Deferred(),
-        loader = new Image(),
-        total = images.length,
-        count = 0;
-
-        loader.onload = function(){
-            count += 1;
-
-            if (count === total) {
-                deferred.resolve();
-            } else {
-                loader.src = images.pop();
-            }
-        };
-
-        loader.src = images.pop();
-
-    return deferred;
-}
+/*jshint -W087 */
 
 var ModelExtension = require('../../extensions/model'),
-
+    canvasUtils = require('../../utils/canvas'),
     MapModel = ModelExtension.extend({
 
         isReady: false,
 
         initialize: function() {
             var tileSet = this.get('tileSet'),
-                loader = preloadImages([tileSet.src]);
+                loader = canvasUtils.preloadImages([tileSet.src]);
 
             this._super.apply(this, arguments);
 
@@ -57,6 +37,8 @@ var ModelExtension = require('../../extensions/model'),
             var tileIndex = this.getTileIndex(tile),
                 tileType = this.get('tileMap')[tileIndex];
 
+                // console.log(this.cid);
+
             return this.get('tileTypes')[tileType];
         },
 
@@ -66,6 +48,7 @@ var ModelExtension = require('../../extensions/model'),
         },
 
         getTilePortal: function (tile) {
+
             var tileType = this.getTileType(tile);
             return this.attributes.portals[tileType.portal];
         },
@@ -79,6 +62,9 @@ var ModelExtension = require('../../extensions/model'),
         },
 
         getTileIndex: function (tile) {
+            if (!tile) {
+                debugger;
+            }
           var x = tile.x,
               y = tile.y;
 
