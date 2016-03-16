@@ -48,9 +48,18 @@ var ModelExtension = require('../../extensions/model'),
 		},
 
 		playerChangedMap: function () {
-			// this.base = {
+			var map = this.gameModel.getCurrentMap(),
+				gameWidth = this.gameModel.attributes.width,
+				gameHeight = this.gameModel.attributes.height,
+				worldWidth = map.attributes.width,
+				worldHeight = map.attributes.height;
 
-			// };
+				console.log(gameWidth - worldWidth, gameHeight - worldHeight);
+
+			this.base = {
+				x: gameWidth - worldWidth > 0 ? (gameWidth - worldWidth) / 2 : 0,
+				y: gameHeight - worldHeight > 0 ? (gameHeight - worldHeight) / 2 : 0
+			};
 
 			this.setPosition();
 		},
@@ -98,24 +107,21 @@ var ModelExtension = require('../../extensions/model'),
 		    	inDeadzoneRight = (targetX + (worldWidth - gameWidth) < 0), // is in deadzone
 		    	inDeadzoneBottom = (targetY + (worldHeight - gameHeight) < 0); // is in deadzone
 
-		    	if (worldHeight <= gameHeight) {
-
-		    	}
 
 		    	if (worldWidth <= gameWidth || inDeadzoneLeft) {
-		    		this.x = 0;
+		    		this.x = this.base.x;
 		    	} else if (inDeadzoneRight) {
-		    		this.x = -(worldWidth - gameWidth);
+		    		this.x = this.base.x -(worldWidth - gameWidth);
 		    	} else {
-		    		this.x = targetX;
+		    		this.x = targetX + this.base.x;
 		    	}
 
 		    	if (worldHeight <= gameHeight || inDeadzoneTop) {
-		    		this.y = 0;
+		    		this.y = this.base.y;
 		    	} else if (inDeadzoneBottom) {
-		    		this.y = -(worldHeight - gameHeight);
+		    		this.y = this.base.y -(worldHeight - gameHeight);
 		    	} else {
-		    		this.y = targetY;
+		    		this.y = targetY + this.base.y;
 		    	}
 
 		    this.trigger('updated');
