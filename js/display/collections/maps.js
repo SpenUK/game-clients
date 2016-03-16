@@ -25,7 +25,6 @@ var CollectionExtension = require('../../extensions/collection'),
             if (currentMap && currentMap !== this.currentMap) {
                 this.lastMap = this.currentMap;
                 this.currentMap = currentMap;
-                console.log('valid change:', this.currentMap);
                 this.trigger('changed:currentMap', this.currentMap);
             }
 

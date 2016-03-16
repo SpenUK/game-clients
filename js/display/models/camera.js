@@ -39,6 +39,7 @@ var ModelExtension = require('../../extensions/model'),
 		initialize: function() {
 			this._super.apply(this, arguments);
 			this.listenTo(this.playerModel, 'moved', this.playerMoved.bind(this));
+			this.listenTo(this.playerModel, 'changed:mapModel', this.playerMoved.bind(this));
 			window.camera = this;
 		},
 
@@ -81,13 +82,16 @@ var ModelExtension = require('../../extensions/model'),
 				worldHeight = map.attributes.height,
 				playerX = this.playerModel.position.x,
 				playerY = this.playerModel.position.y,
-				targetX = this.base.x + (gameWidth / 2) - playerX, // center of map - player position
-  				targetY = this.base.y + (gameHeight / 2) - playerY,
+				targetX = (gameWidth / 2) - playerX, // center of map - player position
+  				targetY = (gameHeight / 2) - playerY,
 
 		    	inDeadzoneLeft = targetX > 0,
 		    	inDeadzoneTop = targetY > 0,
 		    	inDeadzoneRight = (targetX + (worldWidth - gameWidth) < 0), // is in deadzone
 		    	inDeadzoneBottom = (targetY + (worldHeight - gameHeight) < 0); // is in deadzone
+
+		    	// inDeadzoneX = inDeadzoneLeft || inDeadzoneRight,
+		    	// inDeadzoneY = inDeadzoneTop || inDeadzoneBottom;
 
 		    	if (inDeadzoneLeft) {
 		    		this.x = 0;
@@ -104,6 +108,39 @@ var ModelExtension = require('../../extensions/model'),
 		    	} else {
 		    		this.y = targetY;
 		    	}
+
+		    	// var playerOffScreenX = playerX < this.x + worldWidth;
+		    	// var playerOffScreenY = playerY < this.y + worldHeight - 240;
+
+		    	// if (playerOffScreenY) {
+		    		// console.log(playerOffScreenX, playerOffScreenY);
+		    	// } else {
+		    		// console.log(targetY + (worldHeight - gameHeight) < this.y);
+		    		// console.log(targetY, (worldHeight - gameHeight), this.y);
+		    	// }
+
+
+		    	// console.log(worldWidth, gameWidth);
+
+		    	// console.log(this.x, this.y);
+		    	// console.log(playerX, playerY);
+		    	// -552 -240
+		    	// 1152 600
+		    	//
+		    	// var thingY = targetY + (worldHeight - gameHeight) < this.y;
+		    	// var thingX = targetX + (worldWidth - gameWidth) < this.x;
+
+		    	// var thingY = targetY + (worldHeight - gameHeight) < 0;
+		    	// var thingX = targetX + (worldWidth - gameWidth) < 0;
+
+		    	// if (thingY || thingX) {
+		    		// console.log(thingX, thingY);
+		    	// }
+
+
+
+		    // this.x = (!inDeadzoneX ? (targetX + this.base.x) : this.x);
+		    // this.y = (!inDeadzoneY ? (targetY + this.base.y) : this.y);
 
 		    this.trigger('updated');
 		}

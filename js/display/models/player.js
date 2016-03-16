@@ -62,6 +62,7 @@ var ModelExtension = require('../../extensions/model'),
         setMapModel: function (model) {
             console.log('set:', model);
             this.mapModel = model;
+            this.trigger('changed:mapModel');
         },
 
         onControlDown: function (key) {
@@ -79,7 +80,8 @@ var ModelExtension = require('../../extensions/model'),
         },
 
     	move: function () {
-            var nextTile;
+            var nextTile,
+                portal;
 
             this._setDirection();
 
@@ -102,7 +104,7 @@ var ModelExtension = require('../../extensions/model'),
 
                     this.set(this.target);
 
-                    var portal = this.mapModel.getTilePortal(this.target);
+                    portal = this.mapModel.getTilePortal(this.target);
 
                     if (portal) {
                         this._stopMoving();
@@ -166,7 +168,8 @@ var ModelExtension = require('../../extensions/model'),
         },
 
         _getNextTile: function () {
-            var target;
+            var target,
+                map = this.gameModel.mapsCollection.currentMap.attributes;
 
             if (!this.direction) {
                 return false;
@@ -177,15 +180,20 @@ var ModelExtension = require('../../extensions/model'),
                 y: this.get('y')
             };
 
-            if (this.direction === 1) {
+            // directions: 1: up, 2: down, 3: left, 4: right
+            console.log(target.y > 0, target.x > 0, target.y < map.tilesY -1, target.x < map.tilesX -1);
+
+            if (this.direction === 1 && target.y > 0) {
                 target.y = target.y - 1;
-            } else if (this.direction === 2) {
+            } else if (this.direction === 2 && target.y < map.tilesY - 1) {
                 target.y = target.y + 1;
-            } else if (this.direction === 3) {
+            } else if (this.direction === 3 && target.x > 0) {
                 target.x = target.x - 1;
-            } else if (this.direction === 4) {
+            } else if (this.direction === 4 && target.x < map.tilesX - 1) {
                 target.x = target.x + 1;
             }
+
+
 
             return target;
         },
