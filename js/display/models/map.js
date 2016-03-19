@@ -4,6 +4,7 @@
 
 var ModelExtension = require('../../extensions/model'),
     canvasUtils = require('../../utils/canvas'),
+
     MapModel = ModelExtension.extend({
 
         isReady: false,

@@ -6,11 +6,13 @@ var ModelExtension = require('../../extensions/model'),
     canvasUtils = require('../../utils/canvas'),
     PlayerModel = ModelExtension.extend({
 
+        isReady: false,
+
         isMoving: false,
 
         step: 4,
 
-    	acceptedParams: ['controlsModel', 'gameModel'],
+    	acceptedParams: ['socket', 'controlsModel', 'gameModel'],
 
         keyMap: {
             '37': 'left',
@@ -56,6 +58,8 @@ var ModelExtension = require('../../extensions/model'),
                 this.setMapModel(this.gameModel.getCurrentMap());
             }
 
+            this.socket.on('game:force-tile', this.onForceTile.bind(this));
+
             this.move();
     	},
 
@@ -79,6 +83,10 @@ var ModelExtension = require('../../extensions/model'),
             }
         },
 
+        onForceTile: function (tile) {
+            console.log('forcing tile:', tile);
+        },
+
     	move: function () {
             var nextTile,
                 portal;
@@ -93,6 +101,15 @@ var ModelExtension = require('../../extensions/model'),
                     this._startMoving(nextTile, this.direction);
                     this._continueMoving();
                 } else {
+                    // logic could be bettere, right now turing right or left on a tile portals,
+                    // when only up should...
+                    portal = this.mapModel.getTilePortal({
+                        x: this.attributes.x,
+                        y: this.attributes.y
+                    });
+                    if (portal) {
+                        this._moveToPortalDestination(portal);
+                    }
                     // can't move - so stop to be sure.
                     this._stopMoving();
                 }
@@ -102,8 +119,6 @@ var ModelExtension = require('../../extensions/model'),
                 if (this._reachedTarget()) {
                     // No more distance to travel, so update tile position.
 
-                    this.set(this.target);
-
                     portal = this.mapModel.getTilePortal(this.target);
 
                     if (portal) {
@@ -111,6 +126,8 @@ var ModelExtension = require('../../extensions/model'),
                         this._moveToPortalDestination(portal);
                         return;
                     }
+
+                    this._setLocation(this.target);
 
                     if (!this.direction) {
                         // no current direction, so stop moving
@@ -134,12 +151,11 @@ var ModelExtension = require('../../extensions/model'),
     	},
 
         _moveToPortalDestination: function (portal) {
-            this._setLocation(portal.x, portal.y, portal.map);
+            this._setLocation({x: portal.x, y: portal.y, map: portal.map});
             this.gameModel.mapsCollection.setCurrentMap(portal.map);
         },
 
         _canMoveToTile: function (target) {
-            // var targetTile = this.mapModel.getTileType(target);
             var targetTile = this.gameModel.mapsCollection.currentMap.getTileType(target);
 
             return targetTile &&
@@ -176,13 +192,11 @@ var ModelExtension = require('../../extensions/model'),
             }
 
             target = {
-                x: this.get('x'),
-                y: this.get('y')
+                x: this.attributes.x,
+                y: this.attributes.y
             };
 
             // directions: 1: up, 2: down, 3: left, 4: right
-            console.log(target.y > 0, target.x > 0, target.y < map.tilesY -1, target.x < map.tilesX -1);
-
             if (this.direction === 1 && target.y > 0) {
                 target.y = target.y - 1;
             } else if (this.direction === 2 && target.y < map.tilesY - 1) {
@@ -256,20 +270,29 @@ var ModelExtension = require('../../extensions/model'),
 
         _initializePosition: function () {
             var location = this.get('location');
-            this._setLocation(location.x, location.y, location.map);
+            this._setLocation({x: location.x, y: location.y, map: location.map});
         },
 
-        _setLocation: function (x, y, map) {
-            var tileSize = this.get('tileSize');
-            this.set({
-                x: x,
-                y: y,
-                map: map
-            });
+        _setLocation: function (location) {
+            var tileSize = this.attributes.tileSize,
+                attributes = {
+                    x: location.x,
+                    y: location.y
+                };
+
+            if (attributes.x === undefined || attributes.y === undefined ) {
+                return false;
+            }
+
+            if (location.map) {
+                attributes.map = location.map;
+            }
+
+            this.set(attributes);
 
             this.position = {
-                x: x * tileSize,
-                y: y * tileSize
+                x: location.x * tileSize,
+                y: location.y * tileSize
             };
         }
     });

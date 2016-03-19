@@ -127,7 +127,7 @@ var _ = require('underscore'),
                     });
                 }
 
-                if (!view.model || view.model.isReady) {
+                if (!view.model && !view.collection || view.model.isReady) {
                     view.onReady();
                 } else {
                     view.listenToOnce(view.model, 'ready', view.onReady);

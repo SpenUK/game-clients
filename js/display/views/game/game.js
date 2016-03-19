@@ -32,8 +32,10 @@ var	ViewExtension = require('../../../extensions/view'),
 
 			this.playerModel = new PlayerModel(playerData, {
 				gameModel: this.model,
-				controlsModel: this.controlsModel
+				controlsModel: this.controlsModel,
+				socket: this.socket
 			});
+
 			this.model.set('playerModel', this.playerModel);
 
 			this.cameraModel = new CameraModel({
@@ -52,6 +54,8 @@ var	ViewExtension = require('../../../extensions/view'),
 				}
 			});
 			this.model.set('cameraModel', this.cameraModel);
+
+			// this.socket.on('controller joined', this.onControllerJoined.bind(this));
 
 		},
 

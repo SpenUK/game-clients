@@ -13,6 +13,7 @@ spriteAnimations
 tap to turn, hold to walk - means sending new events.
 
 interact button(s) - to start NPC chat etc.
+	buttons could change label to 'talk' or 'shop' when applicable?
 
 NPCs... static and roaming? roaming could be hard, will need to set boundaries, ensure that the NPC can't walk over player and viceversa
 
@@ -35,4 +36,25 @@ Local storage for:
 	events for pause?
 
 free up keys when needed
+
+on map init, need to plot the environment & initialise any entities - use an array of ents, each with a location and list of behaviours - compose these behaviours - composing behaviours can be applied elsewhere too, could be the key.
+	behaviours might be... wanderer, trader, follower etc. each behaviour should come with a corresponding param object, wanderer for instance might have an array of tiles he can wander to, trader - the items he stocks and the prices. - all in data.
+
+
+
+tile object? extension of an entity? give that behaviours
+
+map stuff
+	use x & y - so much easier to plot out... also 1-index them, a 20 wide map should have tiles 1-20.
+
+	each map has:
+		tilemap, tiletypes,
+		entitymap, entitytypes,
+		eventmap? bundle this in with tilemap?
+		enviroment on one canvas, entities on another - maybe?
+
+some sort of lazy data repository for maps, npcs etc?
+	move to next map should look in this repo first before requesting from the server
+
+split player view in to player enitity and player canvas - could have player on a 'sprites layer' with the other sprites (NPCs etc.)
 

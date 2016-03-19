@@ -17,32 +17,23 @@ var ViewExtension = require('../../../extensions/view'),
 		translateY: 0,
 
 		initialize: function() {
-			var loader,
-				spriteMap = this.model.get('spriteMap'),
-				spriteSrc = spriteMap.src;
-
-				console.log(spriteSrc);
 
 			this._super.apply(this, arguments);
 
-			loader = canvasUtils.preloadImages([spriteSrc]);
-
-			// Image stuff better handled on the model.
-
-			this.image = new Image();
-  			this.image.src = spriteSrc;
-
-			if (loader.state() === 'resolved') {
+			if (this.model.isReady) {
 				this.ready();
 			} else {
-				loader.then(this.ready.bind(this));
+				this.listenTo(this.model, 'ready', this.ready);
 			}
+		},
 
+		onReady: function () {
 			this.listenTo(this.model, 'change:y change:x', this.startMoving);
 			this.listenTo(this.cameraModel, 'updated', this.draw);
 		},
 
 		render: function () {
+			console.log('render');
 			this._super.apply(this, arguments);
 			this.context = canvasUtils.getContext('player');
 			this.draw();
@@ -62,7 +53,7 @@ var ViewExtension = require('../../../extensions/view'),
 
 			this.context.clearRect(0,0, this.gameModel.attributes.width, this.gameModel.attributes.height);
 	    	this.context.drawImage(
-		        this.image, // image
+		        this.model.image, // image
 		        srcX * this.model.attributes.tileSize, // source x start
 				srcY * this.model.attributes.tileSize, // source y start
 				this.model.attributes.tileSize, // source x width

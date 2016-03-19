@@ -3,6 +3,8 @@
 var _ = require('underscore'),
 	canvasUtils = require('../../../utils/canvas'),
 	ViewExtension = require('../../../extensions/view'),
+	SpritesView = require('./sprites'),
+	SpritesCollection = require('../../collections/sprites'),
 	template = require('../../templates/game/environment.hbs'),
 
 	EnviromentView = ViewExtension.extend({
@@ -20,7 +22,10 @@ var _ = require('underscore'),
 		initialize: function() {
 			var loader,
 				map = this.model.getCurrentMap(),
-				tileSet = map.get('tileSet');
+				tileSet = map.get('tileSet'),
+				sprites = this.getSprites();
+
+			this.spritesCollection = new SpritesCollection(sprites);
 
 			this._super.apply(this, arguments);
 
@@ -40,6 +45,19 @@ var _ = require('underscore'),
 			this.listenTo(this.cameraModel, 'updated', this.translateAll.bind(this));
 		},
 
+		getSprites: function () {
+			var model = this.model.getCurrentMap(),
+				spriteMap = window.initialData.npcs,
+				sprites = model.get('npcs') || [];
+
+			return _.map(sprites, function (sprite) {
+				return _.extend(spriteMap[sprite.ref], {
+					x: sprite.x,
+					y: sprite.y
+				});
+			});
+		},
+
 		setContexts: function () {
 			var baseCtx = canvasUtils.getContext('base'),
 				coverCtx = canvasUtils.getContext('cover'),
@@ -57,6 +75,19 @@ var _ = require('underscore'),
 			this.setContexts();
 
 			this.model.ticker.register('environment-tick', this.tick.bind(this));
+		},
+
+		views: function () {
+			return {
+				'.sprites': {
+					view: SpritesView,
+					options: {
+						collection: this.spritesCollection,
+						socket: this.socket,
+						cameraModel: this.cameraModel
+					}
+				}
+			};
 		},
 
 		tick: function () {
