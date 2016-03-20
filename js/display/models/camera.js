@@ -40,6 +40,7 @@ var ModelExtension = require('../../extensions/model'),
 			this._super.apply(this, arguments);
 			this.listenTo(this.playerModel, 'moved', this.playerMoved.bind(this));
 			this.listenTo(this.playerModel, 'changed:mapModel', this.playerChangedMap.bind(this));
+			this.playerChangedMap();
 			window.camera = this;
 		},
 
@@ -51,10 +52,8 @@ var ModelExtension = require('../../extensions/model'),
 			var map = this.gameModel.getCurrentMap(),
 				gameWidth = this.gameModel.attributes.width,
 				gameHeight = this.gameModel.attributes.height,
-				worldWidth = map.attributes.width,
-				worldHeight = map.attributes.height;
-
-				console.log(gameWidth - worldWidth, gameHeight - worldHeight);
+				worldWidth = map.attributes.width * map.attributes.tilewidth,
+				worldHeight = map.attributes.height * map.attributes.tileheight;
 
 			this.base = {
 				x: gameWidth - worldWidth > 0 ? (gameWidth - worldWidth) / 2 : 0,
@@ -95,8 +94,8 @@ var ModelExtension = require('../../extensions/model'),
 			var map = this.gameModel.getCurrentMap(),
 				gameWidth = this.gameModel.attributes.width,
 				gameHeight = this.gameModel.attributes.height,
-				worldWidth = map.attributes.width,
-				worldHeight = map.attributes.height,
+				worldWidth = map.attributes.width * map.attributes.tilewidth,
+				worldHeight = map.attributes.height * map.attributes.tileheight,
 				playerX = this.playerModel.position.x,
 				playerY = this.playerModel.position.y,
 				targetX = (gameWidth / 2) - playerX, // center of map - player position
@@ -112,6 +111,7 @@ var ModelExtension = require('../../extensions/model'),
 		    		this.x = this.base.x;
 		    	} else if (inDeadzoneRight) {
 		    		this.x = this.base.x -(worldWidth - gameWidth);
+		    		console.log(this.x);
 		    	} else {
 		    		this.x = targetX + this.base.x;
 		    	}
@@ -119,6 +119,7 @@ var ModelExtension = require('../../extensions/model'),
 		    	if (worldHeight <= gameHeight || inDeadzoneTop) {
 		    		this.y = this.base.y;
 		    	} else if (inDeadzoneBottom) {
+		    		console.log(this.y);
 		    		this.y = this.base.y -(worldHeight - gameHeight);
 		    	} else {
 		    		this.y = targetY + this.base.y;

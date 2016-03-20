@@ -1,11 +1,11 @@
 'use strict';
 
 var	ViewExtension = require('../../../extensions/view'),
-	EnvironmentView = require('./environment'),
+	EnvironmentView = require('./environmentt'),
 	PlayerView = require('./player'),
 	CameraModel = require('../../models/camera'),
 	ControlsModel = require('../../models/controls'),
-	PlayerModel = require('../../models/player'),
+	PlayerModel = require('../../models/playerr'),
 	template = require('../../templates/game/game.hbs'),
 
 	GameView = ViewExtension.extend({

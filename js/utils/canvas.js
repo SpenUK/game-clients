@@ -11,7 +11,7 @@ function getContext(id, contextType) {
 	return canvas ? canvas.getContext(contextType) : false;
 }
 
-function preloadImages(images) {
+function preloadImages(images, callback, context) {
 	var deferred = new $.Deferred(),
 		loader = new Image(),
 		total = images.length,
@@ -26,6 +26,14 @@ function preloadImages(images) {
 			loader.src = images.pop();
 		}
 	};
+
+	if (callback) {
+		if (context) {
+			callback = callback.bind(context);
+		}
+
+		deferred.then(callback);
+	}
 
 	loader.src = images.pop();
 

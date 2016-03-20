@@ -18,10 +18,11 @@ var Backbone = require('backbone'),
 
     	ready: function () {
             this.isReady = true;
-            console.log('model ready');
+            // console.log('model ready');
             this.onReady();
             this.trigger('ready');
         },
+
         /**
          * Override
          */

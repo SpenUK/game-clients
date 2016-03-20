@@ -23,15 +23,23 @@ var _ = require('underscore'),
     	},
 
 		bindKeys: function () {
-			$(document).on('keydown.controlModel', (function(e) {
-			    this.onControlDown({message: e.which});
-			    e.preventDefault();
-			}).bind(this));
-
 			$(document).on('keyup.controlModel', (function(e) {
-			    this.onControlUp({message: e.which});
-			    e.preventDefault();
+				if (e.which === 80) {
+					console.log('togglePause');
+					e.preventDefault();
+					ticker.togglePause();
+				}
 			}).bind(this));
+			//
+			// $(document).on('keydown.controlModel', (function(e) {
+			//     this.onControlDown({message: e.which});
+			//     e.preventDefault();
+			// }).bind(this));
+
+			// $(document).on('keyup.controlModel', (function(e) {
+			//     this.onControlUp({message: e.which});
+			//     e.preventDefault();
+			// }).bind(this));
 		},
 
 		onControlDown: function (data) {

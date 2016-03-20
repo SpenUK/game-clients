@@ -2,7 +2,9 @@
 /*jshint bitwise: false*/
 
 var ModelExtension = require('../../extensions/model'),
-	MapsCollection = require('../collections/maps'),
+	// MapsCollection = require('../collections/maps'),
+	TiledMapCollection = require('../collections/mapss'),
+	// TilesetsCollection = require('../collections/tilesets'),
 	ticker = require('../ticker'),
 
     GameModel = ModelExtension.extend({
@@ -24,6 +26,10 @@ var ModelExtension = require('../../extensions/model'),
 		initialize: function() {
 			var mapData = window.initialData.map;
 
+			this.tiledMapsCollection = new TiledMapCollection(mapData.tiledMaps, {
+				defaultMap: mapData.defaultMap
+			});
+
 			this.set('controllerUrl', 'bit.ly/rpg-control');
 
 			this.socket.on('token generated', this.setToken.bind(this));
@@ -33,9 +39,9 @@ var ModelExtension = require('../../extensions/model'),
 
 			this._super.apply(this, arguments);
 
-			this.mapsCollection = new MapsCollection(mapData.maps, {
-				defaultMap: mapData.defaultMap
-			});
+			// this.mapsCollection = new MapsCollection(mapData.maps, {
+			// 	defaultMap: mapData.defaultMap
+			// });
 
 			this.on('change:token', this.setUrl);
 		},
@@ -50,7 +56,7 @@ var ModelExtension = require('../../extensions/model'),
 		},
 
 		getCurrentMap: function () {
-			return this.mapsCollection.getCurrentMap();
+			return this.tiledMapsCollection.getCurrentMap();
 		}
     });
 

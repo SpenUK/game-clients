@@ -34,6 +34,21 @@ var _ = require('underscore'),
             Backbone.Collection.prototype.constructor.apply(this, arguments);
         },
 
+        // _prepareModel: function (attrs, options) {
+            // if (this.modelAttributes) {
+            //     console.log('modelAttributes is set');
+            //     if (this._isModel(attrs)) {
+            //         attrs.set(this.modelAttributes);
+            //     } else if (_.isObject(attrs)) {
+            //         _.extend(attrs, this.modelAttributes);
+            //     }
+            // } else {
+            //     console.log('modelAttributes not set');
+            // }
+
+            // this._super.apply(this, [attrs, options]);
+        // },
+
     	initialize: function() {
     		this._super.apply(this, arguments);
 

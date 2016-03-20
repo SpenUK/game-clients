@@ -39,7 +39,7 @@ var ModelExtension = require('../../extensions/model'),
             this.listenTo(this.controlsModel, 'down', this.onControlDown);
             this.listenTo(this.controlsModel, 'up', this.onControlUp);
 
-            this.listenTo(this.gameModel.mapsCollection, 'changed:currentMap', function (map) {
+            this.listenTo(this.gameModel.tiledMapsCollection, 'changed:currentMap', function (map) {
                 this.setMapModel(map);
             });
 
@@ -119,13 +119,13 @@ var ModelExtension = require('../../extensions/model'),
                 if (this._reachedTarget()) {
                     // No more distance to travel, so update tile position.
 
-                    portal = this.mapModel.getTilePortal(this.target);
+                    // portal = this.mapModel.getTilePortal(this.target);
 
-                    if (portal) {
-                        this._stopMoving();
-                        this._moveToPortalDestination(portal);
-                        return;
-                    }
+                    // if (portal) {
+                    //     this._stopMoving();
+                    //     this._moveToPortalDestination(portal);
+                    //     return;
+                    // }
 
                     this._setLocation(this.target);
 
@@ -152,40 +152,38 @@ var ModelExtension = require('../../extensions/model'),
 
         _moveToPortalDestination: function (portal) {
             this._setLocation({x: portal.x, y: portal.y, map: portal.map});
-            this.gameModel.mapsCollection.setCurrentMap(portal.map);
+            this.gameModel.tiledMapsCollection.setCurrentMap(portal.map);
         },
 
         _canMoveToTile: function (target) {
-            var targetTile = this.gameModel.tiledMapsCollection.currentMap.getTileType(target);
+            var targetTileCollisions = this.mapModel.getCollisions(target);
 
-            return targetTile &&
-                    !(this.direction === 1 && targetTile.blocker % 1000 >= 100 ||
-                      this.direction === 2 && targetTile.blocker >= 1000       ||
-                      this.direction === 3 && targetTile.blocker % 10 === 1    ||
-                      this.direction === 4 && targetTile.blocker % 100 >= 10);
+            return !(this.direction === 1 && targetTileCollisions % 1000 >= 100 ||
+                      this.direction === 2 && targetTileCollisions >= 1000       ||
+                      this.direction === 3 && targetTileCollisions % 10 === 1    ||
+                      this.direction === 4 && targetTileCollisions % 100 >= 10);
         },
 
         _canMoveFromTile: function () {
-            var currentTile = this.gameModel.tiledMapsCollection.currentMap.getTileType({
+            var currentTileCollisions = this.mapModel.getCollisions({
                 x: this.attributes.x,
                 y: this.attributes.y
             });
 
-            return currentTile &&
-                    !(this.direction === 1 && currentTile.blocker >= 1000       ||
-                      this.direction === 2 && currentTile.blocker % 1000 >= 100 ||
-                      this.direction === 3 && currentTile.blocker % 100 >= 1000 ||
-                      this.direction === 4 && currentTile.blocker % 10 === 1);
+            return !(this.direction === 1 && currentTileCollisions >= 1000       ||
+                      this.direction === 2 && currentTileCollisions % 1000 >= 100 ||
+                      this.direction === 3 && currentTileCollisions % 100 >= 1000 ||
+                      this.direction === 4 && currentTileCollisions % 10 === 1);
         },
 
-        _getTileEvent: function (tile) {
-            var tileType = this.gameModel.tiledMapsCollection.currentMap.getTileType(tile);
-            return tileType.event;
+        _getTileEvent: function () {
+            // var tileType = this.mapModel.getTileType(tile);
+            return null;
         },
 
         _getNextTile: function () {
             var target,
-                map = this.gameModel.tiledMapsCollection.currentMap.attributes;
+                map = this.mapModel.attributes;
 
             if (!this.direction) {
                 return false;
@@ -199,11 +197,11 @@ var ModelExtension = require('../../extensions/model'),
             // directions: 1: up, 2: down, 3: left, 4: right
             if (this.direction === 1 && target.y > 0) {
                 target.y = target.y - 1;
-            } else if (this.direction === 2 && target.y < map.tilesY - 1) {
+            } else if (this.direction === 2 && target.y < map.height - 1) {
                 target.y = target.y + 1;
             } else if (this.direction === 3 && target.x > 0) {
                 target.x = target.x - 1;
-            } else if (this.direction === 4 && target.x < map.tilesX - 1) {
+            } else if (this.direction === 4 && target.x < map.width - 1) {
                 target.x = target.x + 1;
             }
 
