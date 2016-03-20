@@ -35,7 +35,7 @@ var ViewExtension = require('../../../extensions/view'),
 		render: function () {
 			console.log('render');
 			this._super.apply(this, arguments);
-			this.context = canvasUtils.getContext('player');
+			this.context = canvasUtils.getContext('base');
 			this.draw();
 			this.gameModel.ticker.register('player-tick', this.tick.bind(this));
 		},
@@ -51,7 +51,7 @@ var ViewExtension = require('../../../extensions/view'),
 				x = this.model.position.x,
 				y = this.model.position.y + (this.model.attributes.offsetY * this.model.attributes.tileSize);
 
-			this.context.clearRect(0,0, this.gameModel.attributes.width, this.gameModel.attributes.height);
+			// this.context.clearRect(0,0, this.gameModel.attributes.width, this.gameModel.attributes.height);
 	    	this.context.drawImage(
 		        this.model.image, // image
 		        srcX * this.model.attributes.tileSize, // source x start
