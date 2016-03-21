@@ -3,30 +3,38 @@
 
 var ModelExtension = require('../../extensions/model'),
 	// MapsCollection = require('../collections/maps'),
-	TiledMapCollection = require('../collections/mapss'),
+	MapsCollection = require('../collections/mapss'),
+	EntitiesCollection = require('../collections/entities'),
+	// NpcModel = require('./npc'),
 	// TilesetsCollection = require('../collections/tilesets'),
+	PlayerModel = require('./playerr'),
 	ticker = require('../ticker'),
 
     GameModel = ModelExtension.extend({
 
-    	acceptedParams: ['socket'],
+    	acceptedParams: ['socket', 'cameraModel'],
 
-    	// need to actually set these defaults.
-		defaults: {
-			height: 0,
-			width: 0,
-			deadzone: {
-				x: 0,
-				y: 0
-			}
-		},
+		isReady: false,
 
 		ticker: ticker.initialize(),
 
 		initialize: function() {
-			var mapData = window.initialData.map;
+			var playerData = window.initialData.player,
+				mapData = window.initialData.map;
 
-			this.tiledMapsCollection = new TiledMapCollection(mapData.tiledMaps, {
+			this.playerModel = new PlayerModel(playerData, {
+				gameModel: this.model,
+				controlsModel: this.controlsModel,
+				socket: this.socket
+			});
+
+			this.set('playerModel', this.playerModel);
+
+			this.entities = new EntitiesCollection();
+
+			this.entities.add(this.playerModel);
+
+			this.mapsCollection = new MapsCollection(mapData.tiledMaps, {
 				defaultMap: mapData.defaultMap
 			});
 
@@ -39,11 +47,15 @@ var ModelExtension = require('../../extensions/model'),
 
 			this._super.apply(this, arguments);
 
-			// this.mapsCollection = new MapsCollection(mapData.maps, {
-			// 	defaultMap: mapData.defaultMap
-			// });
-
 			this.on('change:token', this.setUrl);
+
+			window.gameModel = this;
+		},
+
+		tick: function () {
+			var currentMap = this.mapsCollection.getCurrentMap();
+			currentMap.draw();
+			this.entities.drawEach();
 		},
 
 		setToken: function (data) {
@@ -56,7 +68,7 @@ var ModelExtension = require('../../extensions/model'),
 		},
 
 		getCurrentMap: function () {
-			return this.tiledMapsCollection.getCurrentMap();
+			return this.mapsCollection.getCurrentMap();
 		}
     });
 

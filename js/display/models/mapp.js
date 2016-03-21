@@ -7,7 +7,7 @@ var _ = require('underscore'),
     LayersCollection = require('../collections/layers'),
     ObjectLayersCollection = require('../collections/objectlayers'),
     TilesetsCollection = require('../collections/tilesets'),
-    // canvasUtils = require('../../utils/canvas'),
+    canvasUtils = require('../../utils/canvas'),
 
     MapModel = ModelExtension.extend({
 
@@ -39,6 +39,7 @@ var _ = require('underscore'),
                 this.listenTo(this.tilesets, 'allReady', this.setTilesetMap);
             }
 
+            this.inBoundsCount = 0;
         },
 
         setTilesetMap: function () {
@@ -80,6 +81,68 @@ var _ = require('underscore'),
               y = tile.y;
 
               return (y * this.get('tilesX')) + x;
+        },
+
+        draw: function () {
+            this.layers.each(this.drawLayer.bind(this));
+        },
+
+        drawLayer: function (layer) {
+            _.each(layer.attributes.tiles, this.drawTile.bind(this));
+
+            debugger;
+            console.log(this.inBoundsCount);
+            this.inBoundsCount = 0;
+        },
+
+        drawTile: function (tile, i) {
+            var map = this,
+                x = i % map.attributes.width,
+                y = Math.floor(i / map.attributes.width),
+                tileheight = map.attributes.tileheight,
+                tilewidth = map.attributes.tilewidth,
+                tileset = map.tilesetMap[tile],
+                // canvasWidth = this.model.attributes.width,
+                // canvasHeight = this.model.attributes.height,
+                canvasWidth = 600,
+                canvasHeight = 400,
+                translateX = 0,//this.cameraModel.x,
+                translateY = 0; //this.cameraModel.y;
+
+            if (!tileset || !tileset.image) {
+                return false;
+            }
+
+            var inBounds =  x * tilewidth < - translateX + canvasWidth &&
+                            y * tileheight < - translateY + canvasHeight &&
+                            (x + 1) * tilewidth > - translateX &&
+                            (y + 1) * tileheight > - translateY;
+
+            inBounds = inBounds;
+
+            if (!inBounds) {
+                // return false;
+            } else {
+                this.inBoundsCount += 1;
+            }
+
+            var srcX = (tile - tileset.gidoffset) % tileset.width,
+                srcY = Math.floor((tile - tileset.gidoffset) / tileset.width);
+
+                console.log(x * tilewidth, y * tileheight);
+
+            canvasUtils.getContext('base').drawImage(
+                tileset.image, // image
+                srcX * tilewidth, // source x start
+                srcY * tileheight, // source y start
+                tilewidth, // source x width
+                tileheight, // source y height
+                x * tilewidth, // placement x
+                y * tileheight, // placement y
+                tilewidth, // height
+                tileheight // width
+            );
+
         }
     });
 

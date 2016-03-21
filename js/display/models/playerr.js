@@ -1,10 +1,11 @@
 'use strict';
 /*jshint bitwise: false*/
 /*jshint -W087 */
-
-var ModelExtension = require('../../extensions/model'),
+var _ = require('underscore'),
+    EntityModel = require('./entity'),
     canvasUtils = require('../../utils/canvas'),
-    PlayerModel = ModelExtension.extend({
+
+    PlayerModel = EntityModel.extend({
 
         isReady: false,
 
@@ -12,7 +13,7 @@ var ModelExtension = require('../../extensions/model'),
 
         step: 4,
 
-    	acceptedParams: ['socket', 'controlsModel', 'gameModel'],
+    	acceptedParams: ['socket', 'controlsModel', 'cameraModel', 'gameModel'],
 
         keyMap: {
             '37': 'left',
@@ -39,35 +40,29 @@ var ModelExtension = require('../../extensions/model'),
             this.listenTo(this.controlsModel, 'down', this.onControlDown);
             this.listenTo(this.controlsModel, 'up', this.onControlUp);
 
-            this.listenTo(this.gameModel.tiledMapsCollection, 'changed:currentMap', function (map) {
-                this.setMapModel(map);
-            });
+            // this.listenTo(this.gameModel.tiledMapsCollection, 'changed:currentMap', function (map) {
+            //     this.setMapModel(map);
+            // });
 
             loader = canvasUtils.preloadImages([spriteMap.src]);
 
             this.image = new Image();
             this.image.src = spriteMap.src;
 
-            if (loader.state() === 'resolved') {
-                this.ready();
-            } else {
-                loader.then(this.ready.bind(this));
-            }
+            loader.then(this.ready.bind(this));
 
-            if (!this.mapModel) {
-                this.setMapModel(this.gameModel.getCurrentMap());
-            }
+            // if (!this.mapModel) {
+            //     this.setMapModel(this.gameModel.getCurrentMap());
+            // }
 
             this.socket.on('game:force-tile', this.onForceTile.bind(this));
-
-            this.move();
     	},
 
-        setMapModel: function (model) {
-            console.log('set:', model);
-            this.mapModel = model;
-            this.trigger('changed:mapModel');
-        },
+        // setMapModel: function (model) {
+        //     console.log('set:', model);
+        //     this.mapModel = model;
+        //     this.trigger('changed:mapModel');
+        // },
 
         onControlDown: function (key) {
             var direction = this.keyMap[key];
@@ -87,7 +82,7 @@ var ModelExtension = require('../../extensions/model'),
             console.log('forcing tile:', tile);
         },
 
-    	move: function () {
+    	update: function () {
             var nextTile,
                 portal;
 
@@ -150,15 +145,17 @@ var ModelExtension = require('../../extensions/model'),
             }
     	},
 
-        _moveToPortalDestination: function (portal) {
-            this._setLocation({x: portal.x, y: portal.y, map: portal.map});
-            this.gameModel.tiledMapsCollection.setCurrentMap(portal.map);
-        },
+        // _moveToPortalDestination: function (portal) {
+        //     this._setLocation({x: portal.x, y: portal.y, map: portal.map});
+        //     this.gameModel.tiledMapsCollection.setCurrentMap(portal.map);
+        // },
 
         _canMoveToTile: function (target) {
             var targetTileCollisions = this.mapModel.getCollisions(target);
 
-            return !(this.direction === 1 && targetTileCollisions % 1000 >= 100 ||
+            console.log(targetTileCollisions);
+
+            return !_.isNumber(targetTileCollisions) || !(this.direction === 1 && targetTileCollisions % 1000 >= 100 ||
                       this.direction === 2 && targetTileCollisions >= 1000       ||
                       this.direction === 3 && targetTileCollisions % 10 === 1    ||
                       this.direction === 4 && targetTileCollisions % 100 >= 10);
@@ -170,7 +167,7 @@ var ModelExtension = require('../../extensions/model'),
                 y: this.attributes.y
             });
 
-            return !(this.direction === 1 && currentTileCollisions >= 1000       ||
+            return !_.isNumber(currentTileCollisions) || !(this.direction === 1 && currentTileCollisions >= 1000       ||
                       this.direction === 2 && currentTileCollisions % 1000 >= 100 ||
                       this.direction === 3 && currentTileCollisions % 100 >= 1000 ||
                       this.direction === 4 && currentTileCollisions % 10 === 1);

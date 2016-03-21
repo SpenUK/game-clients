@@ -14,9 +14,7 @@ var	Collection = require('../../extensions/collection'),
 
         initialize: function() {
         	this._super.apply(this, arguments);
-            console.log('mapss', this.map(function(m) {
-                return m.cid;
-            }));
+            console.log('mapss', this);
         	window.mapsCollection = this;
         },
 
@@ -37,7 +35,6 @@ var	Collection = require('../../extensions/collection'),
 
             return this.currentMap;
         }
-
     });
 
 module.exports = MapsCollection;

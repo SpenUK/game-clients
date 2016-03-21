@@ -2,8 +2,11 @@
 
 var ViewExtension = require('../../../extensions/view'),
 	canvasUtils = require('../../../utils/canvas'),
+	template = require('../../templates/game/player.hbs'),
 
 	PlayerView = ViewExtension.extend({
+
+		template: template,
 
 		acceptedParams: ['socket', 'cameraModel', 'gameModel'],
 
@@ -62,6 +65,13 @@ var ViewExtension = require('../../../extensions/view'),
 				this.model.attributes.tileSize, // width
 				this.model.attributes.tileSize * this.model.attributes.height // height
 	    	);
+		},
+
+		serialize: function () {
+			return {
+				gameWidth: this.gameModel.get('width') + 'px',
+				gameHeight: this.gameModel.get('height') + 'px'
+			};
 		}
 	});
 

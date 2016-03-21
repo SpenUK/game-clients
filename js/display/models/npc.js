@@ -2,10 +2,10 @@
 /*jshint bitwise: false*/
 /*jshint -W087 */
 
-var ModelExtension = require('../../extensions/model'),
+var EntityModel = require('./entity'),
     canvasUtils = require('../../utils/canvas'),
 
-    EntityModel = ModelExtension.extend({
+    NpcModel = EntityModel.extend({
 
         isReady: false,
 
@@ -16,15 +16,33 @@ var ModelExtension = require('../../extensions/model'),
             y: 0
         },
 
+        initialize: function() {
+        var src = 'images/3264player-pink.png';
+        var loader = canvasUtils.preloadImages([src]);
+
+            this.image = new Image();
+            this.image.src = src;
+
+            if (loader.state() === 'resolved') {
+                this.ready();
+            } else {
+                loader.then(this.ready.bind(this));
+            }
+
+            this._super.apply(this, arguments);
+        },
+
         update: function () {
 
         },
 
-        draw: function () {
+        drawy: function () {
             var srcX = 0,
                 srcY = 0,
-                x = this.position.x,
-                y = this.position.y + (this.attributes.offsetY * this.attributes.tileSize);
+                x = 200,
+                y = 200 + (this.attributes.offsetY * this.attributes.tileSize);
+
+            console.log(this.image);
 
             canvasUtils.getContext('base').drawImage(
                 this.image, // image
@@ -37,8 +55,9 @@ var ModelExtension = require('../../extensions/model'),
                 this.attributes.tileSize, // width
                 this.attributes.tileSize * this.attributes.height // height
             );
+            // debugger;
         }
 
     });
 
-module.exports = EntityModel;
+module.exports = NpcModel;

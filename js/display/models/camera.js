@@ -38,30 +38,30 @@ var ModelExtension = require('../../extensions/model'),
 
 		initialize: function() {
 			this._super.apply(this, arguments);
-			this.listenTo(this.playerModel, 'moved', this.playerMoved.bind(this));
-			this.listenTo(this.playerModel, 'changed:mapModel', this.playerChangedMap.bind(this));
-			this.playerChangedMap();
+			// this.listenTo(this.playerModel, 'moved', this.playerMoved.bind(this));
+			// this.listenTo(this.playerModel, 'changed:mapModel', this.playerChangedMap.bind(this));
+			// this.playerChangedMap();
 			window.camera = this;
 		},
 
-		playerMoved: function () {
-			this.setPosition();
-		},
+		// playerMoved: function () {
+		// 	this.setPosition();
+		// },
 
-		playerChangedMap: function () {
-			var map = this.gameModel.getCurrentMap(),
-				gameWidth = this.gameModel.attributes.width,
-				gameHeight = this.gameModel.attributes.height,
-				worldWidth = map.attributes.width * map.attributes.tilewidth,
-				worldHeight = map.attributes.height * map.attributes.tileheight;
+		// playerChangedMap: function () {
+		// 	var map = this.gameModel.getCurrentMap(),
+		// 		gameWidth = this.gameModel.attributes.width,
+		// 		gameHeight = this.gameModel.attributes.height,
+		// 		worldWidth = map.attributes.width * map.attributes.tilewidth,
+		// 		worldHeight = map.attributes.height * map.attributes.tileheight;
 
-			this.base = {
-				x: gameWidth - worldWidth > 0 ? (gameWidth - worldWidth) / 2 : 0,
-				y: gameHeight - worldHeight > 0 ? (gameHeight - worldHeight) / 2 : 0
-			};
+		// 	this.base = {
+		// 		x: gameWidth - worldWidth > 0 ? (gameWidth - worldWidth) / 2 : 0,
+		// 		y: gameHeight - worldHeight > 0 ? (gameHeight - worldHeight) / 2 : 0
+		// 	};
 
-			this.setPosition();
-		},
+		// 	this.setPosition();
+		// },
 
 		// follow: function(subject, deadzone) {
 		// 	this.followed = subject;
@@ -90,16 +90,16 @@ var ModelExtension = require('../../extensions/model'),
 		// 	this.trigger('updated');
 		// },
 
-		setPosition: function () {
+		setPosition: function (followX, followY) {
 			var map = this.gameModel.getCurrentMap(),
 				gameWidth = this.gameModel.attributes.width,
 				gameHeight = this.gameModel.attributes.height,
 				worldWidth = map.attributes.width * map.attributes.tilewidth,
 				worldHeight = map.attributes.height * map.attributes.tileheight,
-				playerX = this.playerModel.position.x,
-				playerY = this.playerModel.position.y,
-				targetX = (gameWidth / 2) - playerX, // center of map - player position
-  				targetY = (gameHeight / 2) - playerY,
+				// followX = this.playerModel.position.x,
+				// playerY = this.playerModel.position.y,
+				targetX = (gameWidth / 2) - followX, // center of map - player position
+  				targetY = (gameHeight / 2) - followY,
 
 		    	inDeadzoneLeft = targetX > 0,
 		    	inDeadzoneTop = targetY > 0,

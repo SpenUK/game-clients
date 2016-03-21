@@ -61,7 +61,7 @@ var _ = require('underscore'),
 
 		draw: function () {
 			var map = this.map,
-				layers = map.layers;
+				layers = map.layers ;
 
 
 			// function a (layer, map) {
