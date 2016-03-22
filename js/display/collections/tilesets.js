@@ -35,7 +35,6 @@ var _ = require('underscore'),
         // },
 
         checkReady: function () {
-            console.log(this.allModelsAreReady(), this.length);
             if (this.allModelsAreReady()) {
                 this.trigger('allReady');
                 this.isReady = true;

@@ -1,26 +1,37 @@
 'use strict';
 /*jshint bitwise: false*/
 
-var CollectionExtension = require('../../extensions/collection'),
-    MapModel = require('../models/map'),
+var	Collection = require('../../extensions/collection'),
+	MapModel = require('../models/map'),
 
-    MapsCollection = CollectionExtension.extend({
+    MapsCollection = Collection.extend({
 
-        acceptedParams: ['defaultMap'],
+    	model: MapModel,
 
-        model: MapModel,
+    	acceptedParams: ['defaultMap', 'entitiesCollection'],
 
         currentMap: null,
+
+        initialize: function() {
+        	this._super.apply(this, arguments);
+            console.log('mapss', this);
+        	window.mapsCollection = this;
+        },
 
         getCurrentMap: function () {
             return this.currentMap || this.setCurrentMap();
         },
 
+        modelAttributes: function () {
+            return {
+                entitiesCollection: this.entitiesCollection
+            };
+        },
+
         setCurrentMap: function (map) {
-            console.log('setCurrentMap');
             var currentMap;
 
-            currentMap = this.findWhere({title: map}) || this.lastMap || this.findWhere({title: this.defaultMap});
+            currentMap = this.findWhere({name: map}) || this.lastMap || this.findWhere({name: this.defaultMap});
 
             if (currentMap && currentMap !== this.currentMap) {
                 this.lastMap = this.currentMap;

@@ -33,16 +33,14 @@ var _ = require('underscore'),
             var loader,
                 spriteMap = this.get('spriteMap');
 
+            _ = _;
+
     		this._super.apply(this, arguments);
 
             this._initializePosition();
 
             this.listenTo(this.controlsModel, 'down', this.onControlDown);
             this.listenTo(this.controlsModel, 'up', this.onControlUp);
-
-            // this.listenTo(this.gameModel.tiledMapsCollection, 'changed:currentMap', function (map) {
-            //     this.setMapModel(map);
-            // });
 
             loader = canvasUtils.preloadImages([spriteMap.src]);
 
@@ -51,18 +49,8 @@ var _ = require('underscore'),
 
             loader.then(this.ready.bind(this));
 
-            // if (!this.mapModel) {
-            //     this.setMapModel(this.gameModel.getCurrentMap());
-            // }
-
             this.socket.on('game:force-tile', this.onForceTile.bind(this));
     	},
-
-        // setMapModel: function (model) {
-        //     console.log('set:', model);
-        //     this.mapModel = model;
-        //     this.trigger('changed:mapModel');
-        // },
 
         onControlDown: function (key) {
             var direction = this.keyMap[key];
@@ -83,8 +71,8 @@ var _ = require('underscore'),
         },
 
     	update: function () {
-            var nextTile,
-                portal;
+            var nextTile;
+                // portal;
 
             this._setDirection();
 
@@ -98,13 +86,13 @@ var _ = require('underscore'),
                 } else {
                     // logic could be bettere, right now turing right or left on a tile portals,
                     // when only up should...
-                    portal = this.mapModel.getTilePortal({
-                        x: this.attributes.x,
-                        y: this.attributes.y
-                    });
-                    if (portal) {
-                        this._moveToPortalDestination(portal);
-                    }
+                    // portal = this.mapModel.getTilePortal({
+                    //     x: this.attributes.x,
+                    //     y: this.attributes.y
+                    // });
+                    // if (portal) {
+                    //     this._moveToPortalDestination(portal);
+                    // }
                     // can't move - so stop to be sure.
                     this._stopMoving();
                 }
@@ -150,27 +138,30 @@ var _ = require('underscore'),
         //     this.gameModel.tiledMapsCollection.setCurrentMap(portal.map);
         // },
 
-        _canMoveToTile: function (target) {
-            var targetTileCollisions = this.mapModel.getCollisions(target);
+        _canMoveToTile: function () {
+            // var targetTileCollisions = this.mapModel.getCollisions(target);
 
-            console.log(targetTileCollisions);
+            // console.log(targetTileCollisions);
 
-            return !_.isNumber(targetTileCollisions) || !(this.direction === 1 && targetTileCollisions % 1000 >= 100 ||
-                      this.direction === 2 && targetTileCollisions >= 1000       ||
-                      this.direction === 3 && targetTileCollisions % 10 === 1    ||
-                      this.direction === 4 && targetTileCollisions % 100 >= 10);
+            return true;
+
+            // return !_.isNumber(targetTileCollisions) || !(this.direction === 1 && targetTileCollisions % 1000 >= 100 ||
+            //           this.direction === 2 && targetTileCollisions >= 1000       ||
+            //           this.direction === 3 && targetTileCollisions % 10 === 1    ||
+            //           this.direction === 4 && targetTileCollisions % 100 >= 10);
         },
 
         _canMoveFromTile: function () {
-            var currentTileCollisions = this.mapModel.getCollisions({
-                x: this.attributes.x,
-                y: this.attributes.y
-            });
+            return true;
+            // var currentTileCollisions = this.mapModel.getCollisions({
+            //     x: this.attributes.x,
+            //     y: this.attributes.y
+            // });
 
-            return !_.isNumber(currentTileCollisions) || !(this.direction === 1 && currentTileCollisions >= 1000       ||
-                      this.direction === 2 && currentTileCollisions % 1000 >= 100 ||
-                      this.direction === 3 && currentTileCollisions % 100 >= 1000 ||
-                      this.direction === 4 && currentTileCollisions % 10 === 1);
+            // return !_.isNumber(currentTileCollisions) || !(this.direction === 1 && currentTileCollisions >= 1000       ||
+            //           this.direction === 2 && currentTileCollisions % 1000 >= 100 ||
+            //           this.direction === 3 && currentTileCollisions % 100 >= 1000 ||
+            //           this.direction === 4 && currentTileCollisions % 10 === 1);
         },
 
         _getTileEvent: function () {
@@ -179,8 +170,8 @@ var _ = require('underscore'),
         },
 
         _getNextTile: function () {
-            var target,
-                map = this.mapModel.attributes;
+            var target;
+                // map = this.mapModel.attributes;
 
             if (!this.direction) {
                 return false;
@@ -194,15 +185,16 @@ var _ = require('underscore'),
             // directions: 1: up, 2: down, 3: left, 4: right
             if (this.direction === 1 && target.y > 0) {
                 target.y = target.y - 1;
-            } else if (this.direction === 2 && target.y < map.height - 1) {
+            // } else if (this.direction === 2 && target.y < map.height - 1) {
+
+            } else if (this.direction === 2 && target.y < 16 - 1) {
                 target.y = target.y + 1;
             } else if (this.direction === 3 && target.x > 0) {
                 target.x = target.x - 1;
-            } else if (this.direction === 4 && target.x < map.width - 1) {
+            // } else if (this.direction === 4 && target.x < map.width - 1) {
+            } else if (this.direction === 4 && target.x < 16 - 1) {
                 target.x = target.x + 1;
             }
-
-
 
             return target;
         },

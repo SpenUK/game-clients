@@ -10,11 +10,17 @@ var Collection = require('../../extensions/collection'),
     		window.entitiesCollection = this;
     	},
 
-    	drawEach: function () {
+    	updateEach: function () {
+            this.each(function(model) {
+                model.update();
+            });
+        },
+
+        drawEach: function () {
     		this.each(function(model) {
     			model.draw();
     		});
-    	},
+    	}
 
     });
 

@@ -12,14 +12,6 @@ var ModelExtension = require('../../extensions/model'),
 		y: 0,
 
 		// Will stay at 0|0 unless the map is smaller than the viewport in either dimension.
-		// TODO - implement basing for thin/short maps.
-		// if (map.pixelWidth < canvas.width) {
-			// this.baseX = (canvas.width - map.pixelWidth) / 2; canvas is WIDER
-		// }
-		// if (map.pixelHeight < canvas.height) {
-			// this.baseY = (canvas.height - map.pixelHeight) / 2; canvas is TALLER
-		// }
-
 		base: {
 			x: 0,
 			y: 0
@@ -36,70 +28,41 @@ var ModelExtension = require('../../extensions/model'),
 
 		acceptedParams: ['playerModel', 'gameModel', 'width', 'height'],
 
-		initialize: function() {
-			this._super.apply(this, arguments);
-			// this.listenTo(this.playerModel, 'moved', this.playerMoved.bind(this));
-			// this.listenTo(this.playerModel, 'changed:mapModel', this.playerChangedMap.bind(this));
-			// this.playerChangedMap();
-			window.camera = this;
+		setTarget: function (target) {
+			this.target = target;
 		},
 
-		// playerMoved: function () {
-		// 	this.setPosition();
-		// },
+		setMap: function (map) {
+			var gameWidth = this.gameModel.attributes.width,
+				gameHeight = this.gameModel.attributes.height,
+				mapWidth = map.attributes.width * map.attributes.tilewidth,
+				mapHeight = map.attributes.height * map.attributes.tileheight;
 
-		// playerChangedMap: function () {
-		// 	var map = this.gameModel.getCurrentMap(),
-		// 		gameWidth = this.gameModel.attributes.width,
-		// 		gameHeight = this.gameModel.attributes.height,
-		// 		worldWidth = map.attributes.width * map.attributes.tilewidth,
-		// 		worldHeight = map.attributes.height * map.attributes.tileheight;
+			this.map = map;
 
-		// 	this.base = {
-		// 		x: gameWidth - worldWidth > 0 ? (gameWidth - worldWidth) / 2 : 0,
-		// 		y: gameHeight - worldHeight > 0 ? (gameHeight - worldHeight) / 2 : 0
-		// 	};
+			this.base = {
+				x: gameWidth - mapWidth > 0 ? (gameWidth - mapWidth) / 2 : 0,
+				y: gameHeight - mapHeight > 0 ? (gameHeight - mapHeight) / 2 : 0
+			};
 
-		// 	this.setPosition();
-		// },
+		},
 
-		// follow: function(subject, deadzone) {
-		// 	this.followed = subject;
-		// 	if (deadzone && deadzone.x && deadzone.y) {
-		// 		this.deadzone = deadzone;
-		// 	}
-		// },
+		update: function () {
+			this.setPosition();
+		},
 
-		// update: function () {
-		// 	var deadzone = this.get('deadzone'),
-		// 		playerX = this.playerModel.get('x') * 32,
-		// 		playerY = this.playerModel.get('y') * 32;
+		setPosition: function () {
+			if (!this.map || !this.map) {
+				return false;
+			}
 
-		// 	if (playerX - this.x + deadzone.x > this.width) {
-		// 		this.x = playerX - (this.width - deadzone.x);
-		// 	} else if (playerX  - deadzone.x < this.x) {
-		// 		this.x = playerX  - deadzone.x;
-		// 	}
-
-		// 	if (playerY - this.y + deadzone.y > this.height) {
-		// 		this.y = playerY - (this.height - deadzone.y);
-		// 	} else if (playerY - deadzone.y < this.y) {
-		// 		this.y = playerY - deadzone.y;
-		// 	}
-
-		// 	this.trigger('updated');
-		// },
-
-		setPosition: function (followX, followY) {
-			var map = this.gameModel.getCurrentMap(),
+			var map = this.map,
 				gameWidth = this.gameModel.attributes.width,
 				gameHeight = this.gameModel.attributes.height,
 				worldWidth = map.attributes.width * map.attributes.tilewidth,
 				worldHeight = map.attributes.height * map.attributes.tileheight,
-				// followX = this.playerModel.position.x,
-				// playerY = this.playerModel.position.y,
-				targetX = (gameWidth / 2) - followX, // center of map - player position
-  				targetY = (gameHeight / 2) - followY,
+				targetX = (gameWidth / 2) - this.target.position.x, // center of map - player position
+  				targetY = (gameHeight / 2) - this.target.position.y,
 
 		    	inDeadzoneLeft = targetX > 0,
 		    	inDeadzoneTop = targetY > 0,
@@ -111,7 +74,6 @@ var ModelExtension = require('../../extensions/model'),
 		    		this.x = this.base.x;
 		    	} else if (inDeadzoneRight) {
 		    		this.x = this.base.x -(worldWidth - gameWidth);
-		    		console.log(this.x);
 		    	} else {
 		    		this.x = targetX + this.base.x;
 		    	}
@@ -119,7 +81,6 @@ var ModelExtension = require('../../extensions/model'),
 		    	if (worldHeight <= gameHeight || inDeadzoneTop) {
 		    		this.y = this.base.y;
 		    	} else if (inDeadzoneBottom) {
-		    		console.log(this.y);
 		    		this.y = this.base.y -(worldHeight - gameHeight);
 		    	} else {
 		    		this.y = targetY + this.base.y;

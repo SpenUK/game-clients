@@ -46,10 +46,6 @@ var Model = require('../../extensions/model'),
             this.setPacket();
 
             this.ready();
-        },
-
-        onReady: function () {
-            console.log('model ready', this.packet, this.cid);
         }
 
     });

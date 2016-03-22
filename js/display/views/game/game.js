@@ -1,11 +1,6 @@
 'use strict';
 
 var	ViewExtension = require('../../../extensions/view'),
-	// EnvironmentView = require('./environmentt'),
-	// PlayerView = require('./player'),
-	// CameraModel = require('../../models/camera'),
-	ControlsModel = require('../../models/controls'),
-	// PlayerModel = require('../../models/playerr'),
 	template = require('../../templates/game/game.hbs'),
 
 	GameView = ViewExtension.extend({
@@ -19,10 +14,6 @@ var	ViewExtension = require('../../../extensions/view'),
 		initialize: function() {
 			this._super.apply(this, arguments);
 
-			this.controlsModel = new ControlsModel({}, {
-				socket: this.socket
-			});
-
 			this.model.set('controlsModel', this.controlsModel);
 
 			if (this.model.isReady) {
@@ -30,47 +21,6 @@ var	ViewExtension = require('../../../extensions/view'),
 			} else {
 			 	this.listenToOnce(this.model, 'ready', this.ready);
 			}
-
-			// this.playerModel = new PlayerModel(playerData, {
-			// 	gameModel: this.model,
-			// 	controlsModel: this.controlsModel,
-			// 	socket: this.socket
-			// });
-
-			// this.mapsCollection = new MapsCollection(mapsData);
-
-			// this.cameraModel = new CameraModel({
-			// 	deadzone: {
-			// 		x: width / 2,
-			// 		y: height / 2
-			// 	}
-			// }, {
-			// 	// playerModel: this.playerModel,
-			// 	gameModel: this.model,
-			// 	width: width,
-			// 	height: height,
-			// 	deadzone: {
-			// 		x: width / 2,
-			// 		y: height / 2
-			// 	}
-			// });
-
-			// this.playerModel = new PlayerModel(playerData, {
-			// 	gameModel: this.model,
-			// 	cameraModel: this.cameraModel,
-			// 	controlsModel: this.controlsModel,
-			// 	socket: this.socket
-			// });
-
-
-
-
-			// this.model.set('cameraModel', this.cameraModel);
-
-			// this.environmentView = new EnvironmentView({
-			// 	socket: this.socket,
-			// 	cameraModel: this.cameraModel
-			// });
 
 			// this.socket.on('controller joined', this.onControllerJoined.bind(this));
 
@@ -87,8 +37,8 @@ var	ViewExtension = require('../../../extensions/view'),
 
 		serialize: function () {
 			return {
-				gameWidth: this.width + 'px',
-				gameHeight: this.height + 'px'
+				gameWidth: this.model.get('width') + 'px',
+				gameHeight: this.model.get('height') + 'px'
 			};
 		}
 

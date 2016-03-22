@@ -34,19 +34,18 @@ var _ = require('underscore'),
             Backbone.Collection.prototype.constructor.apply(this, arguments);
         },
 
-        // _prepareModel: function (attrs, options) {
-            // if (this.modelAttributes) {
-            //     console.log('modelAttributes is set');
-            //     if (this._isModel(attrs)) {
-            //         attrs.set(this.modelAttributes);
-            //     } else if (_.isObject(attrs)) {
-            //         _.extend(attrs, this.modelAttributes);
-            //     }
-            // } else {
-            //     console.log('modelAttributes not set');
-            // }
+        // _prepareModel: function () {
+        //     var attrs = arguments[0];
 
-            // this._super.apply(this, [attrs, options]);
+        //     if (this.modelAttributes) {
+        //         if (this._isModel(attrs)) {
+        //             attrs.set(this.modelAttributes);
+        //         } else {
+        //             _.extend(attrs, _.result(this, 'modelAttributes'));
+        //         }
+        //     }
+
+        //     this._super.apply(this, arguments);
         // },
 
     	initialize: function() {
