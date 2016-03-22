@@ -43,6 +43,8 @@ var _ = require('underscore'),
 
 			this.on('change:token', this.setUrl);
 
+			console.log(mapsCollection.getCurrentMap());
+
 		cameraModel.setMap(currentMap);
 		cameraModel.setTarget(playerModel);
 

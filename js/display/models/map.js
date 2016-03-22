@@ -18,19 +18,13 @@ var _ = require('underscore'),
         initialize: function(attributes, options) {
             attributes = attributes;
             var tilesets = this.get('tilesets'),
-                layers = this.get('layers'),
-                // collision layer
-                tileLayers = _.filter(layers, function (layer) {
-                    return layer.type === 'tilelayer' && layer.name !== 'collisions';
-                }),
-                objectLayers = _.filter(layers, function (layer) {
-                    return layer.type === 'objectgroup';
-                });
+                tileLayers = this.get('tilelayers'),
+                objectLayers = this.get('objectlayers'),
+                collisionsLayer = this.get('collisions');
 
+            // needs to be better...
             this.entitiesCollection = options.entitiesCollection;
             this.cameraModel = options.cameraModel;
-
-            console.log(this.cameraModel);
 
             this._super.apply(this, arguments);
 
@@ -43,6 +37,8 @@ var _ = require('underscore'),
             var parsedObjects = this.parseObjectsFromLayers(objectLayers);
 
             console.log(parsedObjects);
+
+            console.log(collisionsLayer);
 
             this.setObjectsCollection(parsedObjects);
 
@@ -122,16 +118,7 @@ var _ = require('underscore'),
         },
 
         draw: function () {
-            // var context = canvasUtils.getContext('base');
-
-            // context.clearRect(0, 0, 600, 400);
-            // context.save();
-
-            // context.translate(this.cameraModel.x, this.cameraModel.y);
-
             this.layers.each(this.drawLayer.bind(this));
-
-            // context.restore();
         },
 
         drawLayer: function (layer) {
@@ -151,8 +138,8 @@ var _ = require('underscore'),
                 // canvasHeight = this.model.attributes.height,
                 canvasWidth = 600,
                 canvasHeight = 400,
-                translateX = 0,//this.cameraModel.x,
-                translateY = 0; //this.cameraModel.y;
+                translateX = this.cameraModel.x,
+                translateY = this.cameraModel.y;
 
             if (!tileset || !tileset.image) {
                 return false;
