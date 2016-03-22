@@ -28,8 +28,9 @@ var _ = require('underscore'),
                 });
 
             this.entitiesCollection = options.entitiesCollection;
+            this.cameraModel = options.cameraModel;
 
-            console.log(options);
+            console.log(this.cameraModel);
 
             this._super.apply(this, arguments);
 

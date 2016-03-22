@@ -8,7 +8,7 @@ var	Collection = require('../../extensions/collection'),
 
     	model: MapModel,
 
-    	acceptedParams: ['defaultMap', 'entitiesCollection'],
+    	acceptedParams: ['defaultMap', 'entitiesCollection', 'cameraModel'],
 
         currentMap: null,
 
