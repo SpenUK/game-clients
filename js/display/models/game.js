@@ -31,8 +31,6 @@ var _ = require('underscore'),
 			cameraModel = cameraModel;
 			controlsModel = controlsModel;
 
-			window.gameModel = this;
-
 			entitiesCollection.add(playerModel);
 
 			this.setSocketEvents();
@@ -42,8 +40,6 @@ var _ = require('underscore'),
 			this._super.apply(this, arguments);
 
 			this.on('change:token', this.setUrl);
-
-			console.log(mapsCollection.getCurrentMap());
 
 		this.listenTo(mapsCollection, 'changed:currentMap', this.setCurrentMap);
 

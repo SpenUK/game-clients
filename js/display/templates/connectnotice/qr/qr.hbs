@@ -1,8 +1,13 @@
 <p class="connect-notice__message">Play by scanning...</p>
 <div class="qr-code">
-	<a href="{{controllerUrl}}/{{token}}">
+	{{#if clickable}}
+		<a href="{{controllerUrl}}/{{token}}">
+			<div class="code"></div>
+		</a>
+	{{else}}
 		<div class="code"></div>
-	</a>
+	{{/if}}
+
 </div>
 <p class="connect-notice__message">or by entering</p>
 <p class="connect-notice__token">{{token}}</p>

@@ -25,6 +25,7 @@ var ModelExtension = require('../../extensions/model'),
                 srcY = 0,
                 x = this.position.x,
                 y = this.position.y + (this.attributes.offsetY * this.attributes.tileSize);
+            // debugger;
 
             canvasUtils.getContext('base').drawImage(
                 this.image, // image

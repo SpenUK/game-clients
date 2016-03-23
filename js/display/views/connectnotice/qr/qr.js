@@ -1,6 +1,7 @@
 'use strict';
 
-var ViewExtension = require('../../../../extensions/view'),
+var _ = require('underscore'),
+	ViewExtension = require('../../../../extensions/view'),
 	template = require('../../../templates/connectnotice/qr/qr.hbs'),
 
 	QRCodeView = ViewExtension.extend({
@@ -25,6 +26,12 @@ var ViewExtension = require('../../../../extensions/view'),
 			var $qr = $('<div/>');
 			new window.QRCode($qr[0], url);
 			this.$el.find('.code').html($qr);
+		},
+
+		serialize: function () {
+			return _.extend({}, this._super.apply(this, arguments), {
+				clickable: true
+			});
 		}
 
 	});

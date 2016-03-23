@@ -1,8 +1,8 @@
 'use strict';
 /*jshint bitwise: false*/
 /*jshint -W087 */
-var _ = require('underscore'),
-    EntityModel = require('./entity'),
+// var _ = require('underscore'),
+var EntityModel = require('./entity'),
     canvasUtils = require('../../utils/canvas'),
 
     PlayerModel = EntityModel.extend({
@@ -33,8 +33,6 @@ var _ = require('underscore'),
             var loader,
                 spriteMap = this.get('spriteMap');
 
-            _ = _;
-
     		this._super.apply(this, arguments);
 
             this._initializePosition();
@@ -48,6 +46,8 @@ var _ = require('underscore'),
             this.image.src = spriteMap.src;
 
             loader.then(this.ready.bind(this));
+
+            console.log(this);
 
             this.socket.on('game:force-tile', this.onForceTile.bind(this));
     	},
@@ -144,7 +144,6 @@ var _ = require('underscore'),
     	},
 
         _moveToPortalDestination: function (portal) {
-            console.log(portal);
             this._setLocation({x: portal.x, y: portal.y, map: portal.map});
             this.gameModel.mapsCollection.setCurrentMap(portal.map);
         },

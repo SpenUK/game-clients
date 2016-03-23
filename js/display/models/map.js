@@ -38,9 +38,8 @@ var _ = require('underscore'),
             this.setCollisions();
             this.setPortals();
 
-            console.log(this.getPortals());
-
-            this.setObjectsCollection(parsedObjects);
+            var objectsCollection = this.setObjectsCollection();
+            objectsCollection.add(parsedObjects);
 
             if (this.tilesets.isReady) {
             } else {
@@ -67,7 +66,6 @@ var _ = require('underscore'),
 
         setPortals: function () {
             var portalsLayer = this.get('portals');
-            console.log(portalsLayer);
             this.portals = portalsLayer ? portalsLayer.objects : [];
 
             return this.portals;
@@ -93,7 +91,8 @@ var _ = require('underscore'),
             objects = objects || [];
 
             this.objectsCollection = new ObjectsCollection(objects, {
-                entitiesCollection: this.entitiesCollection
+                entitiesCollection: this.entitiesCollection,
+                mapModel: this
             });
 
             return this.objectsCollection;

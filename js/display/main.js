@@ -16,6 +16,6 @@ backbone.$.easing.easeInBack = function (x, t, b, c, d, s) {
 };
 
 $(document).on('ready', function(){
-	var socket = window.socket = window.io.connect();
+	var socket = window.io.connect();
 	app.initialize(socket);
 });

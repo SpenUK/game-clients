@@ -5,11 +5,6 @@ var Collection = require('../../extensions/collection'),
 
     Entities = Collection.extend({
 
-    	initialize: function() {
-    		this._super.apply(this, arguments);
-    		window.entitiesCollection = this;
-    	},
-
     	updateEach: function () {
             this.each(function(model) {
                 model.update();

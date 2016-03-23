@@ -12,12 +12,6 @@ var	Collection = require('../../extensions/collection'),
 
         currentMap: null,
 
-        initialize: function() {
-        	this._super.apply(this, arguments);
-            console.log('mapss', this);
-        	window.mapsCollection = this;
-        },
-
         getCurrentMap: function () {
             return this.currentMap || this.setCurrentMap();
         },
@@ -32,8 +26,6 @@ var	Collection = require('../../extensions/collection'),
             var currentMap;
 
             currentMap = this.findWhere({name: map}) || this.lastMap || this.findWhere({name: this.defaultMap});
-
-            console.log(map, currentMap);
 
             if (currentMap && currentMap !== this.currentMap) {
                 this.lastMap = this.currentMap;
