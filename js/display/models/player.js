@@ -1,9 +1,10 @@
 'use strict';
 /*jshint bitwise: false*/
 /*jshint -W087 */
-// var _ = require('underscore'),
-var EntityModel = require('./entity'),
-    canvasUtils = require('../../utils/canvas'),
+
+var _ = require('underscore'),
+    EntityModel = require('./entity'),
+    // canvasUtils = require('../../utils/canvas'),
 
     PlayerModel = EntityModel.extend({
 
@@ -30,8 +31,10 @@ var EntityModel = require('./entity'),
         },
 
     	initialize: function() {
-            var loader,
-                spriteMap = this.get('spriteMap');
+            // var loader,
+                // spriteMap = this.get('spriteMap');
+                //
+            _.bindAll(this, 'ready');
 
     		this._super.apply(this, arguments);
 
@@ -40,14 +43,23 @@ var EntityModel = require('./entity'),
             this.listenTo(this.controlsModel, 'down', this.onControlDown);
             this.listenTo(this.controlsModel, 'up', this.onControlUp);
 
-            loader = canvasUtils.preloadImages([spriteMap.src]);
+            var loader = this.loadSpriteMap();
 
-            this.image = new Image();
-            this.image.src = spriteMap.src;
+            if (loader) {
+                loader.then(this.ready);
+            } else {
+                console.log('no loader');
+            }
 
-            loader.then(this.ready.bind(this));
 
-            console.log(this);
+            // loader = canvasUtils.preloadImages([spriteMap.src]);
+
+            // this.image = new Image();
+            // this.image.src = spriteMap.src;
+
+            // loader.then(this.ready.bind(this));
+
+            // console.log(this);
 
             this.socket.on('game:force-tile', this.onForceTile.bind(this));
     	},

@@ -16,6 +16,26 @@ var ModelExtension = require('../../extensions/model'),
             y: 0
         },
 
+        _initializePosition: function () {
+            var location = this.get('location');
+            this._setLocation({x: location.x, y: location.y, map: location.map});
+        },
+
+        loadSpriteMap: function () {
+            var loader,
+                spriteMap = this.get('spriteMap');
+
+            if (spriteMap) {
+                loader = canvasUtils.preloadImages([spriteMap.src]);
+                this.image = new Image();
+                this.image.src = spriteMap.src;
+
+                return loader;
+            }
+
+            return false;
+        },
+
         update: function () {
 
         },

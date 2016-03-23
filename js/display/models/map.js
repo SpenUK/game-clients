@@ -46,7 +46,13 @@ var _ = require('underscore'),
                 this.listenTo(this.tilesets, 'allReady', this.setTilesetMap);
             }
 
+            this.listenTo(this.collection, 'changed:currentMap', this.onMapChange);
+
             this.inBoundsCount = 0;
+        },
+
+        onMapChange: function () {
+            this.entitiesCollection.removeSprites();
         },
 
         getCollisions: function () {

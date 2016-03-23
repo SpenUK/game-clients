@@ -2,6 +2,7 @@
 /*jshint bitwise: false*/
 
 var Collection = require('../../extensions/collection'),
+    PlayerModel = require('../models/player'),
 
     Entities = Collection.extend({
 
@@ -15,7 +16,15 @@ var Collection = require('../../extensions/collection'),
     		this.each(function(model) {
     			model.draw();
     		});
-    	}
+    	},
+
+        removeSprites: function () {
+            this.filter(function (entity) {
+                return !(entity instanceof PlayerModel);
+            }).each(function (entity) {
+                entity.destroy();
+            });
+        }
 
     });
 

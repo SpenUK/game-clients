@@ -3,7 +3,6 @@
 /*jshint -W087 */
 var _ = require('underscore'),
     EntityModel = require('./entity'),
-    canvasUtils = require('../../utils/canvas'),
 
     NpcModel = EntityModel.extend({
 
@@ -21,21 +20,18 @@ var _ = require('underscore'),
         moveWaitTime: 0,
 
         initialize: function() {
-            var src = 'images/3264player-pink.png';
-            var loader = canvasUtils.preloadImages([src]);
-
+            _.bindAll(this, 'ready');
             this.setRandomWaitTime();
-
-            this.image = new Image();
-            this.image.src = src;
-
-            if (loader.state() === 'resolved') {
-                this.ready();
-            } else {
-                loader.then(this.ready.bind(this));
-            }
-
+            this._initializePosition();
             this._super.apply(this, arguments);
+
+            var loader = this.loadSpriteMap();
+
+            if (loader) {
+                loader.then(this.ready);
+            } else {
+                console.log('no loader');
+            }
         },
 
         setRandomWaitTime: function () {
