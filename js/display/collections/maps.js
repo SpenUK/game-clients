@@ -33,6 +33,8 @@ var	Collection = require('../../extensions/collection'),
 
             currentMap = this.findWhere({name: map}) || this.lastMap || this.findWhere({name: this.defaultMap});
 
+            console.log(map, currentMap);
+
             if (currentMap && currentMap !== this.currentMap) {
                 this.lastMap = this.currentMap;
                 this.currentMap = currentMap;

@@ -36,7 +36,7 @@ var EntityModel = require('./entity'),
 
         },
 
-        drawy: function () {
+        draw: function () {
             var srcX = 0,
                 srcY = 0,
                 x = 200,

@@ -8,7 +8,7 @@ var _ = require('underscore'),
 	ControlsModel = require('./controls'),
 	// NpcModel = require('./npc'),
 	// TilesetsCollection = require('../collections/tilesets'),
-	PlayerModel = require('./playerr'),
+	PlayerModel = require('./player'),
 	canvasUtils =require('../../utils/canvas'),
 	ticker = require('../ticker'),
 
@@ -45,6 +45,9 @@ var _ = require('underscore'),
 
 			console.log(mapsCollection.getCurrentMap());
 
+		this.listenTo(mapsCollection, 'changed:currentMap', this.setCurrentMap);
+
+		playerModel.setMap(currentMap);
 		cameraModel.setMap(currentMap);
 		cameraModel.setTarget(playerModel);
 
@@ -54,6 +57,13 @@ var _ = require('underscore'),
 				// mapsCollection.getCurrentMap(),
 				currentMap
 			]);
+		},
+
+		setCurrentMap: function () {
+			var map = this.getCurrentMap();
+
+			this.getPlayerModel().setMap(map);
+			this.getCameraModel().setMap(map);
 		},
 
 		listenForReady: function (items) {
@@ -174,7 +184,7 @@ var _ = require('underscore'),
 		},
 
 		getCurrentMap: function () {
-			return this.mapsCollection.getCurrentMap();
+			return this.getMapsCollection().getCurrentMap();
 		},
 
 		tick: function () {

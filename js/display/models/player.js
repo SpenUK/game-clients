@@ -1,10 +1,11 @@
 'use strict';
 /*jshint bitwise: false*/
 /*jshint -W087 */
-
-var ModelExtension = require('../../extensions/model'),
+var _ = require('underscore'),
+    EntityModel = require('./entity'),
     canvasUtils = require('../../utils/canvas'),
-    PlayerModel = ModelExtension.extend({
+
+    PlayerModel = EntityModel.extend({
 
         isReady: false,
 
@@ -12,7 +13,7 @@ var ModelExtension = require('../../extensions/model'),
 
         step: 4,
 
-    	acceptedParams: ['socket', 'controlsModel', 'gameModel'],
+    	acceptedParams: ['socket', 'controlsModel', 'cameraModel', 'gameModel'],
 
         keyMap: {
             '37': 'left',
@@ -32,6 +33,8 @@ var ModelExtension = require('../../extensions/model'),
             var loader,
                 spriteMap = this.get('spriteMap');
 
+            _ = _;
+
     		this._super.apply(this, arguments);
 
             this._initializePosition();
@@ -39,41 +42,31 @@ var ModelExtension = require('../../extensions/model'),
             this.listenTo(this.controlsModel, 'down', this.onControlDown);
             this.listenTo(this.controlsModel, 'up', this.onControlUp);
 
-            this.listenTo(this.gameModel.mapsCollection, 'changed:currentMap', function (map) {
-                this.setMapModel(map);
-            });
-
             loader = canvasUtils.preloadImages([spriteMap.src]);
 
             this.image = new Image();
             this.image.src = spriteMap.src;
 
-            if (loader.state() === 'resolved') {
-                this.ready();
-            } else {
-                loader.then(this.ready.bind(this));
-            }
-
-            if (!this.mapModel) {
-                this.setMapModel(this.gameModel.getCurrentMap());
-            }
+            loader.then(this.ready.bind(this));
 
             this.socket.on('game:force-tile', this.onForceTile.bind(this));
-
-            this.move();
     	},
-
-        setMapModel: function (model) {
-            console.log('set:', model);
-            this.mapModel = model;
-            this.trigger('changed:mapModel');
-        },
 
         onControlDown: function (key) {
             var direction = this.keyMap[key];
             if (direction) {
                 this.keyState[direction] = true;
             }
+        },
+
+        getMap: function () {
+            return this.map || this.setMap.apply(this, arguments);
+        },
+
+        setMap: function (map) {
+            this.map = map;
+
+            return this.map;
         },
 
         onControlUp: function (key) {
@@ -87,7 +80,7 @@ var ModelExtension = require('../../extensions/model'),
             console.log('forcing tile:', tile);
         },
 
-    	move: function () {
+    	update: function () {
             var nextTile,
                 portal;
 
@@ -103,13 +96,14 @@ var ModelExtension = require('../../extensions/model'),
                 } else {
                     // logic could be bettere, right now turing right or left on a tile portals,
                     // when only up should...
-                    portal = this.mapModel.getTilePortal({
-                        x: this.attributes.x,
-                        y: this.attributes.y
-                    });
-                    if (portal) {
-                        this._moveToPortalDestination(portal);
-                    }
+                    // var portal = this.getMap().getPortal(target);
+                    // portal = this.mapModel.getTilePortal({
+                    //     x: this.attributes.x,
+                    //     y: this.attributes.y
+                    // });
+                    // if (portal) {
+                    //     this._moveToPortalDestination(portal);
+                    // }
                     // can't move - so stop to be sure.
                     this._stopMoving();
                 }
@@ -118,12 +112,11 @@ var ModelExtension = require('../../extensions/model'),
                 // IS MOVING
                 if (this._reachedTarget()) {
                     // No more distance to travel, so update tile position.
-
-                    portal = this.mapModel.getTilePortal(this.target);
+                    portal = this.getMap().getPortal(this.target);
 
                     if (portal) {
                         this._stopMoving();
-                        this._moveToPortalDestination(portal);
+                        this._moveToPortalDestination(portal.target);
                         return;
                     }
 
@@ -151,41 +144,38 @@ var ModelExtension = require('../../extensions/model'),
     	},
 
         _moveToPortalDestination: function (portal) {
+            console.log(portal);
             this._setLocation({x: portal.x, y: portal.y, map: portal.map});
             this.gameModel.mapsCollection.setCurrentMap(portal.map);
         },
 
         _canMoveToTile: function (target) {
-            var targetTile = this.gameModel.tiledMapsCollection.currentMap.getTileType(target);
+            var targetTileCollision = this.getMap().getCollision(target);
 
-            return targetTile &&
-                    !(this.direction === 1 && targetTile.blocker % 1000 >= 100 ||
-                      this.direction === 2 && targetTile.blocker >= 1000       ||
-                      this.direction === 3 && targetTile.blocker % 10 === 1    ||
-                      this.direction === 4 && targetTile.blocker % 100 >= 10);
+            return !(this.direction === 1 && targetTileCollision % 1000 >= 100 ||
+                      this.direction === 2 && targetTileCollision >= 1000       ||
+                      this.direction === 3 && targetTileCollision % 10 === 1    ||
+                      this.direction === 4 && targetTileCollision % 100 >= 10);
         },
 
         _canMoveFromTile: function () {
-            var currentTile = this.gameModel.tiledMapsCollection.currentMap.getTileType({
+            var currentTileCollision = this.getMap().getCollision({
                 x: this.attributes.x,
                 y: this.attributes.y
             });
 
-            return currentTile &&
-                    !(this.direction === 1 && currentTile.blocker >= 1000       ||
-                      this.direction === 2 && currentTile.blocker % 1000 >= 100 ||
-                      this.direction === 3 && currentTile.blocker % 100 >= 1000 ||
-                      this.direction === 4 && currentTile.blocker % 10 === 1);
+            return !(this.direction === 1 && currentTileCollision >= 1000       ||
+                      this.direction === 2 && currentTileCollision % 1000 >= 100 ||
+                      this.direction === 3 && currentTileCollision % 100 >= 1000 ||
+                      this.direction === 4 && currentTileCollision % 10 === 1);
         },
 
-        _getTileEvent: function (tile) {
-            var tileType = this.gameModel.tiledMapsCollection.currentMap.getTileType(tile);
-            return tileType.event;
+        _getTileEvent: function () {
+            return null;
         },
 
         _getNextTile: function () {
-            var target,
-                map = this.gameModel.tiledMapsCollection.currentMap.attributes;
+            var target;
 
             if (!this.direction) {
                 return false;
@@ -199,15 +189,16 @@ var ModelExtension = require('../../extensions/model'),
             // directions: 1: up, 2: down, 3: left, 4: right
             if (this.direction === 1 && target.y > 0) {
                 target.y = target.y - 1;
-            } else if (this.direction === 2 && target.y < map.tilesY - 1) {
+            // } else if (this.direction === 2 && target.y < map.height - 1) {
+
+            } else if (this.direction === 2 && target.y < 16 - 1) {
                 target.y = target.y + 1;
             } else if (this.direction === 3 && target.x > 0) {
                 target.x = target.x - 1;
-            } else if (this.direction === 4 && target.x < map.tilesX - 1) {
+            // } else if (this.direction === 4 && target.x < map.width - 1) {
+            } else if (this.direction === 4 && target.x < 16 - 1) {
                 target.x = target.x + 1;
             }
-
-
 
             return target;
         },

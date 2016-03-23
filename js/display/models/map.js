@@ -19,8 +19,7 @@ var _ = require('underscore'),
             attributes = attributes;
             var tilesets = this.get('tilesets'),
                 tileLayers = this.get('tilelayers'),
-                objectLayers = this.get('objectlayers'),
-                collisionsLayer = this.get('collisions');
+                objectLayers = this.get('objectlayers');
 
             // needs to be better...
             this.entitiesCollection = options.entitiesCollection;
@@ -36,9 +35,10 @@ var _ = require('underscore'),
 
             var parsedObjects = this.parseObjectsFromLayers(objectLayers);
 
-            console.log(parsedObjects);
+            this.setCollisions();
+            this.setPortals();
 
-            console.log(collisionsLayer);
+            console.log(this.getPortals());
 
             this.setObjectsCollection(parsedObjects);
 
@@ -48,6 +48,29 @@ var _ = require('underscore'),
             }
 
             this.inBoundsCount = 0;
+        },
+
+        getCollisions: function () {
+            return this.collisions || this.setCollisions();
+        },
+
+        setCollisions: function () {
+            var collisionsLayer = this.get('collisions');
+            this.collisions = collisionsLayer ? collisionsLayer.objects : [];
+
+            return this.collisions;
+        },
+
+        getPortals: function () {
+            return this.portals || this.setPortals();
+        },
+
+        setPortals: function () {
+            var portalsLayer = this.get('portals');
+            console.log(portalsLayer);
+            this.portals = portalsLayer ? portalsLayer.objects : [];
+
+            return this.portals;
         },
 
         parseObjectsFromLayers: function (objectLayers) {
@@ -86,10 +109,6 @@ var _ = require('underscore'),
             this.ready();
         },
 
-        getCollisions: function () {
-            return false;
-        },
-
         setImages: function () {
             var images = {};
 
@@ -103,7 +122,7 @@ var _ = require('underscore'),
         },
 
         getCoords: function (tile) {
-            var columns = this.get('tilesX'),
+            var columns = this.get('width'),
                 x = tile % columns,
                 y = parseInt(tile / columns);
 
@@ -114,7 +133,19 @@ var _ = require('underscore'),
           var x = tile.x,
               y = tile.y;
 
-              return (y * this.get('tilesX')) + x;
+              return (y * this.get('width')) + x;
+        },
+
+        getCollision: function (target) {
+            var collision = _.findWhere(this.getCollisions(), target);
+
+            return collision && collision.code ? collision.code : 0;
+        },
+
+        getPortal: function (target) {
+            var portal = _.findWhere(this.getPortals(), target);
+
+            return portal;
         },
 
         draw: function () {
