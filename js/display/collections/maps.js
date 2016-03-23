@@ -30,6 +30,13 @@ var	Collection = require('../../extensions/collection'),
             if (currentMap && currentMap !== this.currentMap) {
                 this.lastMap = this.currentMap;
                 this.currentMap = currentMap;
+
+                if (this.lastMap) {
+                    this.lastMap.deactivate();
+                }
+
+                this.currentMap.activate();
+
                 this.trigger('changed:currentMap', this.currentMap);
             }
 

@@ -45,10 +45,14 @@ var _ = require('underscore'),
             } else {
                 this.listenTo(this.tilesets, 'allReady', this.setTilesetMap);
             }
+        },
 
-            this.listenTo(this.collection, 'changed:currentMap', this.onMapChange);
+        activate: function () {
+            this.getObjectsCollection().activate();
+        },
 
-            this.inBoundsCount = 0;
+        deactivate: function () {
+            this.getObjectsCollection().deactivate();
         },
 
         onMapChange: function () {

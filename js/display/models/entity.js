@@ -17,8 +17,7 @@ var ModelExtension = require('../../extensions/model'),
         },
 
         _initializePosition: function () {
-            var location = this.get('location');
-            this._setLocation({x: location.x, y: location.y, map: location.map});
+            this._setLocation({x: this.attributes.x, y: this.attributes.y, map: location.map});
         },
 
         loadSpriteMap: function () {

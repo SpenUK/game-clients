@@ -43,6 +43,9 @@ var _ = require('underscore'),
 
 		this.listenTo(mapsCollection, 'changed:currentMap', this.setCurrentMap);
 
+		window.entitiesCollection = entitiesCollection;
+		window.mapsCollection = mapsCollection;
+
 		playerModel.setMap(currentMap);
 		cameraModel.setMap(currentMap);
 		cameraModel.setTarget(playerModel);

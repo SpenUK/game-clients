@@ -35,7 +35,7 @@ var _ = require('underscore'),
         },
 
         setRandomWaitTime: function () {
-            this.moveWaitTime = _.random(1000, 10000);
+            this.moveWaitTime = _.random(1000, 5000);
         },
 
         update: function () {

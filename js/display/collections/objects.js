@@ -96,16 +96,24 @@ var _ = require('underscore'),
 
     	acceptedParams: ['entitiesCollection', 'mapModel'],
 
-    	initialize: function(attributes, options) {
-    		console.log(attributes, options);
-    		this.on('add', function (model) {
-    			console.log('adding');
-    			this.entitiesCollection.add(model.getEntityModel());
+    	activate: function () {
+    		this.entitiesCollection.add(this.getEntities());
+    	},
+
+    	deactivate: function () {
+    		this.entitiesCollection.remove(this.getEntities());
+    	},
+
+    	getEntities: function () {
+    		return this.entities || this.setEntities();
+    	},
+
+    	setEntities: function () {
+    		this.entities = this.map(function (object) {
+    			return object.entityModel;
     		});
 
-    		this._super.apply(this, arguments);
-
-    		console.log(this);
+    		return this.entities;
     	}
 
     });
