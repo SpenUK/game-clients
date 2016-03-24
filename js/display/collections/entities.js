@@ -7,25 +7,21 @@ var Collection = require('../../extensions/collection'),
 
     	updateEach: function () {
             this.each(function(model) {
+                if (!model || !model.update) {
+                    return;
+                }
                 model.update();
             });
         },
 
         drawEach: function () {
     		this.each(function(model) {
+                if (!model || !model.draw) {
+                    return;
+                }
     			model.draw();
     		});
     	}
-
-        // removeSprites: function () {
-        //     var filtered = this.filter(function (entity) {
-        //         return !(entity instanceof PlayerModel);
-        //     });
-
-        //     _.each(filtered, function (entity) {
-        //         entity.destroy();
-        //     });
-        // }
 
     });
 

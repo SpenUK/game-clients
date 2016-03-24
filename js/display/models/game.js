@@ -31,7 +31,7 @@ var _ = require('underscore'),
 			cameraModel = cameraModel;
 			controlsModel = controlsModel;
 
-			entitiesCollection.add(playerModel);
+			// entitiesCollection.add(playerModel);
 
 			this.setSocketEvents();
 
@@ -187,12 +187,20 @@ var _ = require('underscore'),
 		},
 
 		tick: function () {
-			var currentMap = this.getMapsCollection().getCurrentMap(),
+			var mapsCollection = this.getMapsCollection(),
+				currentMap = mapsCollection.getCurrentMap(),
 				context = canvasUtils.getContext('base'),
 				entities = this.getEntitiesCollection(),
-				camera = this.getCameraModel();
+				camera = this.getCameraModel(),
+				player = this.getPlayerModel(),
+				quedMap = mapsCollection.quedMap;
+
+			if (quedMap) {
+				mapsCollection.setCurrentMap(quedMap);
+			}
 
 			entities.updateEach();
+			player.update();
 
 			camera.update();
 
@@ -203,6 +211,7 @@ var _ = require('underscore'),
 
             currentMap.draw();
 			entities.drawEach();
+			player.draw();
 
             context.restore();
 		}

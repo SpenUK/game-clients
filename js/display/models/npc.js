@@ -29,8 +29,6 @@ var _ = require('underscore'),
 
             if (loader) {
                 loader.then(this.ready);
-            } else {
-                console.log('no loader');
             }
         },
 
@@ -87,11 +85,6 @@ var _ = require('underscore'),
                       this.direction === 2 && targetTileCollision >= 1000       ||
                       this.direction === 3 && targetTileCollision % 10 === 1    ||
                       this.direction === 4 && targetTileCollision % 100 >= 10);
-
-            if (!passable) {
-                console.log(target, targetTileCollision, passable);
-            }
-
 
             return passable;
         },

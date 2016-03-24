@@ -12,6 +12,8 @@ var	Collection = require('../../extensions/collection'),
 
         currentMap: null,
 
+        quedMap: null,
+
         getCurrentMap: function () {
             return this.currentMap || this.setCurrentMap();
         },
@@ -20,6 +22,10 @@ var	Collection = require('../../extensions/collection'),
             return {
                 entitiesCollection: this.entitiesCollection
             };
+        },
+
+        queMap: function (map) {
+            this.quedMap = map;
         },
 
         setCurrentMap: function (map) {
@@ -35,6 +41,7 @@ var	Collection = require('../../extensions/collection'),
                     this.lastMap.deactivate();
                 }
 
+                this.quedMap = null;
                 this.currentMap.activate();
 
                 this.trigger('changed:currentMap', this.currentMap);

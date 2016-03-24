@@ -157,7 +157,7 @@ var _ = require('underscore'),
 
         _moveToPortalDestination: function (portal) {
             this._setLocation({x: portal.x, y: portal.y, map: portal.map});
-            this.gameModel.mapsCollection.setCurrentMap(portal.map);
+            this.gameModel.mapsCollection.queMap(portal.map);
         },
 
         _canMoveToTile: function (target) {

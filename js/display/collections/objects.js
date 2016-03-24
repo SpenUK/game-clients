@@ -47,9 +47,10 @@ var _ = require('underscore'),
 	},
 
 	ObjectModel = Model.extend({
+
 		initialize: function() {
 			this._super.apply(this, arguments);
-			console.log(this.getEntityModel());
+			this.setEntityModel();
 		},
 
 		assignBehaviours: function () {
@@ -57,7 +58,6 @@ var _ = require('underscore'),
 		},
 
 		getEntityModel: function () {
-			console.log('entityModel create');
 			return this.entityModel || this.setEntityModel();
 		},
 
@@ -97,7 +97,8 @@ var _ = require('underscore'),
     	acceptedParams: ['entitiesCollection', 'mapModel'],
 
     	activate: function () {
-    		this.entitiesCollection.add(this.getEntities());
+    		var entities = this.getEntities();
+    		this.entitiesCollection.add(entities);
     	},
 
     	deactivate: function () {
