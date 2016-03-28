@@ -6,6 +6,7 @@ var _ = require('underscore'),
 	EntitiesCollection = require('../collections/entities'),
 	CameraModel = require('./camera'),
 	ControlsModel = require('./controls'),
+	ImagesCollection = require('../collections/images'),
 	// NpcModel = require('./npc'),
 	// TilesetsCollection = require('../collections/tilesets'),
 	PlayerModel = require('./player'),
@@ -24,14 +25,12 @@ var _ = require('underscore'),
 			var cameraModel = this.getCameraModel(),
 				controlsModel = this.getControlsModel(),
 				playerModel = this.getPlayerModel(),
-				entitiesCollection = this.getEntitiesCollection(),
-				mapsCollection = this.getMapsCollection(),
-				currentMap = mapsCollection.getCurrentMap();
+				entitiesCollection = this.getEntitiesCollection();
 
 			cameraModel = cameraModel;
 			controlsModel = controlsModel;
 
-			// entitiesCollection.add(playerModel);
+			entitiesCollection.add(playerModel);
 
 			this.setSocketEvents();
 
@@ -41,21 +40,32 @@ var _ = require('underscore'),
 
 			this.on('change:token', this.setUrl);
 
-		this.listenTo(mapsCollection, 'changed:currentMap', this.setCurrentMap);
 
-		window.entitiesCollection = entitiesCollection;
-		window.mapsCollection = mapsCollection;
+			window.entitiesCollection = entitiesCollection;
+			// window.mapsCollection = mapsCollection;
+			window.game = this;
+			// window.playerModel = playerModel;
 
-		playerModel.setMap(currentMap);
-		cameraModel.setMap(currentMap);
-		cameraModel.setTarget(playerModel);
+			cameraModel.setTarget(playerModel);
 
-			this.listenForReady([
-				playerModel,
-				entitiesCollection,
-				// mapsCollection.getCurrentMap(),
-				currentMap
-			]);
+			var playerDeferred = new $.Deferred(),
+				mapDeferred = new $.Deferred(),
+				currentMap = this.getCurrentMap();
+
+			$.when(playerDeferred, mapDeferred).then(this.ready.bind(this));
+
+			if (currentMap.isReady) {
+				mapDeferred.resolve();
+			} else {
+				this.listenToOnce(currentMap, 'ready', mapDeferred.resolve);
+			}
+
+			if (playerModel.isReady) {
+				playerDeferred.resolve();
+			} else {
+				this.listenToOnce(playerModel, 'ready', playerDeferred.resolve);
+			}
+
 		},
 
 		setCurrentMap: function () {
@@ -63,26 +73,59 @@ var _ = require('underscore'),
 
 			this.getPlayerModel().setMap(map);
 			this.getCameraModel().setMap(map);
+			if (this.started) {
+				map.activate();
+			}
+
+		},
+
+		onReady: function () {
+			console.log('game ready');
+			this.start();
+		},
+
+		start: function () {
+			if (!this.started) {
+				console.log('game started');
+				this.started = true;
+				this.listenTo(this.getMapsCollection(), 'changed:currentMap', this.setCurrentMap);
+				this.setCurrentMap();
+			}
 		},
 
 		listenForReady: function (items) {
 			var count = items.length;
 
+			console.log('count', count);
+
 			_.each(items, function (item) {
 				if (item.isReady) {
 					count -= 1;
+					console.log('ready', item);
 						if (count <= 0) {
 							this.ready();
 						}
 				} else {
 					this.listenToOnce(item, 'ready', function () {
 						count -= 1;
-						if (count <= 0) {
+						console.log('waited', count);
+						if (count >= 0) {
+							console.log('ready', item);
 							this.ready();
 						}
 					});
 				}
 			}, this);
+		},
+
+		getImagesCollection: function () {
+			return this.imagesCollection || this.setImagesCollection.apply(this, arguments);
+		},
+
+		setImagesCollection: function () {
+			this.imagesCollection = new ImagesCollection();
+
+			return this.imagesCollection;
 		},
 
 		getControlsModel: function () {
@@ -116,6 +159,7 @@ var _ = require('underscore'),
 
 			this.playerModel = new PlayerModel(data, {
 				controlsModel: this.getControlsModel(),
+				imagesCollection: this.getImagesCollection(),
 				gameModel: this,
 				socket: this.socket
 			});
@@ -132,6 +176,7 @@ var _ = require('underscore'),
 			options = _.extend({}, options, {
 				defaultMap: data.defaultMap,
 				entitiesCollection: this.getEntitiesCollection(),
+				imagesCollection: this.getImagesCollection(),
 				cameraModel: this.getCameraModel()
 			});
 
@@ -188,19 +233,19 @@ var _ = require('underscore'),
 
 		tick: function () {
 			var mapsCollection = this.getMapsCollection(),
-				currentMap = mapsCollection.getCurrentMap(),
+				// currentMap = mapsCollection.getCurrentMap(),
 				context = canvasUtils.getContext('base'),
 				entities = this.getEntitiesCollection(),
 				camera = this.getCameraModel(),
-				player = this.getPlayerModel(),
 				quedMap = mapsCollection.quedMap;
 
 			if (quedMap) {
 				mapsCollection.setCurrentMap(quedMap);
+				// quedMap.activate();
 			}
 
+			console.log(entities.length);
 			entities.updateEach();
-			player.update();
 
 			camera.update();
 
@@ -209,9 +254,8 @@ var _ = require('underscore'),
 
             context.translate(this.cameraModel.x, this.cameraModel.y);
 
-            currentMap.draw();
-			entities.drawEach();
-			player.draw();
+            // currentMap.draw();
+			entities.drawEach(context);
 
             context.restore();
 		}

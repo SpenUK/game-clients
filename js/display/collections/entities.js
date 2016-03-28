@@ -1,7 +1,7 @@
 'use strict';
 /*jshint bitwise: false*/
-
-var Collection = require('../../extensions/collection'),
+var _ = require('underscore'),
+    Collection = require('../../extensions/collection'),
 
     Entities = Collection.extend({
 
@@ -14,14 +14,19 @@ var Collection = require('../../extensions/collection'),
             });
         },
 
-        drawEach: function () {
-    		this.each(function(model) {
-                if (!model || !model.draw) {
-                    return;
-                }
-    			model.draw();
+        drawEach: function (context) {
+            // perf hit by using underscore directly here?
+            // can it be chained or even automatic?
+    		_.each(this.sortBy('zIndex'), function(model) {
+    			model.draw(context);
     		});
-    	}
+    	},
+
+        getCids: function () {
+            return this.map(function (m) {
+                return m.cid;
+            });
+        }
 
     });
 

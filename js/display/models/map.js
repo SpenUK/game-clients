@@ -7,13 +7,14 @@ var _ = require('underscore'),
     LayersCollection = require('../collections/layers'),
     ObjectsCollection = require('../collections/objects'),
     TilesetsCollection = require('../collections/tilesets'),
-    canvasUtils = require('../../utils/canvas'),
+    TilesCollection = require('../collections/tiles'),
+    // canvasUtils = require('../../utils/canvas'),
 
     MapModel = ModelExtension.extend({
 
         isReady: false,
 
-        acceptedParams: ['entitiesCollection', 'cameraModel'],
+        acceptedParams: ['entitiesCollection', 'cameraModel', 'imagesCollection'],
 
         initialize: function(attributes, options) {
             attributes = attributes;
@@ -27,11 +28,13 @@ var _ = require('underscore'),
 
             this._super.apply(this, arguments);
 
-            this.tilesets = new TilesetsCollection(tilesets);
+            this.tilesetsCollection = this.setTilesetCollection(tilesets);
 
             this.layers = new LayersCollection(tileLayers, {
-                tilesets: this.tilesets
+                tilesets: this.tilesetsCollection
             });
+
+            // debugger;
 
             var parsedObjects = this.parseObjectsFromLayers(objectLayers);
 
@@ -41,22 +44,50 @@ var _ = require('underscore'),
             var objectsCollection = this.setObjectsCollection();
             objectsCollection.add(parsedObjects);
 
-            if (this.tilesets.isReady) {
+            if (this.tilesetsCollection.isReady) {
+                this.setTilesetMap();
             } else {
-                this.listenTo(this.tilesets, 'allReady', this.setTilesetMap);
+                this.listenToOnce(this.tilesetsCollection, 'allReady', this.onTilesetsReady);
             }
         },
 
+        onTilesetsReady: function () {
+            this.setTiles();
+            this.ready();
+        },
+
+        ready: function () {
+            this.setTilesetMap();
+            this._super.apply(this, arguments);
+
+        },
+
         activate: function () {
+            console.log(this.get('name'));
             this.getObjectsCollection().activate();
+            this.getTiles().activate();
+            window.mappy = this;
         },
 
         deactivate: function () {
             this.getObjectsCollection().deactivate();
+            this.getTiles().deactivate();
         },
 
         onMapChange: function () {
             this.entitiesCollection.removeSprites();
+        },
+
+        getTilesetCollection: function () {
+            return this.tilesetCollection || this.setTilesetCollection.apply(this, arguments);
+        },
+
+        setTilesetCollection: function (tilesets) {
+            this.tilesetCollection = new TilesetsCollection(tilesets, {
+                imagesCollection: this.imagesCollection
+            });
+
+            return this.tilesetCollection;
         },
 
         getCollisions: function () {
@@ -79,6 +110,22 @@ var _ = require('underscore'),
             this.portals = portalsLayer ? portalsLayer.objects : [];
 
             return this.portals;
+        },
+
+        getTiles: function () {
+            return this.tiles || this.setTiles();
+        },
+
+        setTiles: function () {
+            console.log('create new tiles collection');
+            this.tiles = new TilesCollection(this.get('tiles'), {
+                entitiesCollection: this.entitiesCollection,
+                tilesetsCollection: this.tilesetsCollection,
+                name: this.get('name'),
+                mapModel: this
+            });
+
+            return this.tiles;
         },
 
         parseObjectsFromLayers: function (objectLayers) {
@@ -109,13 +156,11 @@ var _ = require('underscore'),
         },
 
         setTilesetMap: function () {
-            this.tilesetMap = _.flatten(_.union([], this.tilesets.sortBy('firstgid').map(function (tileset) {
+            this.tilesetMap = _.flatten(_.union([], this.tilesetsCollection.sortBy('firstgid').map(function (tileset) {
                 return _.map(_.range(0, tileset.get('tilecount')), function () {
                     return tileset.getPacket();
                 });
             })));
-
-            this.ready();
         },
 
         setImages: function () {
@@ -155,63 +200,8 @@ var _ = require('underscore'),
             var portal = _.findWhere(this.getPortals(), target);
 
             return portal;
-        },
-
-        draw: function () {
-            this.layers.each(this.drawLayer.bind(this));
-        },
-
-        drawLayer: function (layer) {
-            _.each(layer.attributes.tiles, this.drawTile.bind(this));
-
-            this.inBoundsCount = 0;
-        },
-
-        drawTile: function (tile, i) {
-            var map = this,
-                x = i % map.attributes.width,
-                y = Math.floor(i / map.attributes.width),
-                tileheight = map.attributes.tileheight,
-                tilewidth = map.attributes.tilewidth,
-                tileset = map.tilesetMap[tile],
-                // canvasWidth = this.model.attributes.width,
-                // canvasHeight = this.model.attributes.height,
-                canvasWidth = 600,
-                canvasHeight = 400,
-                translateX = this.cameraModel.x,
-                translateY = this.cameraModel.y;
-
-            if (!tileset || !tileset.image) {
-                return false;
-            }
-
-            var inBounds =  x * tilewidth < - translateX + canvasWidth &&
-                            y * tileheight < - translateY + canvasHeight &&
-                            (x + 1) * tilewidth > - translateX &&
-                            (y + 1) * tileheight > - translateY;
-
-            inBounds = inBounds;
-
-            if (!inBounds) {
-                return false;
-            }
-
-            var srcX = (tile - tileset.gidoffset) % tileset.width,
-                srcY = Math.floor((tile - tileset.gidoffset) / tileset.width);
-
-            canvasUtils.getContext('base').drawImage(
-                tileset.image, // image
-                srcX * tilewidth, // source x start
-                srcY * tileheight, // source y start
-                tilewidth, // source x width
-                tileheight, // source y height
-                x * tilewidth, // placement x
-                y * tileheight, // placement y
-                tilewidth, // height
-                tileheight // width
-            );
-
         }
+
     });
 
 module.exports = MapModel;

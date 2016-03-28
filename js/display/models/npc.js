@@ -8,14 +8,7 @@ var _ = require('underscore'),
 
         isReady: false,
 
-        zIndex: 0,
-
         step: 1,
-
-        position: {
-            x: 200,
-            y: 200
-        },
 
         moveWaitTime: 0,
 

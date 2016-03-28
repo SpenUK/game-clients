@@ -40,8 +40,6 @@ free up keys when needed
 on map init, need to plot the environment & initialise any entities - use an array of ents, each with a location and list of behaviours - compose these behaviours - composing behaviours can be applied elsewhere too, could be the key.
 	behaviours might be... wanderer, trader, follower etc. each behaviour should come with a corresponding param object, wanderer for instance might have an array of tiles he can wander to, trader - the items he stocks and the prices. - all in data.
 
-
-
 tile object? extension of an entity? give that behaviours
 
 map stuff
@@ -59,3 +57,5 @@ some sort of lazy data repository for maps, npcs etc?
 split player view in to player enitity and player canvas - could have player on a 'sprites layer' with the other sprites (NPCs etc.)
 
 Tiles are ents? they own properties like 'isOccupied' when a sprite is walking to or from etc.
+
+Better mapping on the server... cache parsed maps and refer to the cache... means all maps are parsed once, as opposed to on every request

@@ -3,38 +3,49 @@
 
 var _ = require('underscore'),
     Collection = require('../../extensions/collection'),
-    TilesetModel = require('../models/tileset'),
+    ImageModel = require('../models/image'),
 
-    TilesetsCollection = Collection.extend({
-
-    	model: TilesetModel,
+    ImagesCollection = Collection.extend({
 
         isReady: false,
 
-        acceptedParams: ['imagesCollection'],
+    	model: ImageModel,
 
-    	initialize: function() {
+        initialize: function() {
             _.bindAll(this, 'onResolved');
 
-    		this._super.apply(this, arguments);
-
-            if (this.length) {
-                this.listenToDeferreds();
-            }
-    	},
-
-        add: function () {
             this._super.apply(this, arguments);
 
+            this.listenToDeferreds();
+        },
+
+        getImageModel: function (src) {
+            var imageModel = this.findWhere({src: src});
+            if (imageModel) {
+                return imageModel;
+            }
+
+            imageModel = new this.model({
+                src: src
+            });
+
+            this.add(imageModel);
+
+            return imageModel;
+        },
+
+        add: function () {
             if (!this.isWaiting) {
                 this.isReady = false;
                 this.listenToDeferreds();
             }
+
+            this._super.apply(this, arguments);
         },
 
         getDeferreds: function () {
             return this.map(function (model) {
-                return model.imageModel.deferred;
+                return model.deferred;
             });
         },
 
@@ -60,10 +71,12 @@ var _ = require('underscore'),
         },
 
         ready: function () {
-            this._super.apply(this, arguments);
+            // console.log('all images ready');
+            this.isWaiting = false;
+            this.isReady = true;
             this.trigger('allReady');
-        }
+        },
 
     });
 
-module.exports = TilesetsCollection;
+module.exports = ImagesCollection;

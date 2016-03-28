@@ -14,7 +14,7 @@ var _ = require('underscore'),
 
         step: 4,
 
-    	acceptedParams: ['socket', 'controlsModel', 'cameraModel', 'gameModel'],
+    	acceptedParams: ['socket', 'controlsModel', 'cameraModel', 'gameModel', 'imagesCollection'],
 
         keyMap: {
             '37': 'left',
@@ -31,44 +31,46 @@ var _ = require('underscore'),
         },
 
     	initialize: function() {
-            // var loader,
-                // spriteMap = this.get('spriteMap');
-                //
             _.bindAll(this, 'ready');
 
     		this._super.apply(this, arguments);
+
+            var imageModel = this.getImageModel();
+
+            imageModel.deferred.done(this.ready);
 
             this._initializePosition();
 
             this.listenTo(this.controlsModel, 'down', this.onControlDown);
             this.listenTo(this.controlsModel, 'up', this.onControlUp);
 
-            var loader = this.loadSpriteMap();
-
-            if (loader) {
-                loader.then(this.ready);
-            } else {
-                console.log('no loader');
-            }
-
-
-            // loader = canvasUtils.preloadImages([spriteMap.src]);
-
-            // this.image = new Image();
-            // this.image.src = spriteMap.src;
-
-            // loader.then(this.ready.bind(this));
-
-            // console.log(this);
-
             this.socket.on('game:force-tile', this.onForceTile.bind(this));
     	},
+
+        ready: function () {
+            console.log('player ready');
+            this._super.apply(this, arguments);
+        },
 
         onControlDown: function (key) {
             var direction = this.keyMap[key];
             if (direction) {
                 this.keyState[direction] = true;
             }
+        },
+
+        getImageModel: function () {
+            return this.imageModel || this.setImageModel();
+        },
+
+        setImageModel: function () {
+            var src = this.get('spriteMap').src,
+                imageModel = this.imagesCollection.getImageModel(src);
+
+            this.imageModel = imageModel;
+            this.image = imageModel.image;
+
+            return this.imageModel;
         },
 
         getMap: function () {

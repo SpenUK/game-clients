@@ -16,6 +16,13 @@ var ModelExtension = require('../../extensions/model'),
             y: 0
         },
 
+        acceptedParams: ['imagesCollection'],
+
+        initialize: function() {
+
+            this._super.apply(this, arguments);
+        },
+
         _initializePosition: function () {
             this._setLocation({x: this.attributes.x, y: this.attributes.y, map: location.map});
         },
@@ -39,22 +46,28 @@ var ModelExtension = require('../../extensions/model'),
 
         },
 
-        draw: function () {
-            var srcX = 0,
-                srcY = 0,
-                x = this.position.x,
-                y = this.position.y + (this.attributes.offsetY * this.attributes.tileSize);
-            // debugger;
+        _setLocation: function (location) {
+            this.set({
+                x: location.x,
+                y: location.y
+            });
+        },
 
-            canvasUtils.getContext('base').drawImage(
-                this.image, // image
+        draw: function (context) {
+            var srcX = this.attributes.sourceX || 0,
+                srcY = this.attributes.sourceY || 0,
+                x = this.position.x + (this.attributes.offsetX * this.attributes.tileSize),
+                y = this.position.y + (this.attributes.offsetY * this.attributes.tileSize);
+
+            context.drawImage(
+                this.image || new Image(), // image
                 srcX * this.attributes.tileSize, // source x start
                 srcY * this.attributes.tileSize, // source y start
-                this.attributes.tileSize, // source x width
+                this.attributes.tileSize * this.attributes.width, // source x width
                 this.attributes.tileSize * this.attributes.height, // source y height
                 x, // placement x
                 y, // placement y
-                this.attributes.tileSize, // width
+                this.attributes.tileSize * this.attributes.width, // width
                 this.attributes.tileSize * this.attributes.height // height
             );
         }

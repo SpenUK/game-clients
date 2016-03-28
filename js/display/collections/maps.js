@@ -8,15 +8,11 @@ var	Collection = require('../../extensions/collection'),
 
     	model: MapModel,
 
-    	acceptedParams: ['defaultMap', 'entitiesCollection', 'cameraModel'],
+    	acceptedParams: ['defaultMap', 'entitiesCollection', 'cameraModel', 'imagesCollection'],
 
         currentMap: null,
 
         quedMap: null,
-
-        getCurrentMap: function () {
-            return this.currentMap || this.setCurrentMap();
-        },
 
         modelAttributes: function () {
             return {
@@ -28,6 +24,19 @@ var	Collection = require('../../extensions/collection'),
             this.quedMap = map;
         },
 
+        getCurrentMap: function () {
+            return this.currentMap || this.setCurrentMap();
+        },
+
+        // onMapChange: function () {
+        //     if (this.lastMap) {
+        //         console.log('deactivate', this.lastMap.get('name'));
+        //         this.lastMap.deactivate();
+        //     }
+        //     console.log('activate', this.currentMap.get('name'));
+        //     this.currentMap.activate();
+        // },
+
         setCurrentMap: function (map) {
             var currentMap;
 
@@ -38,11 +47,11 @@ var	Collection = require('../../extensions/collection'),
                 this.currentMap = currentMap;
 
                 if (this.lastMap) {
+                    console.log('deactivate', this.lastMap.get('name'));
                     this.lastMap.deactivate();
                 }
 
                 this.quedMap = null;
-                this.currentMap.activate();
 
                 this.trigger('changed:currentMap', this.currentMap);
             }

@@ -2,7 +2,7 @@
 /*jshint bitwise: false*/
 
 var Model = require('../../extensions/model'),
-    canvasUtils = require('../../utils/canvas'),
+    // canvasUtils = require('../../utils/canvas'),
 
     TilesetModel = Model.extend({
 
@@ -10,12 +10,30 @@ var Model = require('../../extensions/model'),
 
         isReady: false,
 
+        acceptedAttributes: ['imagesCollection'],
+
         initialize: function() {
-            var images = [this.get('src')];
+            this.imagesCollection = this.collection.imagesCollection;
+
+            var imageModel = this.getImageModel();
 
             this._super.apply(this, arguments);
 
-            canvasUtils.preloadImages(images, this.setImage, this);
+            imageModel.deferred.done(this.ready.bind(this));
+        },
+
+        getImageModel: function () {
+            return this.imageModel || this.setImageModel();
+        },
+
+        setImageModel: function () {
+            var src = this.get('src'),
+                imageModel = this.imagesCollection.getImageModel(src);
+
+            this.imageModel = imageModel;
+            this.image = imageModel.image;
+
+            return this.imageModel;
         },
 
         getPacket: function () {
@@ -34,18 +52,6 @@ var Model = require('../../extensions/model'),
             };
 
             return this.packet;
-        },
-
-        setImage: function () {
-            var image = new Image();
-
-            image.src = this.get('src');
-
-            this.set('image', image);
-
-            this.setPacket();
-
-            this.ready();
         }
 
     });
