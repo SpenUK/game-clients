@@ -12,11 +12,16 @@ var _ = require('underscore'),
 
         moveWaitTime: 0,
 
+        acceptedParams: ['map'],
+
         initialize: function() {
+            console.log(arguments);
             _.bindAll(this, 'ready');
             this.setRandomWaitTime();
             this._initializePosition();
             this._super.apply(this, arguments);
+
+
 
             var loader = this.loadSpriteMap();
 
@@ -71,15 +76,23 @@ var _ = require('underscore'),
         },
 
         _canMoveToTile: function (target) {
-            var targetTileCollision = this.getMap().getCollision(target);
+            var targetTileCollision = this.getMap().getCollision(target),
             // directions: 1: up, 2: down, 3: left, 4: right
-
-            var passable = !(this.direction === 1 && targetTileCollision % 1000 >= 100 ||
+                tileOccupied = !!_.findWhere(this.map.occupiedTiles, target),
+                passable = !(this.direction === 1 && targetTileCollision % 1000 >= 100 ||
                       this.direction === 2 && targetTileCollision >= 1000       ||
                       this.direction === 3 && targetTileCollision % 10 === 1    ||
                       this.direction === 4 && targetTileCollision % 100 >= 10);
 
-            return passable;
+                if (tileOccupied) {
+                    console.log('tile occupied', target);
+                }
+
+                if (!passable) {
+                    console.log('not passable', target);
+                }
+
+            return !tileOccupied && passable;
         },
 
         _canMoveFromTile: function () {
@@ -124,6 +137,7 @@ var _ = require('underscore'),
         },
 
         _startMoving: function(target, direction){
+            this.map.occupiedTiles.push(target);
             this.target = target;
             this.targetDirection = direction;
             this.distance = 32;
@@ -177,6 +191,10 @@ var _ = require('underscore'),
 
         _setLocation: function (location) {
             var tileSize = 32,
+                current = {
+                    x: this.attributes.x,
+                    y: this.attributes.y
+                },
                 attributes = {
                     x: location.x,
                     y: location.y
@@ -185,6 +203,8 @@ var _ = require('underscore'),
             if (attributes.x === undefined || attributes.y === undefined ) {
                 return false;
             }
+
+            this.map.occupiedTiles = _.without(this.map.occupiedTiles, _.findWhere(this.map.occupiedTiles, current)); // better way
 
             if (location.map) {
                 attributes.map = location.map;

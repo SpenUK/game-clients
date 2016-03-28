@@ -28,7 +28,7 @@ var DeferrerModel = require('./deferrer'),
         },
 
         ready: function () {
-            console.log('image ready', this.get('src'));
+            // console.log('image ready', this.get('src'));
             this._super.apply(this, arguments);
         },
 

@@ -65,10 +65,15 @@ var _ = require('underscore'),
 			var entityData = this.getEntityData(this.get('name')),
 				mapModel = this.collection.mapModel;
 
+				console.log(this.collection.mapModel);
+
 			if (entityData) {
-				this.entityModel = new NpcModel(_.extend({}, entityData,
+				this.entityModel = new NpcModel(_.extend({},
+					entityData,
 					this.attributes
-				));
+				), {
+					map: this.collection.mapModel
+				});
 
 				this.entityModel.setMap(mapModel);
 			}
@@ -95,6 +100,11 @@ var _ = require('underscore'),
     	model: ObjectModel,
 
     	acceptedParams: ['entitiesCollection', 'mapModel'],
+
+    	initialize: function() {
+    		this._super.apply(this, arguments);
+    		console.log(this.mapModel);
+    	},
 
     	activate: function () {
     		var entities = this.getEntities();

@@ -39,7 +39,12 @@ var _ = require('underscore'),
 
             imageModel.deferred.done(this.ready);
 
-            this._initializePosition();
+            if (this.map) {
+                this._initializePosition();
+            } else {
+                this.once('mapSet', this._initializePosition);
+            }
+
 
             this.listenTo(this.controlsModel, 'down', this.onControlDown);
             this.listenTo(this.controlsModel, 'up', this.onControlUp);
@@ -78,7 +83,7 @@ var _ = require('underscore'),
 
         setMap: function (map) {
             this.map = map;
-
+            this.trigger('mapSet');
             return this.map;
         },
 
@@ -162,9 +167,11 @@ var _ = require('underscore'),
         },
 
         _canMoveToTile: function (target) {
-            var targetTileCollision = this.getMap().getCollision(target);
+            var targetTileCollision = this.getMap().getCollision(target),
+                tileOccupied = !!_.findWhere(this.map.occupiedTiles, target);
 
-            return !(this.direction === 1 && targetTileCollision % 1000 >= 100 ||
+            return !tileOccupied &&
+                    !(this.direction === 1 && targetTileCollision % 1000 >= 100 ||
                       this.direction === 2 && targetTileCollision >= 1000       ||
                       this.direction === 3 && targetTileCollision % 10 === 1    ||
                       this.direction === 4 && targetTileCollision % 100 >= 10);
@@ -216,6 +223,8 @@ var _ = require('underscore'),
         },
 
         _startMoving: function(target, direction){
+            this.map.occupiedTiles.push(target);
+
             this.target = target;
             this.targetDirection = direction;
             this.distance = this.get('tileSize');
@@ -278,10 +287,16 @@ var _ = require('underscore'),
 
         _setLocation: function (location) {
             var tileSize = this.attributes.tileSize,
+                current = {
+                    x: this.attributes.x,
+                    y: this.attributes.y
+                },
                 attributes = {
                     x: location.x,
                     y: location.y
                 };
+
+            this.map.occupiedTiles = _.without(this.map.occupiedTiles, _.findWhere(this.map.occupiedTiles, current)); // better way
 
             if (attributes.x === undefined || attributes.y === undefined ) {
                 return false;

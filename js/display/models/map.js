@@ -30,6 +30,8 @@ var _ = require('underscore'),
 
             this.tilesetsCollection = this.setTilesetCollection(tilesets);
 
+            this.occupiedTiles = [];
+
             this.layers = new LayersCollection(tileLayers, {
                 tilesets: this.tilesetsCollection
             });
@@ -63,6 +65,7 @@ var _ = require('underscore'),
         activate: function () {
             this.getObjectsCollection().activate();
             this.getTiles().activate();
+            window.mappy = this;
         },
 
         deactivate: function () {
