@@ -24,10 +24,13 @@ var _ = require('underscore'),
 
 		bindKeys: function () {
 			$(document).on('keyup.controlModel', (function(e) {
+				console.log('key', e.which);
 				if (e.which === 80) {
 					console.log('togglePause');
 					e.preventDefault();
 					ticker.togglePause();
+				} else if (e.which === 79) {
+					e.preventDefault();
 				}
 			}).bind(this));
 			//
