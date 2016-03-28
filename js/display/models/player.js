@@ -48,7 +48,6 @@ var _ = require('underscore'),
     	},
 
         ready: function () {
-            console.log('player ready');
             this._super.apply(this, arguments);
         },
 

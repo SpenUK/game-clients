@@ -1,8 +1,8 @@
 'use strict';
 /*jshint bitwise: false*/
 /*jshint -W087 */
-var _ = require('underscore'),
-    EntityModel = require('./entity'),
+
+var EntityModel = require('./entity'),
 
     TileModel = EntityModel.extend({
 
@@ -15,8 +15,7 @@ var _ = require('underscore'),
             // do better...
             this.tilesetsCollection = this.collection.tilesetsCollection;
             this.name = this.collection.name;
-            // this.setTileset();
-            _ = _;
+
             this._initializePosition();
 
         },
@@ -64,12 +63,7 @@ var _ = require('underscore'),
                 x: location.x * tileSize,
                 y: location.y * tileSize
             };
-        },
-
-        // draw: function () {
-        //     debugger;
-        //     this._super.apply(this, arguments);
-        // },
+        }
 
     });
 

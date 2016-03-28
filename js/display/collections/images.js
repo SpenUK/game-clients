@@ -71,7 +71,6 @@ var _ = require('underscore'),
         },
 
         ready: function () {
-            // console.log('all images ready');
             this.isWaiting = false;
             this.isReady = true;
             this.trigger('allReady');

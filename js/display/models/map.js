@@ -34,8 +34,6 @@ var _ = require('underscore'),
                 tilesets: this.tilesetsCollection
             });
 
-            // debugger;
-
             var parsedObjects = this.parseObjectsFromLayers(objectLayers);
 
             this.setCollisions();
@@ -63,10 +61,8 @@ var _ = require('underscore'),
         },
 
         activate: function () {
-            console.log(this.get('name'));
             this.getObjectsCollection().activate();
             this.getTiles().activate();
-            window.mappy = this;
         },
 
         deactivate: function () {
@@ -117,7 +113,6 @@ var _ = require('underscore'),
         },
 
         setTiles: function () {
-            console.log('create new tiles collection');
             this.tiles = new TilesCollection(this.get('tiles'), {
                 entitiesCollection: this.entitiesCollection,
                 tilesetsCollection: this.tilesetsCollection,

@@ -80,13 +80,11 @@ var _ = require('underscore'),
 		},
 
 		onReady: function () {
-			console.log('game ready');
 			this.start();
 		},
 
 		start: function () {
 			if (!this.started) {
-				console.log('game started');
 				this.started = true;
 				this.listenTo(this.getMapsCollection(), 'changed:currentMap', this.setCurrentMap);
 				this.setCurrentMap();
@@ -96,21 +94,16 @@ var _ = require('underscore'),
 		listenForReady: function (items) {
 			var count = items.length;
 
-			console.log('count', count);
-
 			_.each(items, function (item) {
 				if (item.isReady) {
 					count -= 1;
-					console.log('ready', item);
 						if (count <= 0) {
 							this.ready();
 						}
 				} else {
 					this.listenToOnce(item, 'ready', function () {
 						count -= 1;
-						console.log('waited', count);
 						if (count >= 0) {
-							console.log('ready', item);
 							this.ready();
 						}
 					});
@@ -244,7 +237,6 @@ var _ = require('underscore'),
 				// quedMap.activate();
 			}
 
-			console.log(entities.length);
 			entities.updateEach();
 
 			camera.update();
@@ -254,7 +246,6 @@ var _ = require('underscore'),
 
             context.translate(this.cameraModel.x, this.cameraModel.y);
 
-            // currentMap.draw();
 			entities.drawEach(context);
 
             context.restore();
