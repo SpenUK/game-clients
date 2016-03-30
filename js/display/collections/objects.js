@@ -19,7 +19,7 @@ var _ = require('underscore'),
 			tileSize: 32,
 			height: 2,
 			width: 1,
-			offsetY: - 1,
+			offsetY: -1,
 			offsetX: 0,
 			behaviours: [
 				'wanderer'
@@ -38,12 +38,50 @@ var _ = require('underscore'),
 			height: 2,
 			width: 1,
 			tileSize: 32,
-			offsetY: - 1,
+			offsetY: -1,
+			offsetX: 0,
+			behaviours: [
+				'wanderer'
+			]
+		},
+		'vendor-1' : {
+			name: 'vendor-1',
+			spriteMap: {
+				src: 'images/3264player-pink.png',
+				tilesX: 1,
+				tilesY: 2,
+				tileSize: 32,
+				height: 64,
+				width: 32
+			},
+			height: 2,
+			width: 1,
+			tileSize: 32,
+			offsetY: -1,
 			offsetX: 0,
 			behaviours: [
 				'vendor'
 			]
-		}
+		},
+		'vendor-2' : {
+			name: 'vendor-2',
+			spriteMap: {
+				src: 'images/3264player-pink.png',
+				tilesX: 1,
+				tilesY: 2,
+				tileSize: 32,
+				height: 64,
+				width: 32
+			},
+			height: 2,
+			width: 1,
+			tileSize: 32,
+			offsetY: -1,
+			offsetX: 0,
+			behaviours: [
+				'vendor'
+			]
+		},
 	},
 
 	ObjectModel = Model.extend({

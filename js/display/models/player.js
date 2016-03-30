@@ -83,6 +83,8 @@ var _ = require('underscore'),
 
         setMap: function (map) {
             this.map = map;
+            // this.map.occupiedTiles.push({x: this.attributes.x, y: this.attributes.y});
+            // set location??
             this.trigger('mapSet');
             return this.map;
         },
@@ -130,6 +132,7 @@ var _ = require('underscore'),
                 // IS MOVING
                 if (this._reachedTarget()) {
                     // No more distance to travel, so update tile position.
+                    console.log(this.target, this.getMap().getPortal(this.target), this.getMap().get('name') === 'third-shop-two' ? this.getMap().portals : null);
                     portal = this.getMap().getPortal(this.target);
 
                     if (portal) {
@@ -163,6 +166,7 @@ var _ = require('underscore'),
 
         _moveToPortalDestination: function (portal) {
             this._setLocation({x: portal.x, y: portal.y, map: portal.map});
+            // better to que a move?
             this.gameModel.mapsCollection.queMap(portal.map);
         },
 
@@ -223,7 +227,7 @@ var _ = require('underscore'),
         },
 
         _startMoving: function(target, direction){
-            this.map.occupiedTiles.push(target);
+            this.map.occupiedTiles.push(_.extend({occupant: this}, target));
 
             this.target = target;
             this.targetDirection = direction;
@@ -287,16 +291,27 @@ var _ = require('underscore'),
 
         _setLocation: function (location) {
             var tileSize = this.attributes.tileSize,
-                current = {
-                    x: this.attributes.x,
-                    y: this.attributes.y
-                },
+                // current = {
+                //     x: this.attributes.x,
+                //     y: this.attributes.y
+                // },
                 attributes = {
                     x: location.x,
-                    y: location.y
+                    y: location.y,
+                    zIndex: location.y
                 };
 
-            this.map.occupiedTiles = _.without(this.map.occupiedTiles, _.findWhere(this.map.occupiedTiles, current)); // better way
+            // reset here
+            this.map.occupiedTiles = _.reject(this.map.occupiedTiles, function (tile) {
+                // console.log(tile.occupant);
+                return tile.occupant === this;
+            }, this);
+
+            this.map.occupiedTiles.push({
+                occupant: this,
+                x: location.x,
+                y: location.y
+            });
 
             if (attributes.x === undefined || attributes.y === undefined ) {
                 return false;

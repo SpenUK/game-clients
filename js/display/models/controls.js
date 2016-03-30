@@ -23,13 +23,24 @@ var _ = require('underscore'),
     	},
 
 		bindKeys: function () {
+			// test only? no need to allow pause in prod.
 			$(document).on('keyup.controlModel', (function(e) {
 				console.log('key', e.which);
 				if (e.which === 80) {
 					console.log('togglePause');
 					e.preventDefault();
 					ticker.togglePause();
-				} else if (e.which === 79) {
+				} else if (e.which === 81) /* q */ {
+					e.preventDefault();
+				} else if (e.which === 87) /* w */ {
+					e.preventDefault();
+				} else if (e.which === 69) /* e */ {
+					e.preventDefault();
+				} else if (e.which === 82) /* r */ {
+					e.preventDefault();
+				} else if (e.which === 82) /* r */ {
+					e.preventDefault();
+				} else if (e.which === 89) /* y */ {
 					e.preventDefault();
 				}
 			}).bind(this));
@@ -43,6 +54,12 @@ var _ = require('underscore'),
 			//     this.onControlUp({message: e.which});
 			//     e.preventDefault();
 			// }).bind(this));
+		},
+
+		testOpenShop1: function () {
+			this.socket.emit('game:entershop', {
+				message: 'message'
+			});
 		},
 
 		onControlDown: function (data) {

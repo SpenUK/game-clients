@@ -18,11 +18,6 @@ var ModelExtension = require('../../extensions/model'),
 
         acceptedParams: ['imagesCollection'],
 
-        initialize: function() {
-
-            this._super.apply(this, arguments);
-        },
-
         _initializePosition: function () {
             this._setLocation({x: this.attributes.x, y: this.attributes.y, map: location.map});
         },

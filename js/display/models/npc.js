@@ -15,13 +15,10 @@ var _ = require('underscore'),
         acceptedParams: ['map'],
 
         initialize: function() {
-            console.log(arguments);
             _.bindAll(this, 'ready');
             this.setRandomWaitTime();
             this._initializePosition();
             this._super.apply(this, arguments);
-
-
 
             var loader = this.loadSpriteMap();
 
@@ -71,6 +68,7 @@ var _ = require('underscore'),
 
         setMap: function (map) {
             this.map = map;
+            this.map.occupiedTiles.push({x: this.attributes.x, y: this.attributes.y});
 
             return this.map;
         },
@@ -83,14 +81,6 @@ var _ = require('underscore'),
                       this.direction === 2 && targetTileCollision >= 1000       ||
                       this.direction === 3 && targetTileCollision % 10 === 1    ||
                       this.direction === 4 && targetTileCollision % 100 >= 10);
-
-                if (tileOccupied) {
-                    console.log('tile occupied', target);
-                }
-
-                if (!passable) {
-                    console.log('not passable', target);
-                }
 
             return !tileOccupied && passable;
         },
@@ -197,7 +187,8 @@ var _ = require('underscore'),
                 },
                 attributes = {
                     x: location.x,
-                    y: location.y
+                    y: location.y,
+                    zIndex: location.y
                 };
 
             if (attributes.x === undefined || attributes.y === undefined ) {
