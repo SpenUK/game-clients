@@ -142,6 +142,13 @@ var _ = require('underscore'),
             return this.objectsCollection || this.setObjectsCollection.apply(this, arguments);
         },
 
+        getTileOccupant: function (tile) {
+            var tileData = _.findWhere(this.occupiedTiles, tile),
+                occupant = tileData ? tileData.occupant : null;
+
+            return occupant;
+        },
+
         setObjectsCollection: function (objects) {
             objects = objects || [];
 

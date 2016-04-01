@@ -20,7 +20,9 @@ var _ = require('underscore'),
             '37': 'left',
             '38': 'up',
             '39': 'right',
-            '40': 'down'
+            '40': 'down',
+            '65': 'A',
+            '66': 'B'
         },
 
         keyState: {
@@ -39,12 +41,13 @@ var _ = require('underscore'),
 
             imageModel.deferred.done(this.ready);
 
+            this.direction = 2;
+
             if (this.map) {
                 this._initializePosition();
             } else {
                 this.once('mapSet', this._initializePosition);
             }
-
 
             this.listenTo(this.controlsModel, 'down', this.onControlDown);
             this.listenTo(this.controlsModel, 'up', this.onControlUp);
@@ -57,10 +60,49 @@ var _ = require('underscore'),
         },
 
         onControlDown: function (key) {
-            var direction = this.keyMap[key];
-            if (direction) {
-                this.keyState[direction] = true;
+            key = this.keyMap[key];
+
+            if (key) {
+                this.keyState[key] = true;
             }
+        },
+
+        onControlUp: function (key) {
+            key = this.keyMap[key];
+
+            if (!key) {
+                return;
+            }
+
+            this.keyState[key] = false;
+
+            if (key === 'A') {
+                this.interact();
+            }
+
+            if (key === 'B') {
+                this.cancel();
+            }
+        },
+
+        interact: function () {
+            var targetTile = this._getNextTile(this.direction),
+                occupant = this.map.getTileOccupant(targetTile),
+                tileData = {
+                    mapName: this.map.get('name'),
+                    x: targetTile.x,
+                    y: targetTile.y
+                };
+
+            if (occupant) {
+                tileData.entityId = occupant.get('entityId') || 101010;
+            }
+
+            this.socket.emit('player-interaction', tileData);
+        },
+
+        cancel: function () {
+            console.log('cancel');
         },
 
         getImageModel: function () {
@@ -83,17 +125,9 @@ var _ = require('underscore'),
 
         setMap: function (map) {
             this.map = map;
-            // this.map.occupiedTiles.push({x: this.attributes.x, y: this.attributes.y});
             // set location??
             this.trigger('mapSet');
             return this.map;
-        },
-
-        onControlUp: function (key) {
-            var direction = this.keyMap[key];
-            if (direction) {
-                this.keyState[direction] = false;
-            }
         },
 
         onForceTile: function (tile) {
@@ -106,24 +140,14 @@ var _ = require('underscore'),
 
             this._setDirection();
 
-            if (!this.isMoving && this.direction) {
+            if (!this.isMoving && this.moveDirection) {
 
-                nextTile = this._getNextTile();
+                nextTile = this._getNextTile(this.moveDirection);
                 // not moving but wants to move
                 if (nextTile && this._canMoveToTile(nextTile) && this._canMoveFromTile()) {
-                    this._startMoving(nextTile, this.direction);
+                    this._startMoving(nextTile, this.moveDirection);
                     this._continueMoving();
                 } else {
-                    // logic could be bettere, right now turing right or left on a tile portals,
-                    // when only up should...
-                    // var portal = this.getMap().getPortal(target);
-                    // portal = this.mapModel.getTilePortal({
-                    //     x: this.attributes.x,
-                    //     y: this.attributes.y
-                    // });
-                    // if (portal) {
-                    //     this._moveToPortalDestination(portal);
-                    // }
                     // can't move - so stop to be sure.
                     this._stopMoving();
                 }
@@ -132,7 +156,6 @@ var _ = require('underscore'),
                 // IS MOVING
                 if (this._reachedTarget()) {
                     // No more distance to travel, so update tile position.
-                    console.log(this.target, this.getMap().getPortal(this.target), this.getMap().get('name') === 'third-shop-two' ? this.getMap().portals : null);
                     portal = this.getMap().getPortal(this.target);
 
                     if (portal) {
@@ -143,16 +166,16 @@ var _ = require('underscore'),
 
                     this._setLocation(this.target);
 
-                    if (!this.direction) {
+                    if (!this.moveDirection) {
                         // no current direction, so stop moving
                         this._stopMoving();
                         return;
                     }
 
-                    nextTile = this._getNextTile();
+                    nextTile = this._getNextTile(this.moveDirection);
 
                     if (this._canMoveToTile(nextTile) && this._canMoveFromTile()) {
-                        this._startMoving(nextTile, this.direction);
+                        this._startMoving(nextTile, this.moveDirection);
                     } else {
                         this._stopMoving();
                         return;
@@ -175,10 +198,10 @@ var _ = require('underscore'),
                 tileOccupied = !!_.findWhere(this.map.occupiedTiles, target);
 
             return !tileOccupied &&
-                    !(this.direction === 1 && targetTileCollision % 1000 >= 100 ||
-                      this.direction === 2 && targetTileCollision >= 1000       ||
-                      this.direction === 3 && targetTileCollision % 10 === 1    ||
-                      this.direction === 4 && targetTileCollision % 100 >= 10);
+                    !(this.moveDirection === 1 && targetTileCollision % 1000 >= 100 ||
+                      this.moveDirection === 2 && targetTileCollision >= 1000       ||
+                      this.moveDirection === 3 && targetTileCollision % 10 === 1    ||
+                      this.moveDirection === 4 && targetTileCollision % 100 >= 10);
         },
 
         _canMoveFromTile: function () {
@@ -187,39 +210,36 @@ var _ = require('underscore'),
                 y: this.attributes.y
             });
 
-            return !(this.direction === 1 && currentTileCollision >= 1000       ||
-                      this.direction === 2 && currentTileCollision % 1000 >= 100 ||
-                      this.direction === 3 && currentTileCollision % 100 >= 1000 ||
-                      this.direction === 4 && currentTileCollision % 10 === 1);
+            return !(this.moveDirection === 1 && currentTileCollision >= 1000       ||
+                      this.moveDirection === 2 && currentTileCollision % 1000 >= 100 ||
+                      this.moveDirection === 3 && currentTileCollision % 100 >= 1000 ||
+                      this.moveDirection === 4 && currentTileCollision % 10 === 1);
         },
 
         _getTileEvent: function () {
             return null;
         },
 
-        _getNextTile: function () {
-            var target;
-
-            if (!this.direction) {
-                return false;
-            }
-
-            target = {
+        _getNextTile: function (direction) {
+            var target = {
                 x: this.attributes.x,
                 y: this.attributes.y
             };
 
-            // directions: 1: up, 2: down, 3: left, 4: right
-            if (this.direction === 1 && target.y > 0) {
-                target.y = target.y - 1;
-            // } else if (this.direction === 2 && target.y < map.height - 1) {
+            if (!direction) {
+                return false;
+            }
 
-            } else if (this.direction === 2 && target.y < 16 - 1) {
+            // moveDirections: 1: up, 2: down, 3: left, 4: right
+            if (direction === 1 && target.y > 0) {
+                target.y = target.y - 1;
+            // } else if (direction === 2 && target.y < map.height - 1) {
+            } else if (direction === 2 && target.y < 16 - 1) {
                 target.y = target.y + 1;
-            } else if (this.direction === 3 && target.x > 0) {
+            } else if (direction === 3 && target.x > 0) {
                 target.x = target.x - 1;
-            // } else if (this.direction === 4 && target.x < map.width - 1) {
-            } else if (this.direction === 4 && target.x < 16 - 1) {
+            // } else if (direction === 4 && target.x < map.width - 1) {
+            } else if (direction === 4 && target.x < 16 - 1) {
                 target.x = target.x + 1;
             }
 
@@ -230,14 +250,14 @@ var _ = require('underscore'),
             this.map.occupiedTiles.push(_.extend({occupant: this}, target));
 
             this.target = target;
-            this.targetDirection = direction;
+            this.direction = direction;
             this.distance = this.get('tileSize');
             this.isMoving = true;
             this.lastMove = direction;
         },
 
         _continueMoving: function () {
-            switch(this.targetDirection){
+            switch(this.direction){
               case 1:
                 this.distance -= this.step;
                 this.position.y -= this.step;
@@ -262,15 +282,15 @@ var _ = require('underscore'),
             // directions: 1: up, 2: down, 3: left, 4: right
             // elsing to avoid diags
             // keys could be made more dynamic later by allowing the player to config their own keyboard mappings
-            this.direction = null;
+            this.moveDirection = null;
             if (this.keyState.up) { // up
-                this.direction = 1;
+                this.moveDirection = 1;
             } else if (this.keyState.down) { // down
-                this.direction = 2;
+                this.moveDirection = 2;
             } else if (this.keyState.left) { // left
-                this.direction = 3;
+                this.moveDirection = 3;
             } else if (this.keyState.right) { // right
-                this.direction = 4;
+                this.moveDirection = 4;
             }
         },
 
@@ -279,7 +299,7 @@ var _ = require('underscore'),
         },
 
         _stopMoving: function () {
-            this.targetDirection = null;
+            this.moveDirection = null;
             this.target = null;
             this.isMoving = false;
         },
@@ -291,19 +311,13 @@ var _ = require('underscore'),
 
         _setLocation: function (location) {
             var tileSize = this.attributes.tileSize,
-                // current = {
-                //     x: this.attributes.x,
-                //     y: this.attributes.y
-                // },
                 attributes = {
                     x: location.x,
                     y: location.y,
                     zIndex: location.y
                 };
 
-            // reset here
             this.map.occupiedTiles = _.reject(this.map.occupiedTiles, function (tile) {
-                // console.log(tile.occupant);
                 return tile.occupant === this;
             }, this);
 

@@ -23,12 +23,10 @@ var DeferrerModel = require('./deferrer'),
         },
 
         onLoaded: function () {
-            console.log(this.get('src'), 'loaded');
             this.deferred.resolve();
         },
 
         ready: function () {
-            // console.log('image ready', this.get('src'));
             this._super.apply(this, arguments);
         },
 

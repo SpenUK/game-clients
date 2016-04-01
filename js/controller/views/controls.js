@@ -15,24 +15,32 @@ var _ = require('underscore'),
 			'touchstart .down': 'mdDown',
 			'touchstart .left': 'mdLeft',
 			'touchstart .right': 'mdRight',
+			'touchstart .a-control': 'mdA',
+			'touchstart .b-control': 'mdB',
 
 			'touchend .up': 'muUp',
 			'touchend .down': 'muDown',
 			'touchend .left': 'muLeft',
 			'touchend .right': 'muRight',
+			'touchend .a-control': 'muA',
+			'touchend .b-control': 'muB',
 
 			'mousedown .up': 'mdUp',
 			'mousedown .down': 'mdDown',
 			'mousedown .left': 'mdLeft',
 			'mousedown .right': 'mdRight',
+			'mousedown .a-control': 'mdA',
+			'mousedown .b-control': 'mdB',
 
 			'click .up': 'muUp',
 			'click .down': 'muDown',
 			'click .left': 'muLeft',
-			'click .right': 'muRight'
+			'click .right': 'muRight',
+			'click .a-control': 'muA',
+			'click .b-control': 'muB'
 		},
 
-		keysList: [37, 38, 39, 40],
+		keysList: [37, 38, 39, 40, 65, 66],
 
 		initialize: function() {
 			this._super.apply(this, arguments);
@@ -40,6 +48,7 @@ var _ = require('underscore'),
 		},
 
 		bindKeys: function () {
+			console.log('bindKeys');
 			$(document).on('keydown.controller', this.onClick.bind(this));
 			$(document).on('keyup.controller', this.onRelease.bind(this));
 		},
@@ -61,6 +70,14 @@ var _ = require('underscore'),
 			this.controlDown(39);
 		},
 
+		mdA: function () {
+			this.controlDown(65);
+		},
+
+		mdB: function () {
+			this.controlDown(66);
+		},
+
 		muUp: function () {
 			this.controlUp(38);
 		},
@@ -75,6 +92,14 @@ var _ = require('underscore'),
 
 		muRight: function () {
 			this.controlUp(39);
+		},
+
+		muA: function () {
+			this.controlUp(65);
+		},
+
+		muB: function () {
+			this.controlUp(66);
 		},
 
 		onRelease: function (e) {

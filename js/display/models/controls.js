@@ -11,7 +11,7 @@ var _ = require('underscore'),
 
     	keysBound: false,
 
-    	keysList: [37, 38, 39, 40],
+    	keysList: [37, 38, 39, 40, 65, 66],
 
     	initialize: function() {
     		this._super.apply(this, arguments);
@@ -25,9 +25,7 @@ var _ = require('underscore'),
 		bindKeys: function () {
 			// test only? no need to allow pause in prod.
 			$(document).on('keyup.controlModel', (function(e) {
-				console.log('key', e.which);
 				if (e.which === 80) {
-					console.log('togglePause');
 					e.preventDefault();
 					ticker.togglePause();
 				} else if (e.which === 81) /* q */ {

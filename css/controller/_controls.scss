@@ -27,6 +27,36 @@ $bgd: darken($bg, 5);
 
 		float: left;
 
+		&.b-control {
+			div.button {
+				$button-color: rgba(195, 70, 70, 1);
+				background-color: $button-color;
+
+				font-size: 2em;
+
+				box-shadow: 0 6px darken($button-color, 20);
+
+		    	&:active {
+	    			box-shadow: 0 2px darken($button-color, 20);
+		    	}
+			}
+		}
+
+		&.a-control {
+			div.button {
+				$button-color: rgba(45, 180, 58, 1);
+				background-color: $button-color;
+
+				font-size: 2em;
+
+				box-shadow: 0 6px darken($button-color, 20);
+
+		    	&:active {
+	    			box-shadow: 0 2px darken($button-color, 20);
+		    	}
+			}
+		}
+
 		@include disable-selection();
 
 		div.button {
@@ -46,13 +76,16 @@ $bgd: darken($bg, 5);
 
 		p {
 			line-height: 100px;
+			color: rgba(245,245,245,1);
 			margin: 0;
+			text-shadow: 0 4px rgba(0, 0, 0, 0.4);
+			font-weight: bold;
 		}
 
 		i {
 			line-height: 100px;
-			color: rgba(255,255,255,0.9);
-			text-shadow: 0 6px rgba(0, 0, 0, 0.4);
+			color: rgba(245,245,245,1);
+			text-shadow: 0 5px rgba(0, 0, 0, 0.4);
 		}
 	}
 

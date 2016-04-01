@@ -103,8 +103,6 @@ var _ = require('underscore'),
 			var entityData = this.getEntityData(this.get('name')),
 				mapModel = this.collection.mapModel;
 
-				console.log(this.collection.mapModel);
-
 			if (entityData) {
 				this.entityModel = new NpcModel(_.extend({},
 					entityData,

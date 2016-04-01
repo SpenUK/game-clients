@@ -68,7 +68,6 @@ var _ = require('underscore'),
 
         setMap: function (map) {
             this.map = map;
-            this.map.occupiedTiles.push({x: this.attributes.x, y: this.attributes.y});
 
             return this.map;
         },
@@ -127,7 +126,7 @@ var _ = require('underscore'),
         },
 
         _startMoving: function(target, direction){
-            this.map.occupiedTiles.push(target);
+            this.map.occupiedTiles.push(_.extend({occupant: this}, target));
             this.target = target;
             this.targetDirection = direction;
             this.distance = 32;
@@ -181,21 +180,25 @@ var _ = require('underscore'),
 
         _setLocation: function (location) {
             var tileSize = 32,
-                current = {
-                    x: this.attributes.x,
-                    y: this.attributes.y
-                },
                 attributes = {
                     x: location.x,
                     y: location.y,
                     zIndex: location.y
                 };
 
+            this.map.occupiedTiles = _.reject(this.map.occupiedTiles, function (tile) {
+                return tile.occupant === this;
+            }, this);
+
+            this.map.occupiedTiles.push({
+                occupant: this,
+                x: location.x,
+                y: location.y
+            });
+
             if (attributes.x === undefined || attributes.y === undefined ) {
                 return false;
             }
-
-            this.map.occupiedTiles = _.without(this.map.occupiedTiles, _.findWhere(this.map.occupiedTiles, current)); // better way
 
             if (location.map) {
                 attributes.map = location.map;
