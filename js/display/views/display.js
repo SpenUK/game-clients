@@ -32,7 +32,9 @@ var ViewExtension = require('../../extensions/view'),
 
 			this.socket.on('controller left', this.onControllerLeft.bind(this));
 			this.socket.on('controller joined', this.onControllerJoined.bind(this));
-
+			this.socket.on('interaction test', function (message) {
+				console.log(message);
+			});
 		},
 
 		views: function () {

@@ -51,19 +51,19 @@ var ModelExtension = require('../../extensions/model'),
         draw: function (context) {
             var srcX = this.attributes.sourceX || 0,
                 srcY = this.attributes.sourceY || 0,
-                x = this.position.x + (this.attributes.offsetX * this.attributes.tileSize),
-                y = this.position.y + (this.attributes.offsetY * this.attributes.tileSize);
+                x = this.position.x + (this.attributes.offsetX * this.attributes.tilewidth),
+                y = this.position.y + (this.attributes.offsetY * this.attributes.tileheight);
 
             context.drawImage(
                 this.image || new Image(), // image
-                srcX * this.attributes.tileSize, // source x start
-                srcY * this.attributes.tileSize, // source y start
-                this.attributes.tileSize * this.attributes.width, // source x width
-                this.attributes.tileSize * this.attributes.height, // source y height
+                srcX * this.attributes.tilewidth, // source x start
+                srcY * this.attributes.tileheight, // source y start
+                this.attributes.tilewidth * this.attributes.width, // source x width
+                this.attributes.tileheight * this.attributes.height, // source y height
                 x, // placement x
                 y, // placement y
-                this.attributes.tileSize * this.attributes.width, // width
-                this.attributes.tileSize * this.attributes.height // height
+                this.attributes.tilewidth * this.attributes.width, // width
+                this.attributes.tileheight * this.attributes.height // height
             );
         }
 

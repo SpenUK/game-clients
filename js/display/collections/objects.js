@@ -12,11 +12,13 @@ var _ = require('underscore'),
 				src: 'images/3264player-green.png',
 				tilesX: 1,
 				tilesY: 2,
-				tileSize: 32,
+				tilewidth: 32,
+				tileheight: 32,
 				height: 64,
 				width: 32
 			},
-			tileSize: 32,
+			tilewidth: 32,
+			tileheight: 32,
 			height: 2,
 			width: 1,
 			offsetY: -1,
@@ -31,51 +33,57 @@ var _ = require('underscore'),
 				src: 'images/3264player-pink.png',
 				tilesX: 1,
 				tilesY: 2,
-				tileSize: 32,
+				tilewidth: 32,
+				tileheight: 32,
 				height: 64,
 				width: 32
 			},
 			height: 2,
 			width: 1,
-			tileSize: 32,
+			tilewidth: 32,
+			tileheight: 32,
 			offsetY: -1,
 			offsetX: 0,
 			behaviours: [
 				'wanderer'
 			]
 		},
-		'vendor-1' : {
+		'10002' : {
 			name: 'vendor-1',
 			spriteMap: {
 				src: 'images/3264player-pink.png',
 				tilesX: 1,
 				tilesY: 2,
-				tileSize: 32,
+				tilewidth: 32,
+				tileheight: 32,
 				height: 64,
 				width: 32
 			},
 			height: 2,
 			width: 1,
-			tileSize: 32,
+			tilewidth: 32,
+			tileheight: 32,
 			offsetY: -1,
 			offsetX: 0,
 			behaviours: [
 				'vendor'
 			]
 		},
-		'vendor-2' : {
+		'10003' : {
 			name: 'vendor-2',
 			spriteMap: {
 				src: 'images/3264player-pink.png',
 				tilesX: 1,
 				tilesY: 2,
-				tileSize: 32,
+				tilewidth: 32,
+				tileheight: 32,
 				height: 64,
 				width: 32
 			},
 			height: 2,
 			width: 1,
-			tileSize: 32,
+			tilewidth: 32,
+			tileheight: 32,
 			offsetY: -1,
 			offsetX: 0,
 			behaviours: [
@@ -136,11 +144,6 @@ var _ = require('underscore'),
     	model: ObjectModel,
 
     	acceptedParams: ['entitiesCollection', 'mapModel'],
-
-    	initialize: function() {
-    		this._super.apply(this, arguments);
-    		console.log(this.mapModel);
-    	},
 
     	activate: function () {
     		var entities = this.getEntities();

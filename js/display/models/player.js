@@ -43,6 +43,8 @@ var _ = require('underscore'),
 
             this.direction = 2;
 
+            console.log(this);
+
             if (this.map) {
                 this._initializePosition();
             } else {
@@ -142,6 +144,12 @@ var _ = require('underscore'),
 
             if (!this.isMoving && this.moveDirection) {
 
+                // if (this.moveDirection && this.direction !== this.moveDirection) {
+                    // console.log('update dir');
+                    this.direction = this.moveDirection;
+                    this._updateSpriteDirection();
+                // }
+
                 nextTile = this._getNextTile(this.moveDirection);
                 // not moving but wants to move
                 if (nextTile && this._canMoveToTile(nextTile) && this._canMoveFromTile()) {
@@ -171,6 +179,9 @@ var _ = require('underscore'),
                         this._stopMoving();
                         return;
                     }
+
+                    this.direction = this.moveDirection;
+                    this._updateSpriteDirection();
 
                     nextTile = this._getNextTile(this.moveDirection);
 
@@ -251,7 +262,7 @@ var _ = require('underscore'),
 
             this.target = target;
             this.direction = direction;
-            this.distance = this.get('tileSize');
+            this.distance = this.attributes[(direction === 1 || direction === 2) ? 'tileheight' : 'tilewidth'];
             this.isMoving = true;
             this.lastMove = direction;
         },
@@ -294,6 +305,18 @@ var _ = require('underscore'),
             }
         },
 
+        _updateSpriteDirection: function () {
+            if (this.direction === 1) { // up
+                this.set('sourceY', 0);
+            } else if (this.direction === 2) { // down
+                this.set('sourceY', this.attributes.height * 1);
+            } else if (this.direction === 3) { // left
+                this.set('sourceY', this.attributes.height * 2);
+            } else if (this.direction === 4) { // right
+                this.set('sourceY', this.attributes.height * 3);
+            }
+        },
+
         _reachedTarget: function () {
             return this.distance <= 0;
         },
@@ -310,7 +333,8 @@ var _ = require('underscore'),
         },
 
         _setLocation: function (location) {
-            var tileSize = this.attributes.tileSize,
+            var tilewidth = this.attributes.tilewidth,
+                tileheight = this.attributes.tileheight,
                 attributes = {
                     x: location.x,
                     y: location.y,
@@ -338,8 +362,8 @@ var _ = require('underscore'),
             this.set(attributes);
 
             this.position = {
-                x: location.x * tileSize,
-                y: location.y * tileSize
+                x: location.x * tilewidth,
+                y: location.y * tileheight
             };
         }
     });
