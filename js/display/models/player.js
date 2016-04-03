@@ -245,12 +245,12 @@ var _ = require('underscore'),
             if (direction === 1 && target.y > 0) {
                 target.y = target.y - 1;
             // } else if (direction === 2 && target.y < map.height - 1) {
-            } else if (direction === 2 && target.y < 16 - 1) {
+            } else if (direction === 2 && target.y < this.map.attributes.height - 1) {
                 target.y = target.y + 1;
             } else if (direction === 3 && target.x > 0) {
                 target.x = target.x - 1;
             // } else if (direction === 4 && target.x < map.width - 1) {
-            } else if (direction === 4 && target.x < 16 - 1) {
+            } else if (direction === 4 && target.x < this.map.attributes.width - 1) {
                 target.x = target.x + 1;
             }
 

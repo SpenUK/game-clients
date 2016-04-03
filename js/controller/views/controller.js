@@ -33,7 +33,6 @@ var ViewExtension = require('../../extensions/view'),
 			this.render();
 		},
 
-
 		disableViewPort: function () {
 			var viewport = document.querySelector('meta[name=viewport]'),
 				content = viewport.content.replace(/user-scalable=(\w+)/, 'user-scalable=no');

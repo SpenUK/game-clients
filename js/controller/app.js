@@ -15,8 +15,6 @@ var ControllerView = require('./views/controller'),
                 socket: this.socket,
                 model: this.getControllerModel()
             });
-
-            this.view.render();
         },
 
         getControllerModel: function () {

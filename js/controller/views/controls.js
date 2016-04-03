@@ -47,8 +47,11 @@ var _ = require('underscore'),
 			this.bindKeys();
 		},
 
+		render: function () {
+			this._super.apply(this, arguments);
+		},
+
 		bindKeys: function () {
-			console.log('bindKeys');
 			$(document).on('keydown.controller', this.onClick.bind(this));
 			$(document).on('keyup.controller', this.onRelease.bind(this));
 		},
