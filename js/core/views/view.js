@@ -44,8 +44,14 @@ var _ = require('underscore'),
         },
 
         render: function () {
+            var html = this.template ? this.template(this.serialize()) : '';
             this.rendered = false;
-            this.$el.html(this.template ? this.template(this.serialize()) : '');
+            if (this.append) {
+                this.$el.append(html);
+            } else {
+                this.$el.html(html);
+            }
+
             this._renderSubviews();
             this._super.apply(this, arguments);
 
@@ -108,7 +114,8 @@ var _ = require('underscore'),
             options.model = options.model || this.model || null;
 
             view = new View(_.extend(options, {
-                el: key,
+                el: key || this.el, // needs to be more targetted
+                append: options.append || !key,
                 parentView: this
             }));
 
@@ -143,6 +150,10 @@ var _ = require('underscore'),
             });
 
             return view;
+        },
+
+        removeSubviewInstances: function () {
+            this._removeSubviewInstances.apply(this, arguments);
         },
 
         _removeSubviewInstances: function () {
@@ -188,7 +199,7 @@ var _ = require('underscore'),
             };
         },
 
-        _coreParams: ['parentView', 'app'],
+        _coreParams: ['parentView', 'app', 'append'],
 
         /**
          * Uses the acceptedParams array to set those params on 'this'.

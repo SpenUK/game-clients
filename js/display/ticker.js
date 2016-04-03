@@ -38,8 +38,10 @@ module.exports = {
 	},
 
 	unpause: function () {
-		this.paused = false;
-		window.requestAnimationFrame(this.tick.bind(this));
+		if (this.paused) {
+			this.paused = false;
+			window.requestAnimationFrame(this.tick.bind(this));
+		}
 	},
 
 	togglePause: function () {

@@ -30,11 +30,8 @@ var ViewExtension = require('../../../extensions/view'),
 		},
 
 		render: function () {
-			console.log('render');
 			this._super.apply(this, arguments);
 			this.context = canvasUtils.getContext('base');
-			// this.draw();
-			// this.gameModel.ticker.register('player-tick', this.tick.bind(this));
 		},
 
 		tick: function () {

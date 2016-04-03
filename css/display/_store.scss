@@ -1,0 +1,48 @@
+.store {
+	background-color: whitesmoke;
+	overflow: hidden;
+    height: 100%;
+    width: 100%;
+    padding: 10px;
+
+    .name {
+    	margin: 0.4em auto;
+    	text-align: center;
+    	color: rgba(80,80,80,1);
+    }
+}
+
+.inventory {
+	&:before,
+	&:after {
+	    content: " "; // 1
+	    display: table; // 2
+	}
+	&:after {
+	    clear: both;
+	}
+
+	.inventory-item {
+		float: left;
+		width: 25%;
+
+		text-align: center;
+
+		.name {
+			font-weight: bold;
+			margin: 0.2em auto;
+		}
+
+		.image {
+			margin: 0 auto;
+			display: block;
+		}
+
+		.price {
+			opacity: 1;
+			margin: 0.2em auto;
+		}
+
+	}
+
+}

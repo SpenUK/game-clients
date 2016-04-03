@@ -1,6 +1,7 @@
 'use strict';
 
 var	ViewExtension = require('../../../extensions/view'),
+	GameUIView = require('./gameui'),
 	template = require('../../templates/game/game.hbs'),
 
 	GameView = ViewExtension.extend({
@@ -33,6 +34,18 @@ var	ViewExtension = require('../../../extensions/view'),
 
 		tick: function () {
 			this.model.tick();
+		},
+
+		views: function () {
+			return {
+				'.game-ui': {
+					view: GameUIView,
+					options: {
+						model: this.model,
+						socket: this.socket
+					}
+				}
+			};
 		},
 
 		serialize: function () {

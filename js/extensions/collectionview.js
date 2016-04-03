@@ -1,6 +1,7 @@
 'use strict';
 
-var core = require('../core/core'),
+var _ = require('underscore'),
+	core = require('../core/core'),
 
 	/**
 	 *
@@ -12,7 +13,7 @@ var core = require('../core/core'),
 			this._super.apply(this, arguments);
 
 			// handle render some other way??
-			if (!this.collection.isReady() || !this.collection.length) {
+			if (!_.result(this.collection, 'isReady') || !this.collection.length) {
 				this.listenToOnce(this.collection, 'ready', function(){
 					this.render();
 				});

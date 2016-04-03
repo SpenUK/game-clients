@@ -32,9 +32,12 @@ var ViewExtension = require('../../extensions/view'),
 
 			this.socket.on('controller left', this.onControllerLeft.bind(this));
 			this.socket.on('controller joined', this.onControllerJoined.bind(this));
-			this.socket.on('interaction test', function (message) {
-				console.log(message);
-			});
+
+			this.socket.on('open store', this.openStore.bind(this));
+		},
+
+		openStore: function (data) {
+			this.model.trigger('openStore', data);
 		},
 
 		views: function () {
@@ -51,7 +54,7 @@ var ViewExtension = require('../../extensions/view'),
 					view: GameView,
 					options: {
 						model: this.model,
-						socket: this.socket,
+						socket: this.socket
 					}
 				}
 			};

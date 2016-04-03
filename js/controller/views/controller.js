@@ -21,6 +21,9 @@ var ViewExtension = require('../../extensions/view'),
 
 			this.socket.on('controller joined', this.onSocketJoined.bind(this));
 			this.socket.on('controller rejected', this.onSocketReject.bind(this));
+			this.socket.on('interaction test', function (message) {
+   				console.log(message);
+   			});
 		},
 
 		onSocketJoined: function () {

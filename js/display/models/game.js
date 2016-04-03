@@ -23,12 +23,8 @@ var _ = require('underscore'),
 
 		initialize: function() {
 			var cameraModel = this.getCameraModel(),
-				controlsModel = this.getControlsModel(),
 				playerModel = this.getPlayerModel(),
 				entitiesCollection = this.getEntitiesCollection();
-
-			cameraModel = cameraModel;
-			controlsModel = controlsModel;
 
 			entitiesCollection.add(playerModel);
 
@@ -41,9 +37,9 @@ var _ = require('underscore'),
 			this.on('change:token', this.setUrl);
 
 
-			window.entitiesCollection = entitiesCollection;
+			// window.entitiesCollection = entitiesCollection;
 			// window.mapsCollection = mapsCollection;
-			window.game = this;
+			// window.game = this;
 			// window.playerModel = playerModel;
 
 			cameraModel.setTarget(playerModel);

@@ -2,6 +2,15 @@ body {
 	background-color: $background-color;
 }
 
+.display {
+	position: relative;
+}
+
+.game-ui {
+	position: absolute;
+	top: 0; bottom: 0; left: 0; right: 0;
+}
+
 .game {
 	position: relative;
 	margin: 0 auto;
@@ -21,21 +30,5 @@ body {
 		position: absolute;
 		left: 0;
 		top: 0;
-
-		&#base {
-			z-index: 2000;
-		}
-
-		&#props {
-			z-index: 2002;
-		}
-
-		&#player {
-			z-index: 2002;
-		}
-
-		&#cover {
-			z-index: 2003;
-		}
 	}
 }
