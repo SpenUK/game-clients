@@ -2,6 +2,7 @@
 
 var _ = require('underscore'),
 	ViewExtension = require('../../extensions/view'),
+	// template = require('../templates/controls.hbs'),
 	template = require('../templates/controls.hbs'),
 
 	ControlsView = ViewExtension.extend({
@@ -10,34 +11,36 @@ var _ = require('underscore'),
 
 		acceptedParams: ['socket'],
 
-		events: {
-			'touchstart .up': 'mdUp',
-			'touchstart .down': 'mdDown',
-			'touchstart .left': 'mdLeft',
-			'touchstart .right': 'mdRight',
-			'touchstart .a-control': 'mdA',
-			'touchstart .b-control': 'mdB',
+		events: function () {
+			return {
+				'touchstart .up': this.controlDown.bind(this, 38),
+				'touchstart .down': this.controlDown.bind(this, 40),
+				'touchstart .left': this.controlDown.bind(this, 37),
+				'touchstart .right': this.controlDown.bind(this, 39),
+				'touchstart .a-control': this.controlDown.bind(this, 65),
+				'touchstart .b-control': this.controlDown.bind(this, 66),
 
-			'touchend .up': 'muUp',
-			'touchend .down': 'muDown',
-			'touchend .left': 'muLeft',
-			'touchend .right': 'muRight',
-			'touchend .a-control': 'muA',
-			'touchend .b-control': 'muB',
+				'touchend .up': this.controlUp.bind(this, 38),
+				'touchend .down': this.controlUp.bind(this, 40),
+				'touchend .left': this.controlUp.bind(this, 37),
+				'touchend .right': this.controlUp.bind(this, 39),
+				'touchend .a-control': this.controlUp.bind(this, 65),
+				'touchend .b-control': this.controlUp.bind(this, 66),
 
-			'mousedown .up': 'mdUp',
-			'mousedown .down': 'mdDown',
-			'mousedown .left': 'mdLeft',
-			'mousedown .right': 'mdRight',
-			'mousedown .a-control': 'mdA',
-			'mousedown .b-control': 'mdB',
+				'mousedown .up': this.controlDown.bind(this, 38),
+				'mousedown .down': this.controlDown.bind(this, 40),
+				'mousedown .left': this.controlDown.bind(this, 37),
+				'mousedown .right': this.controlDown.bind(this, 39),
+				'mousedown .a-control': this.controlDown.bind(this, 65),
+				'mousedown .b-control': this.controlDown.bind(this, 66),
 
-			'click .up': 'muUp',
-			'click .down': 'muDown',
-			'click .left': 'muLeft',
-			'click .right': 'muRight',
-			'click .a-control': 'muA',
-			'click .b-control': 'muB'
+				'click .up': this.controlUp.bind(this, 38),
+				'click .down': this.controlUp.bind(this, 40),
+				'click .left': this.controlUp.bind(this, 37),
+				'click .right': this.controlUp.bind(this, 39),
+				'click .a-control': this.controlUp.bind(this, 65),
+				'click .b-control': this.controlUp.bind(this, 66)
+			};
 		},
 
 		keysList: [37, 38, 39, 40, 65, 66],
@@ -54,55 +57,6 @@ var _ = require('underscore'),
 		bindKeys: function () {
 			$(document).on('keydown.controller', this.onClick.bind(this));
 			$(document).on('keyup.controller', this.onRelease.bind(this));
-		},
-
-		// TODO: do better.
-		mdUp: function () {
-			this.controlDown(38);
-		},
-
-		mdDown: function () {
-			this.controlDown(40);
-		},
-
-		mdLeft: function () {
-			this.controlDown(37);
-		},
-
-		mdRight: function () {
-			this.controlDown(39);
-		},
-
-		mdA: function () {
-			this.controlDown(65);
-		},
-
-		mdB: function () {
-			this.controlDown(66);
-		},
-
-		muUp: function () {
-			this.controlUp(38);
-		},
-
-		muDown: function () {
-			this.controlUp(40);
-		},
-
-		muLeft: function () {
-			this.controlUp(37);
-		},
-
-		muRight: function () {
-			this.controlUp(39);
-		},
-
-		muA: function () {
-			this.controlUp(65);
-		},
-
-		muB: function () {
-			this.controlUp(66);
 		},
 
 		onRelease: function (e) {

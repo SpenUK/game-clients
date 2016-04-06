@@ -1,0 +1,43 @@
+// $prefixes: "-moz-", "-webkit-", "-ms-", "";
+
+// -webkit-transition: all 0.4s cubic-bezier(0.100, 0.005, 0.4, 1); /* older webkit */
+// -webkit-transition: all 0.4s cubic-bezier(0.100, 0.005, 0.4, 2.6);
+//    -moz-transition: all 0.4s cubic-bezier(0.100, 0.005, 0.4, 2.6);
+//      -o-transition: all 0.4s cubic-bezier(0.100, 0.005, 0.4, 2.6);
+//         transition: all 0.4s cubic-bezier(0.100, 0.005, 0.4, 2.6); /* custom */
+
+// -webkit-transition-timing-function: cubic-bezier(0.100, 0.005, 0.4, 1); /* older webkit */
+// -webkit-transition-timing-function: cubic-bezier(0.100, 0.005, 0.4, 2.6);
+//    -moz-transition-timing-function: cubic-bezier(0.100, 0.005, 0.4, 2.6);
+//      -o-transition-timing-function: cubic-bezier(0.100, 0.005, 0.4, 2.6);
+//         transition-timing-function: cubic-bezier(0.100, 0.005, 0.4, 2.6); /* custom */
+
+@mixin transform ($options) {
+	-webkit-transform: $options;
+		 -moz-transform: $options;
+      -ms-transform: $options;
+       -o-transform: $options;
+          transform: $options;
+}
+
+@mixin transition ($options) {
+  -webkit-transition: $options;
+     -moz-transition: $options;
+      -ms-transition: $options;
+       -o-transition: $options;
+          transition: $options;
+}
+
+@mixin transition-delay ($options) {
+	-webkit-transition-delay: $options;
+		 -moz-transition-delay: $options;
+      -ms-transition-delay: $options;
+       -o-transition-delay: $options;
+          transition-delay: $options;
+}
+
+@mixin box-shadow ($options) {
+  -webkit-box-shadow: $options;
+  -moz-box-shadow: $options;
+  box-shadow: $options;
+}

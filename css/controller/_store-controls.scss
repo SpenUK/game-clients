@@ -17,17 +17,41 @@ $bgd: darken($bg, 5);
 	// width: 330px;
 	// margin: 20px auto;
 	padding-bottom: 6px;
+	height: 100%;
 
 	@include disable-selection();
+
+	.item-details {
+		// overflow: hidden;
+	    // position: absolute;
+	    // width: 100%;
+	    // padding-left: 110px;
+	    // padding-right: 110px;
+	    text-align: center;
+
+		.name {
+			font-size: 1.8em;
+			font-weight: bold;
+		}
+
+		.item-image {
+		    margin: 0 auto;
+		    display: block;
+		}
+	}
 
 	.control {
 		width: 100px;
 		height: 100px;
-		margin: 5px;
+		margin: 5px auto;
 
 		// float: left;
 
-		&.b-control {
+		&.back-control {
+
+			font-size: 0.7em;
+			margin-bottom: 20px;
+
 			div.button {
 				$button-color: rgba(195, 70, 70, 1);
 				background-color: $button-color;
@@ -42,14 +66,22 @@ $bgd: darken($bg, 5);
 			}
 		}
 
-		&.a-control {
+		&.select-control,
+		&.buy-control {
+
+			font-size: 0.7em;
+			margin-bottom: 20px;
+
 			div.button {
+
 				$button-color: rgba(45, 180, 58, 1);
 				background-color: $button-color;
 
 				font-size: 2em;
 
 				box-shadow: 0 6px darken($button-color, 20);
+				display: inline-block;
+				width: 100%;
 
 		    	&:active {
 	    			box-shadow: 0 2px darken($button-color, 20);
@@ -68,14 +100,8 @@ $bgd: darken($bg, 5);
 			box-shadow: 0 6px rgba(0, 0, 0, 0.4);
 	    	border-radius: 6px;
 
-	    	display: inline-block;
-			width: 100%;
-
-	    	margin-bottom: 4px;
-
 	    	&:active {
-	    		margin-top: 4px;
-	    		margin-bottom: 0px;
+	    		// margin-top: 4px;
     			box-shadow: 0 2px rgba(0, 0, 0, 0.4);
 	    	}
 		}
@@ -94,4 +120,20 @@ $bgd: darken($bg, 5);
 			text-shadow: 0 5px rgba(0, 0, 0, 0.4);
 		}
 	}
+
+	// .up {
+	// }
+
+	// .down {
+
+	// }
+
+	// .left {
+
+	// }
+
+	// .right {
+
+	// }
+
 }

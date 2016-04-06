@@ -1,0 +1,89 @@
+$button-height: 40px;
+$ui-rounded: 5px;
+
+// .button, .cta-button {
+// 	@include rounded($ui-rounded);
+// 	font-size: 20px;
+// 	font-family: $sans-serif;
+// 	padding: 16px 20px;
+	
+// 	text-transform: uppercase;
+// 	text-align: center;
+// }
+
+
+.cta-button {
+
+	display: block;
+	margin: 8px auto;
+	max-width: 380px;
+	border: none;
+
+	&.stretched {
+		max-width: 100%;
+	}
+
+	&.dark {
+		background-color: $black;
+		color: $white;
+
+		&:hover {
+			background-color: $black-hover;
+		}
+
+		p {
+			color: $white;
+			margin: 0;
+		}
+	}
+
+}
+
+.loading-spinner {
+	width: 80px;
+	height: 80px;
+	display: block;
+	margin: 20px auto;
+	opacity: 0.2;
+}
+
+@mixin custom-select ($height, $width, $border-radius, $arrow-image, $arrow-image-hover) {
+	position: relative;
+	display: inline-block;
+
+	-webkit-border-radius: $border-radius;
+  -moz-border-radius: $border-radius;
+  border-radius: $border-radius;
+  overflow: hidden;
+
+  width: $width;
+  height: $height;
+
+  background: url($arrow-image) no-repeat right $white;
+
+  &:hover {
+		background: url($arrow-image-hover) no-repeat right $white;
+  }
+
+	select {
+		background: transparent;
+		border: none;
+		z-index: 110;
+		-webkit-appearance: none;
+		width: $width + 30;
+		height: $height;
+		padding: 0 .75em;
+
+	}
+
+	.dropdown-arrow {
+		background-color: $black;
+		height: 100%;
+		min-height: $height;
+		min-width: 26px;
+
+		position: absolute;
+		right: 0;
+		top: 0;
+	}
+}

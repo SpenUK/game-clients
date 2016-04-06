@@ -1,0 +1,145 @@
+@mixin nine-slice ($class-name, $images, $dimensions) {
+
+  $top: map-get($images,"top");
+  $top-right: map-get($images,"top-right");
+  $top-left: map-get($images,"top-left");
+  $right: map-get($images,"right");
+  $left: map-get($images,"left");
+  $bottom: map-get($images,"bottom");
+  $bottom-right: map-get($images,"bottom-right");
+  $bottom-left: map-get($images,"bottom-left");
+  $center: map-get($images,"center");
+
+  $top-height: map-get($dimensions,"top-height");
+  $bottom-height: map-get($dimensions,"bottom-height");
+  $left-width: map-get($dimensions,"left-width");
+  $right-width: map-get($dimensions,"right-width");
+
+  #{$class-name}__top-wrapper {
+    height: $top-height;
+    float: left;
+    width: 100%;
+    position: relative;
+
+    @include clearfix;
+
+    #{$class-name}__top-left {
+      height: 100%;
+      width: $left-width;
+      position: absolute;
+      left: 0;
+      top: 0;
+
+      background-image: url($top-left);
+      background-size: 100% 100%;
+    }
+    #{$class-name}__top {
+      height: 100%;
+      position: absolute;
+      left: $left-width;
+      top: 0;
+      right: $right-width;
+
+      background-image: url($top);
+      background-size: 100% 100%;
+    }
+    #{$class-name}__top-right {
+      height: 100%;
+      width: $right-width;
+      position: absolute;
+      right: 0;
+      top: 0;
+
+      background-image: url($top-right);
+      background-size: 100% 100%;
+    }
+
+  }
+
+  #{$class-name}__center {
+      padding: 0 $right-width 0 $left-width;
+      width: 100%;
+      height: 100%;
+      float: left;
+      position: relative;
+
+      @include clearfix;
+
+      img {
+        width: 100%;
+        display: block;
+      }
+      #{$class-name}__left {
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: $left-width;
+
+        background-image: url($left);
+        background-size: 100% 100%;
+      }
+      #{$class-name}__right {
+        height: 100%;
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: $right-width;
+
+        background-image: url($right);
+        background-size: 100% 100%;
+      }
+
+      #{$class-name}__content {
+        height: 100%;
+        width: 100%;
+        min-height: 200px;
+        float: left;
+        background-image: url($center);
+        background-size: cover;
+
+        @include clearfix;
+      }
+    }
+
+  #{$class-name}__bottom-wrapper {
+    height: $bottom-height;
+    float: left;
+    width: 100%;
+    position: relative;
+
+    @include clearfix;
+
+    #{$class-name}__bottom-left {
+      height: 100%;
+      width: $left-width;
+      position: absolute;
+      left: 0;
+      top: 0;
+
+      background-image: url($bottom-left);
+      background-size: 100% 100%;
+    }
+    #{$class-name}__bottom {
+      height: 100%;
+      position: absolute;
+      left: $left-width;
+      top: 0;
+      right: $right-width;
+
+      background-image: url($bottom);
+      background-size: 100% 100%;
+    }
+    #{$class-name}__bottom-right {
+      height: 100%;
+      width: $right-width;
+      position: absolute;
+      right: 0;
+      top: 0;
+
+      background-image: url($bottom-right);
+      background-size: 100% 100%;
+    }
+  }
+
+}

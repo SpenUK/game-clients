@@ -1,0 +1,56 @@
+$ui-border-radius: 8px;
+
+// UI labels for buttons, appear the same but with no pseudos
+@mixin ui-btn-label($background-color, $height){
+	background-color: $background-color;
+	box-shadow: 0 2px 0 darken($background-color, 15);
+	color: rgba(255,255,255,0.8);
+	text-shadow: 0 1px 0 rgba(0,0,0,0.2);
+	height: $height * 1px;
+	line-height: $height * 1px;
+	min-width: $height * 1px;
+	text-align: center;
+	border-radius: $ui-border-radius;
+	position: relative;
+	display: inline-block;
+	padding: 0 .25em;
+	vertical-align: top;
+
+	* {
+		line-height: inherit;
+		margin: 0;
+	}
+}
+
+// UI buttons
+@mixin ui-btn($background-color, $height){
+	@include ui-btn-label($background-color, $height);
+	cursor: pointer;
+
+	&.disabled {
+		cursor: auto;
+		opacity: 0.6;
+	}
+
+	&:hover {
+		color: rgba(255,255,255,1);
+		text-shadow: 0 1px 0 rgba(0,0,0,0.6);
+	}
+
+	&:active {
+		top: 1px;
+		box-shadow: 0 1px 0 darken($background-color, 15);
+	}
+
+}
+// Icon buttons, square by default, this would be over-ridden after mixin is called.
+@mixin icon-btn($background-color, $size){
+	@include ui-btn($background-color, $size);
+	color: rgba(255,255,255,0.8);
+	font-size: $size / 10 * 6 * 1px;
+	width: $size * 1px;
+	text-shadow: 0 2px 0 rgba(0,0,0,0.2);
+	
+	line-height: $size * 1px;
+
+}

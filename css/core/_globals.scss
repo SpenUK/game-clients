@@ -1,0 +1,77 @@
+$black: #444;
+$white: #fff;
+
+$white-hover: #eee;
+$black-hover: #333;
+
+$main-body-color: $black;
+
+$background-color: rgba(245,245,245,1);
+$header-color: rgba(255,90,110,1);
+$contrast-color-1: rgba(0,200,180,1);
+$main-body-color: $black;
+
+$screen: "only screen" !default;
+
+$header-height: 60px;
+
+// z-indexs:
+$header-z: 200;
+
+
+$break-points: (
+
+  "small": (
+    "range": (
+      "lower": 0px,
+      "upper": 649px
+    ),
+    "container-width": 100%
+  ),
+  "medium": (
+    "range": (
+      "lower": 650px,
+      "upper": 920px
+    ),
+    "container-width": 100%
+  ),
+  "large": (
+    "range": (
+      "lower": 960px,
+      "upper": 2000px
+    ),
+    "container-width": 960px
+  )
+
+);
+
+// Move function out in to boilerplate...mediaQueries and build all versions
+@function upwards-of($breakpoint) {
+
+  @if map-has-key($break-points, $breakpoint) {
+    $i: map-get($break-points, $breakpoint);
+    $upper: map-get(map-get($i, "range"),"upper");
+    $lower: map-get(map-get($i, "range"),"lower");
+
+
+    @return '#{$screen} and (min-width: #{$lower})';
+  }
+  // $i: nth($break-points, 2);
+
+  @error 'no breakpoint found with value: #{$breakpoint}';
+}
+
+// @function query($breakpoint) {
+
+//   @if map-has-key($break-points, $breakpoint) {
+//     $i: map-get($break-points, $breakpoint);
+//     $upper: map-get(map-get($i, "range"),"upper");
+//     $lower: map-get(map-get($i, "range"),"lower");
+
+
+//     @return '#{$screen} and (min-width: #{$lower}) and (max-width: #{$upper})';
+//   }
+//   // $i: nth($break-points, 2);
+
+//   @error 'no breakpoint found with value: #{$breakpoint}';
+// }

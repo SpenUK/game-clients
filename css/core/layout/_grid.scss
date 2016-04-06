@@ -1,0 +1,82 @@
+// ========= Grid Options ==========
+$col-count: 12;
+$gutter-w: 0px;
+
+$containerClass: 'grid-container';
+$rowClass: 'grid-row';
+
+// =================================
+
+@mixin column-span($multiplier, $col-w){
+  $gutters: $multiplier * $gutter-w - $gutter-w;
+  // width: $multiplier * $col-w + $gutters;
+  width: $multiplier * $col-w;
+}
+
+@function column-width-fixed($container-w, $col-count) {
+  $width: $container-w / $col-count;
+  @return $width;
+}
+
+@function column-width-percent($col-count) {
+  $width: (100 / $col-count);
+  @return $width * 1%;
+}
+
+.#{$containerClass} {
+  @include clearfix();
+  box-sizing: border-box;
+  margin: 0 auto;
+  // margin-top: $gutter-w;
+  position: relative;
+
+  .#{$rowClass} {
+    @include clearfix();
+    // padding-left: -($gutter-w/2);
+    // padding-right: -($gutter-w/2);
+
+    margin-left: -($gutter-w);
+    // margin-right: -($gutter-w);
+
+    &:first-child {
+      margin-top: -($gutter-w);
+    }
+  }
+
+}
+
+$screen: "only screen" !default;
+
+@each $size, $values in $break-points {
+
+  $i: map-get($break-points, $size);
+
+
+  $containerWidth: map-get($i, "container-width");
+
+  @media #{upwards-of($size)} {
+
+    .grid-container {
+      width: 100%;
+      max-width: $containerWidth;
+
+      &.fixed {
+        width: $containerWidth;
+      }
+
+      .#{$rowClass} {
+
+        @for $i from 1 through $col-count {
+          .#{$size}-#{$i} {
+            @include column-span($i, column-width-percent($col-count));
+            display: inline-block;
+            float: left;
+            padding-left: ($gutter-w);
+            padding-top: ($gutter-w);
+          }
+        }
+      }
+    }
+  }
+
+}

@@ -1,0 +1,13 @@
+@font-face {
+  font-family: 'open sans cond';
+  src: url('fonts/OpenSans-CondBold.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+$sans-serif: 'Open Sans', sans-serif;
+$sans-serif-display: 'open sans cond', sans-serif;
+$serif-display: 'georgia', serif;
+$serif-copy: 'georgia', serif;
+
+$default-font-family: $sans-serif;

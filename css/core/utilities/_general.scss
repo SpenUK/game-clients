@@ -1,0 +1,35 @@
+// A stretch mixin for abs-pos elements.
+@mixin cover(){
+	top: 0; bottom: 0; left: 0; right: 0;
+}
+
+@mixin clearfix() {
+  &:before,
+  &:after {
+    content: " "; // 1
+    display: table; // 2
+  }
+  &:after {
+    clear: both;
+  }
+}
+
+@mixin rounded($radius) {
+  -moz-border-radius: $radius;
+  -webkit-border-radius: $radius;
+  border-radius: $radius;
+}
+
+// ================================
+
+.cover {
+	@include cover();
+}
+
+.clearfix {
+	@include clearfix();
+}
+
+.bleed {
+  padding: 10px;
+}

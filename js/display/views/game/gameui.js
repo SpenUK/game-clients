@@ -57,6 +57,11 @@ var	View = require('../../../extensions/view'),
 			this.$el.fadeOut(200);
 		},
 
+		render: function () {
+			this._super.apply(this, arguments);
+			this.hide();
+		},
+
 		cancel: function () {
 			this.hide();
 			ticker.unpause();
