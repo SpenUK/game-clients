@@ -1,6 +1,7 @@
 'use strict';
 
-var _ = require('underscore'),
+// var _ = require('underscore'),
+var Model = require('../../extensions/model'),
 	ControlsView = require('./controls'),
 	template = require('../templates/storeitemcontrols.hbs'),
 
@@ -8,40 +9,87 @@ var _ = require('underscore'),
 
 		template: template,
 
-		acceptedParams: ['socket', 'controllerView'],
+		acceptedParams: ['socket', 'controllerView', 'parentView'],
 
 		// 189 = '-' / 187 = '+'\
 		keysList: [37, 38, 39, 40, 65, 66],
 
-		events: function () {
-			return _.extend({}, this._super.apply(this, arguments), {
-				'touchend .back-control': this.onBackPress,
-				'touchend .buy-control': this.onBuyPress,
-				'touchend .add': this.onAdd,
-				'touchend .remove': this.onRemove,
+		initialize: function() {
+			this._super.apply(this, arguments);
+			console.log(this.model);
 
-				'click .back-control': this.onBackPress,
-				'click .buy-control': this.onBuyPress,
-				'click .add': this.onAdd,
-				'click .remove': this.onRemove
+			this.purchaseModel = new Model({
+				quantity: 0,
+				total: 0
 			});
 		},
 
+		events: function () {
+			var touch = document.ontouchstart !== null,
+				// startEvent = touch ? 'mousedown' : 'touchstart',
+				endEvent = touch ? 'click' : 'touchend',
+				events = this._super.apply(this, arguments);
+
+			events[endEvent + ' .back-control'] = this.onBackPress;
+			events[endEvent + ' .buy-control'] = this.onBuyPress;
+			events[endEvent + ' .add'] = this.onAdd;
+			events[endEvent + ' .remove'] = this.onSubtract;
+
+			return events;
+		},
+
+		getPurchaseDetails: function () {
+			return {
+				itemId: this.model.get('itemId'),
+				quantity: this.purchaseModel.get('quantity')
+			};
+		},
+
 		onBackPress: function () {
-			this.model.set('controllerState', 'store');
+			this.parentView.goBack();
 		},
 
 		onBuyPress: function () {
-			// this.model.set('controllerState', 'itemStore');
-			window.alert('buy');
+			var details = this.getPurchaseDetails();
+			this.socket.emit('purchase-item', details);
 		},
 
 		onAdd: function () {
-			window.alert('add');
+			var quantity = this.purchaseModel.get('quantity'),
+				price = this.model.get('price'),
+				cappedQuantity = Math.min(Math.max(quantity + 1, 0), 99),
+				total = cappedQuantity * price;
+
+
+			this.purchaseModel.set({
+				quantity: cappedQuantity,
+				total: total
+			});
+
+			this.render();
 		},
 
-		onRemove: function () {
-			window.alert('remove');
+		onSubtract: function () {
+			var quantity = this.purchaseModel.get('quantity'),
+				price = this.model.get('price'),
+				cappedQuantity = Math.min(Math.max(quantity - 1, 0), 99),
+				total = cappedQuantity * price;
+
+			this.purchaseModel.set({
+				quantity: cappedQuantity,
+				total: total
+			});
+
+			this.render();
+		},
+
+		serialize: function () {
+			return {
+				name: this.model.get('name'),
+				price: this.model.get('price'),
+				quantity: this.purchaseModel.get('quantity'),
+				total: this.purchaseModel.get('total')
+			};
 		}
 
 	});

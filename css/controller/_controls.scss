@@ -20,6 +20,11 @@ $bgd: darken($bg, 5);
 
 	@include disable-selection();
 
+	.control-row {
+		max-height: 50%;
+		overflow: hidden;
+	}
+
 	.control {
 		width: 100px;
 		height: 100px;

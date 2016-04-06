@@ -1,37 +1,16 @@
-$bg: rgba(40,90,140,1);
-$bgd: darken($bg, 5);
-
-@mixin disable-selection() {
-  	-webkit-touch-callout: none;
-	-webkit-user-select: none;
-	-khtml-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
-	outline: 0;
-}
-
 .controls {
-	overflow: hidden;
-
-	// width: 330px;
-	// margin: 20px auto;
-	padding-bottom: 6px;
-	height: 100%;
-
-	@include disable-selection();
-
 	.item-details {
-		// overflow: hidden;
-	    // position: absolute;
-	    // width: 100%;
-	    // padding-left: 110px;
-	    // padding-right: 110px;
+		min-height: 1px;
 	    text-align: center;
 
 		.name {
 			font-size: 1.8em;
 			font-weight: bold;
+			margin: 0.4em;
+			text-overflow: ellipsis;
+		    word-wrap: inherit;
+		    overflow: hidden;
+		    white-space: nowrap;
 		}
 
 		.item-image {
@@ -41,12 +20,6 @@ $bgd: darken($bg, 5);
 	}
 
 	.control {
-		width: 100px;
-		height: 100px;
-		margin: 5px auto;
-
-		// float: left;
-
 		&.back-control {
 
 			font-size: 0.7em;
@@ -88,52 +61,5 @@ $bgd: darken($bg, 5);
 		    	}
 			}
 		}
-
-		@include disable-selection();
-
-		div.button {
-			background-color: rgba(0, 0, 0, 0.2);
-			text-align: center;
-
-			font-size: 2em;
-
-			box-shadow: 0 6px rgba(0, 0, 0, 0.4);
-	    	border-radius: 6px;
-
-	    	&:active {
-	    		// margin-top: 4px;
-    			box-shadow: 0 2px rgba(0, 0, 0, 0.4);
-	    	}
-		}
-
-		p {
-			line-height: 100px;
-			color: rgba(245,245,245,1);
-			margin: 0;
-			text-shadow: 0 4px rgba(0, 0, 0, 0.4);
-			font-weight: bold;
-		}
-
-		i {
-			line-height: 100px;
-			color: rgba(245,245,245,1);
-			text-shadow: 0 5px rgba(0, 0, 0, 0.4);
-		}
 	}
-
-	// .up {
-	// }
-
-	// .down {
-
-	// }
-
-	// .left {
-
-	// }
-
-	// .right {
-
-	// }
-
 }

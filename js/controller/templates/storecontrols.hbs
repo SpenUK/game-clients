@@ -1,6 +1,6 @@
 <div class="grid-container">
 
-	<div class="grid-row">
+	<div class="control-row grid-row">
 		<div class="small-3">
 			<div class="control back-control">
 				<div class="button">
@@ -11,8 +11,8 @@
 
 		<div class="small-6">
 			<div class="item-details">
-				<p class="name">Item name</p>
-				<p class="cost"><b>Cost:</b>40</p>
+				<p class="name">{{name}}</p>
+				<p class="cost"><b>Cost: </b>{{price}}</p>
 			</div>
 		</div>
 
@@ -25,9 +25,9 @@
 		</div>
 	</div>
 
-	<div class="grid-row">
+	<div class="control-row grid-row">
 		<div class="small-3">
-			<div class="control left">
+			<div class="control prev">
 				<div class="button">
 					<i class="fa fa-arrow-left"></i>
 				</div>
@@ -35,13 +35,13 @@
 		</div>
 
 		<div class="small-6">
-			<div class="item-details">
-				<img class="item-image" src="/images/items/greenapple.png">
+			<div class="item-details item-image">
+				<img class="item-image" src="{{src}}">
 			</div>
 		</div>
 
 		<div class="small-3">
-			<div class="control right">
+			<div class="control next">
 				<div class="button">
 					<i class="fa fa-arrow-right "></i>
 				</div>

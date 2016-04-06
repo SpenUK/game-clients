@@ -60,6 +60,20 @@ var _ = require('underscore'),
             return this.at((this.position -1 < 0) ? false : this.position - 1);
         },
 
+        incrementPosition: function () {
+            var nextModel = this.getNextModel();
+            if (nextModel) {
+                this.setCurrentModel(nextModel);
+            }
+        },
+
+        decrementPosition: function () {
+            var prevModel = this.getPrevModel();
+            if (prevModel) {
+                this.setCurrentModel(prevModel);
+            }
+        },
+
         checkSlug: function(slug){
             return (this.collection.where({slug: slug}).length >= 1);
         },
